@@ -91,8 +91,8 @@ export default function HomePage() {
           <Reveal className="flex-1">
             <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image
-                src="/images/gallery-kitchen.jpg"
-                alt="Inside the Urban Rasoi kitchen"
+                src="/images/gallery-founder.jpg"
+                alt="The founder and team at Urban Rasoi, passionate about food"
                 fill
                 className="object-cover"
                 sizes="(min-width: 768px) 45vw, 100vw"
