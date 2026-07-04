@@ -1,0 +1,60 @@
+'use client'
+
+import { useEffect, useRef, type ReactNode } from 'react'
+import { cn } from '@/lib/utils'
+
+export function Reveal({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode
+  className?: string
+  delay?: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    // Only hide elements that are below the viewport at mount time.
+    // Content stays visible without JS and above the fold.
+    const rect = el.getBoundingClientRect()
+    if (rect.top >= window.innerHeight) {
+      el.classList.add('reveal')
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              el.classList.add('is-visible')
+              observer.disconnect()
+            }
+          }
+        },
+        { threshold: 0.15 },
+      )
+      observer.observe(el)
+      // Safety net: never leave content hidden if the observer fails to fire.
+      const fallback = window.setTimeout(() => {
+        el.classList.add('is-visible')
+        observer.disconnect()
+      }, 4000)
+      return () => {
+        window.clearTimeout(fallback)
+        observer.disconnect()
+      }
+    }
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={delay ? { animationDelay: `${delay}ms` } : undefined}
+    >
+      {children}
+    </div>
+  )
+}
