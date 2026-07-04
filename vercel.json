@@ -1,4 +1,6 @@
 {
   "buildCommand": "corepack prepare pnpm@9.4.0 --activate && pnpm run build",
-  "installCommand": "corepack prepare pnpm@9.4.0 --activate && pnpm install"
+  "installCommand": "corepack prepare pnpm@9.4.0 --activate && pnpm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next"
 }
