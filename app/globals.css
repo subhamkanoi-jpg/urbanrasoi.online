@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-figtree), system-ui, sans-serif;
+
+  --color-background: #fdf9f3;
+  --color-foreground: #2b2018;
+  --color-cream: #f6eee2;
+  --color-ink: #2b2018;
+  --color-ink-soft: #6b5d51;
+  --color-terracotta: #e05e1a;
+  --color-terracotta-deep: #b8490f;
+  --color-card: #ffffff;
+  --color-border: #e8ddcf;
+
+  --color-primary: #e05e1a;
+  --color-primary-foreground: #fdf9f3;
+  --color-muted: #f6eee2;
+  --color-muted-foreground: #6b5d51;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--color-terracotta);
+  color: var(--color-primary-foreground);
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+
+.reveal.is-visible {
+  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+  }
+  .reveal.is-visible {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
