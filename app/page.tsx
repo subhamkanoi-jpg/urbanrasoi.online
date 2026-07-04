@@ -17,7 +17,7 @@ const galleryStrip = [
   { src: '/images/gallery-houseparty.jpg', alt: 'Buffet spread at a home celebration' },
   { src: '/images/gallery-diwali.jpg', alt: 'Live service at a festive gathering' },
   { src: '/images/gallery-spread.jpg', alt: 'Quesadillas from our grazing menu' },
-  { src: '/images/gallery-grazing.jpg', alt: 'Styled grazing table setup' },
+  { src: '/images/gallery-event.jpg', alt: 'Dabeli sliders styled on a grazing board' },
 ]
 
 export default function HomePage() {

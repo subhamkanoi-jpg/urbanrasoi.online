@@ -36,7 +36,15 @@ export function Reveal({
         { threshold: 0.15 },
       )
       observer.observe(el)
-      return () => observer.disconnect()
+      // Safety net: never leave content hidden if the observer fails to fire.
+      const fallback = window.setTimeout(() => {
+        el.classList.add('is-visible')
+        observer.disconnect()
+      }, 4000)
+      return () => {
+        window.clearTimeout(fallback)
+        observer.disconnect()
+      }
     }
   }, [])
 

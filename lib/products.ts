@@ -35,10 +35,10 @@ export const products: Product[] = [
     heroImagePosition: 'object-[80%_center]',
     cardImage: '/images/gallery-event.jpg',
     gallery: [
-      { src: '/images/gallery-grazing.jpg', alt: 'Styled gourmet grazing table spread' },
+      { src: '/images/gallery-event.jpg', alt: 'Dabeli sliders and mezze styled on a grazing board' },
       { src: '/images/gallery-spread.jpg', alt: 'Three cheese quesadilla with salsa from our grazing menu' },
       { src: '/images/gallery-baguette.jpg', alt: 'Freshly baked cheesy baguettes from our kitchen' },
-      { src: '/images/gallery-minipartay.jpg', alt: 'Mini party grazing setup with bite-sized portions' },
+      { src: '/images/gallery-houseparty.jpg', alt: 'A full spread styled and ready for guests' },
     ],
     included: [
       { title: 'Mediterranean Mezze', detail: 'Hummus, dips, olives, crackers and artisan breads' },
@@ -73,7 +73,7 @@ export const products: Product[] = [
       'Curated menus for birthdays, anniversaries and get-togethers — delivered warm to your doorstep.',
     description:
       'From an intimate dinner for ten to a full-house celebration, we build menus around your occasion. Homestyle Indian, Bengali classics, Indo-Chinese favourites, Continental spreads and desserts — cooked fresh in our kitchen and delivered ready to serve.',
-    heroImage: '/images/gallery-houseparty.jpg',
+    heroImage: '/images/gallery-diwali.jpg',
     cardImage: '/images/gallery-houseparty.jpg',
     gallery: [
       { src: '/images/gallery-houseparty.jpg', alt: 'House party buffet with curated Indian dishes' },
@@ -114,7 +114,7 @@ export const products: Product[] = [
       'Reliable, delicious catering for meetings, offsites and office celebrations — delivered on schedule, every time.',
     description:
       'Ten years of feeding Kolkata has taught us what workplaces need: consistency, punctuality and food people actually talk about. From daily team lunches to festive office parties and client events, we scale from 10 to 200+ heads without losing the homemade touch.',
-    heroImage: '/images/gallery-team.jpg',
+    heroImage: '/images/gallery-houseparty.jpg',
     cardImage: '/images/gallery-team.jpg',
     gallery: [
       { src: '/images/gallery-team.jpg', alt: 'Urban Rasoi team preparing food at a large event' },
