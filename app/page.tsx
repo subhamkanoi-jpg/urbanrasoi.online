@@ -103,8 +103,8 @@ export default function HomePage() {
       </section>
 
       {/* ── STORY ────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-5 py-16 md:px-10 md:py-24">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center md:gap-16">
+      <section className="mx-auto max-w-7xl px-5 py-10 md:px-10 md:py-16">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center md:gap-12">
           {/* Image */}
           <Reveal>
             <div className="relative aspect-[4/5] overflow-hidden rounded-2xl md:aspect-[3/4]">
@@ -129,27 +129,18 @@ export default function HomePage() {
             <h2 className="mt-4 font-serif text-3xl font-semibold leading-snug tracking-tight text-ink text-balance md:text-4xl">
               Ten years of one simple belief — food made with passion tastes different.
             </h2>
-            <p className="mt-5 text-base leading-relaxed text-ink-soft">
-              Urban Rasoi began in 2015 in Salt Lake with a founder who could not stop cooking for people. Six cuisines, one standard: would we serve this at our own table?
+            <p className="mt-5 text-sm uppercase tracking-widest text-ink-soft">
+              Salt Lake, Kolkata &nbsp;·&nbsp; FSSAI Certified &nbsp;·&nbsp; Since 2015
             </p>
-            <p className="mt-3 text-base leading-relaxed text-ink-soft">
-              Homestyle Indian, Bengali classics, South Indian, Indo-Chinese, Continental and desserts — always fresh, always made to order.
-            </p>
-            <div className="mt-8">
-              <WhatsAppButton message={defaultWhatsappMessage} label="Plan your event" />
-            </div>
           </Reveal>
         </div>
       </section>
 
       {/* ── OFFERINGS ────────────────────────────────────────── */}
-      <section className="bg-cream py-16 md:py-24">
+      <section className="bg-cream py-10 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <Reveal>
             <p className="section-label">What we craft</p>
-            <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink text-balance md:text-4xl">
-              Four ways to bring Urban Rasoi to your table.
-            </h2>
           </Reveal>
 
           {/* Bento grid of offerings */}
@@ -178,17 +169,11 @@ export default function HomePage() {
                   </div>
 
                   {/* Card body */}
-                  <div className="px-5 py-5 md:px-6 md:py-6">
-                    <h3 className="font-serif text-xl font-semibold text-ink md:text-2xl">
+                  <div className="flex items-center justify-between px-5 py-4 md:px-6">
+                    <h3 className="font-serif text-lg font-semibold text-ink md:text-xl">
                       {p.name}
                     </h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-ink-soft line-clamp-2">
-                      {p.promise}
-                    </p>
-                    <div className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-terracotta transition-all group-hover:gap-3">
-                      Explore {p.shortName}
-                      <span aria-hidden="true">→</span>
-                    </div>
+                    <span className="text-sm font-semibold text-terracotta transition-all group-hover:translate-x-1" aria-hidden="true">→</span>
                   </div>
                 </Link>
               </Reveal>
@@ -198,16 +183,11 @@ export default function HomePage() {
       </section>
 
       {/* ── GALLERY MOSAIC ───────────────────────────────────── */}
-      <section aria-label="From our kitchen" className="py-16 md:py-24">
+      <section aria-label="From our kitchen" className="py-10 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="section-label">Our food</p>
-                <h2 className="mt-2 font-serif text-3xl font-semibold text-ink md:text-4xl">
-                  From our kitchen, lately.
-                </h2>
-              </div>
+              <p className="section-label">From our kitchen</p>
               <a
                 href={site.instagram}
                 target="_blank"
@@ -249,23 +229,20 @@ export default function HomePage() {
       </section>
 
       {/* ── TRUST STRIP ──────────────────────────────────────── */}
-      <section className="bg-cream py-12 md:py-16">
+      <section className="bg-cream py-8 md:py-10">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {[
-              { icon: '✓', title: 'FSSAI Certified', desc: 'Our kitchen holds a valid FSSAI licence — full hygiene compliance, no compromises.' },
-              { icon: '★', title: '4.9 Customer Rating', desc: 'Rated by our guests across hundreds of events, big and small.' },
-              { icon: '♥', title: 'Made Fresh Daily', desc: 'Every dish is cooked on the day of your event — never reheated, never rushed.' },
+              { icon: '✓', title: 'FSSAI Certified' },
+              { icon: '★', title: '4.9 Customer Rating' },
+              { icon: '♥', title: 'Made Fresh Daily' },
             ].map((item) => (
               <Reveal key={item.title}>
-                <div className="flex gap-4 rounded-2xl bg-card p-6" style={{ boxShadow: '0 1px 8px rgba(30,20,11,0.06)' }}>
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-terracotta/10 font-serif text-lg text-terracotta">
+                <div className="flex items-center gap-4 rounded-2xl bg-card px-6 py-5" style={{ boxShadow: '0 1px 8px rgba(30,20,11,0.06)' }}>
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-terracotta/10 font-serif text-base text-terracotta">
                     {item.icon}
                   </span>
-                  <div>
-                    <p className="font-serif text-base font-semibold text-ink">{item.title}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-ink-soft">{item.desc}</p>
-                  </div>
+                  <p className="font-serif text-base font-semibold text-ink">{item.title}</p>
                 </div>
               </Reveal>
             ))}
@@ -285,17 +262,13 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-ink/75" />
         <div className="relative mx-auto flex max-w-3xl flex-col items-center px-5 py-24 text-center md:py-32">
           <Reveal>
-            <p className="section-label text-terracotta-light">Let&apos;s plan something delicious</p>
-            <h2 className="mt-4 font-serif text-4xl font-semibold leading-tight tracking-tight text-white text-balance md:text-6xl">
+            <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-white text-balance md:text-6xl">
               One message is all it takes.
             </h2>
-            <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-white/70">
-              Tell us your occasion, date and guest count — we&apos;ll take it from there, the way we have for ten years.
-            </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <WhatsAppButton
                 message={defaultWhatsappMessage}
-                label="Chat with Urban Rasoi"
+                label="Chat on WhatsApp"
                 size="large"
               />
               <a

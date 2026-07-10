@@ -50,28 +50,19 @@ export function ProductLanding({ product }: { product: Product }) {
         </div>
       </section>
 
-      {/* ── INTRO + TRUST ────────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-5 py-14 md:px-10 md:py-20">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-[1fr_280px] md:items-start">
-          <Reveal>
-            <h2 className="font-serif text-2xl font-semibold leading-snug tracking-tight text-ink text-balance md:text-3xl">
-              {product.description}
-            </h2>
-          </Reveal>
-          <Reveal delay={100}>
-            <div className="flex flex-col gap-5 rounded-2xl bg-cream p-6 md:p-7">
-              {[
-                { value: `Since ${site.foundedYear}`, label: 'A decade of craft' },
-                { value: `${site.rating}★ rated`, label: 'By our customers' },
-                { value: 'FSSAI certified', label: `${site.location} kitchen` },
-              ].map((item) => (
-                <div key={item.label} className="flex flex-col gap-1 border-b border-border pb-5 last:border-0 last:pb-0">
-                  <p className="font-serif text-lg font-semibold text-ink">{item.value}</p>
-                  <p className="text-xs uppercase tracking-widest text-ink-soft">{item.label}</p>
-                </div>
-              ))}
+      {/* ── TRUST STRIP ──────────────────────────────────────── */}
+      <section className="border-b border-border bg-cream">
+        <div className="mx-auto grid max-w-7xl grid-cols-3 divide-x divide-border">
+          {[
+            { value: `Since ${site.foundedYear}`, label: 'Crafting food' },
+            { value: `${site.rating}★`, label: 'Customer rating' },
+            { value: 'FSSAI', label: 'Certified kitchen' },
+          ].map((item) => (
+            <div key={item.label} className="flex flex-col items-center gap-1 py-6 px-4 text-center">
+              <p className="font-serif text-xl font-semibold text-ink">{item.value}</p>
+              <p className="text-[0.65rem] uppercase tracking-widest text-ink-soft">{item.label}</p>
             </div>
-          </Reveal>
+          ))}
         </div>
       </section>
 
@@ -100,24 +91,18 @@ export function ProductLanding({ product }: { product: Product }) {
       </section>
 
       {/* ── WHAT'S INCLUDED ──────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-5 py-14 md:px-10 md:py-20">
+      <section className="mx-auto max-w-7xl px-5 py-12 md:px-10 md:py-16">
         <Reveal>
           <p className="section-label">What you get</p>
-          <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink md:text-4xl">
-            Everything, thoughtfully handled.
-          </h2>
         </Reveal>
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {product.included.map((item, i) => (
-            <Reveal key={item.title} delay={i * 55}>
-              <li className="flex gap-4 rounded-2xl bg-cream p-5 md:p-6">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-terracotta/15 font-serif text-sm font-semibold text-terracotta">
+            <Reveal key={item.title} delay={i * 45}>
+              <li className="flex items-center gap-3 rounded-xl bg-cream px-5 py-4">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-terracotta/15 font-serif text-xs font-semibold text-terracotta">
                   {`0${i + 1}`}
                 </span>
-                <div>
-                  <p className="font-serif text-base font-semibold text-ink">{item.title}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-soft">{item.detail}</p>
-                </div>
+                <p className="font-serif text-sm font-semibold text-ink">{item.title}</p>
               </li>
             </Reveal>
           ))}
@@ -125,31 +110,19 @@ export function ProductLanding({ product }: { product: Product }) {
       </section>
 
       {/* ── HOW IT WORKS ─────────────────────────────────────── */}
-      <section className="bg-cream py-14 md:py-20">
+      <section className="bg-cream py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <Reveal>
             <p className="section-label">How it works</p>
-            <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink md:text-4xl">
-              Three steps to done.
-            </h2>
           </Reveal>
-          <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-6">
+          <ol className="mt-6 grid gap-3 md:grid-cols-3">
             {product.steps.map((step, i) => (
-              <Reveal key={step.title} delay={i * 90}>
-                <li className="relative flex flex-col gap-4 rounded-2xl bg-card p-6 md:p-8" style={{ boxShadow: '0 2px 16px rgba(30,20,11,0.07)' }}>
-                  {/* Step number */}
-                  <div className="flex items-center justify-between">
-                    <span className="font-serif text-5xl font-semibold leading-none text-terracotta/20">
-                      {`0${i + 1}`}
-                    </span>
-                    {i < product.steps.length - 1 && (
-                      <span className="hidden text-2xl text-border md:block" aria-hidden="true">→</span>
-                    )}
-                  </div>
-                  <div>
-                    <p className="font-serif text-xl font-semibold text-ink">{step.title}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-ink-soft">{step.detail}</p>
-                  </div>
+              <Reveal key={step.title} delay={i * 80}>
+                <li className="flex items-center gap-4 rounded-xl bg-card px-6 py-5" style={{ boxShadow: '0 1px 8px rgba(30,20,11,0.06)' }}>
+                  <span className="font-serif text-3xl font-semibold leading-none text-terracotta/25 tabular-nums">
+                    {`0${i + 1}`}
+                  </span>
+                  <p className="font-serif text-base font-semibold text-ink">{step.title}</p>
                 </li>
               </Reveal>
             ))}
@@ -169,23 +142,22 @@ export function ProductLanding({ product }: { product: Product }) {
         <div className="absolute inset-0 bg-ink/80" />
         <div className="relative mx-auto flex max-w-3xl flex-col items-center px-5 py-24 text-center md:py-32">
           <Reveal>
-            <p className="section-label text-terracotta-light">{product.eyebrow}</p>
-            <h2 className="mt-4 font-serif text-4xl font-semibold leading-tight tracking-tight text-white text-balance md:text-6xl">
+            <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-white text-balance md:text-6xl">
               {product.closingHeadline}
             </h2>
-            <p className="mx-auto mt-5 max-w-md text-base leading-relaxed text-white/65">
-              {product.closingCopy}
-            </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <WhatsAppButton
                 message={product.whatsappMessage}
                 label={product.ctaLabel}
                 size="large"
               />
+              <a
+                href={`tel:${site.phone.replace(/\s/g, '')}`}
+                className="flex items-center gap-2 rounded-full border border-white/30 px-6 py-4 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/10"
+              >
+                {site.phone}
+              </a>
             </div>
-            <p className="mt-5 text-xs uppercase tracking-widest text-white/40">
-              Or call us at {site.phone}
-            </p>
           </Reveal>
         </div>
       </section>
