@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Reveal } from '@/components/reveal'
 import { WhatsAppButton } from '@/components/whatsapp-button'
+import { MenuBuilderFloat } from '@/components/menu-builder-float'
 import { products } from '@/lib/products'
 import { site, defaultWhatsappMessage } from '@/lib/site'
 
@@ -65,12 +66,13 @@ export default function HomePage() {
                 label="Order on WhatsApp"
                 size="large"
               />
-              <Link
-                href="/grazing-tables"
-                className="rounded-full border border-white/40 px-6 py-4 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:border-white hover:bg-white/10"
+              <a
+                href="/menu.html"
+                className="group flex items-center gap-2 rounded-full bg-white/15 px-6 py-4 text-sm font-semibold text-white ring-1 ring-white/40 backdrop-blur-sm transition-all duration-200 hover:bg-white hover:text-ink"
               >
-                See our menus
-              </Link>
+                Build Your Menu
+                <span className="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true">→</span>
+              </a>
             </div>
           </Reveal>
         </div>
@@ -182,6 +184,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── MENU BUILDER BANNER ──────────────────────────────── */}
+      <section className="bg-cream px-5 pb-10 md:px-10">
+        <Reveal>
+          <a
+            href="/menu.html"
+            className="group relative flex flex-col items-start justify-between gap-6 overflow-hidden rounded-2xl bg-ink px-7 py-8 md:flex-row md:items-center md:px-10 md:py-10"
+          >
+            {/* Subtle background texture — large faded text */}
+            <span
+              className="pointer-events-none absolute -right-4 -top-3 select-none font-serif text-[7rem] font-semibold leading-none text-white/[0.04] md:text-[9rem]"
+              aria-hidden="true"
+            >
+              Menu
+            </span>
+
+            <div className="relative max-w-lg">
+              <p className="section-label text-terracotta-light">House parties &amp; celebrations</p>
+              <h2 className="mt-2.5 font-serif text-2xl font-semibold leading-snug text-white text-balance md:text-3xl">
+                Pick every dish. Send us your dream menu in one tap.
+              </h2>
+            </div>
+
+            <div className="relative shrink-0">
+              <span className="inline-flex items-center gap-2.5 rounded-full bg-terracotta px-7 py-4 text-sm font-semibold text-white transition-all duration-200 group-hover:bg-terracotta-deep group-hover:gap-4">
+                Build Your Menu
+                <span aria-hidden="true">→</span>
+              </span>
+            </div>
+          </a>
+        </Reveal>
+      </section>
+
       {/* ── GALLERY MOSAIC ───────────────────────────────────── */}
       <section aria-label="From our kitchen" className="py-10 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
@@ -249,6 +283,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <MenuBuilderFloat />
 
       {/* ── CLOSING CTA ──────────────────────────────────────── */}
       <section className="relative overflow-hidden">
