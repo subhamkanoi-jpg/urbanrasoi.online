@@ -120,6 +120,19 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
 .field textarea{resize:vertical;min-height:64px}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
+/* COUPON */
+.coupon{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px}
+.coupon h3{font-size:1.05rem;margin-bottom:12px}
+.coupon-row{display:flex;gap:10px}
+.coupon-row input{flex:1;border:1.5px solid rgba(43,32,24,.15);border-radius:12px;padding:13px 14px;font-family:'Poppins',sans-serif;font-size:.95rem;background:var(--cream);color:var(--ink);outline:none;text-transform:uppercase;letter-spacing:.06em}
+.coupon-row input:focus{border-color:var(--orange)}
+.coupon-row button{border:none;background:var(--orange);color:#fff;font-family:'Poppins',sans-serif;font-weight:600;font-size:.9rem;border-radius:12px;padding:0 22px;cursor:pointer;transition:background .15s;white-space:nowrap}
+.coupon-row button:hover{background:var(--orange-dark)}
+.coupon-applied{display:none;align-items:center;justify-content:space-between;gap:10px;background:#DDF5E4;border:1.5px dashed #1B7A3D;border-radius:12px;padding:12px 14px;font-size:.86rem;font-weight:500;color:#1B7A3D}
+.coupon-applied button{border:none;background:transparent;color:#1B7A3D;font-size:.78rem;font-weight:600;cursor:pointer;text-decoration:underline;font-family:'Poppins',sans-serif}
+.coupon.has-coupon .coupon-row{display:none}
+.coupon.has-coupon .coupon-applied{display:flex}
+
 /* LIVE PRICE */
 .price-live{background:linear-gradient(120deg,var(--orange),var(--orange-dark));color:#fff;border-radius:var(--radius);box-shadow:0 14px 36px rgba(238,107,35,.3);padding:20px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .price-live .pl-label{font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;opacity:.92;display:block}
@@ -232,6 +245,18 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
     </div>
   </div>
 
+  <div class="coupon" id="couponBox">
+    <h3>🏷️ Have a coupon?</h3>
+    <div class="coupon-row">
+      <input type="text" id="couponInput" placeholder="Enter coupon code" maxlength="20" autocomplete="off">
+      <button type="button" id="couponApply">Apply</button>
+    </div>
+    <div class="coupon-applied">
+      <span id="couponTag"></span>
+      <button type="button" id="couponRemove">Remove</button>
+    </div>
+  </div>
+
   <div class="price-live" id="priceLive">
     <div>
       <span class="pl-label">Your estimated total</span>
@@ -335,8 +360,27 @@ function charmTotal(raw) {
   return Math.max(999, Math.round((raw + 1) / 1000) * 1000 - 1);
 }
 
-function currentTotal() {
+// round DOWN to the nearest amount ending in 999 — used after a discount so the
+// customer never pays more than the discounted figure (e.g. 37,999.05 → 37,999)
+function charmFloor(raw) {
+  return Math.max(999, Math.floor((raw + 1) / 1000) * 1000 - 1);
+}
+
+const COUPONS = { URSPECIAL5: 0.05 };
+let appliedCoupon = null;
+
+function subtotal() {
   return charmTotal(perPlate() * guests);
+}
+
+function couponDiscount() {
+  if (!appliedCoupon) return 0;
+  const sub = subtotal();
+  return sub - charmFloor(sub * (1 - COUPONS[appliedCoupon]));
+}
+
+function currentTotal() {
+  return subtotal() - couponDiscount();
 }
 
 function serviceName() {
@@ -376,9 +420,42 @@ function renderServices() {
 
 function updatePrice() {
   document.getElementById('plAmount').textContent = fmtINR(currentTotal());
-  document.getElementById('plPerPlate').textContent = fmtINR(perPlate()) + ' × ' + guests + ' guests';
+  const disc = couponDiscount();
+  document.getElementById('plPerPlate').textContent = disc
+    ? 'you save ' + fmtINR(disc) + ' with ' + appliedCoupon
+    : fmtINR(perPlate()) + ' × ' + guests + ' guests';
   document.getElementById('plDetail').textContent = MENUS[activeMenu].name + ' · ' + serviceName() + ' · ' + guests + ' guests';
 }
+
+// COUPON
+const couponBox = document.getElementById('couponBox');
+const couponInput = document.getElementById('couponInput');
+
+function applyCoupon() {
+  const code = couponInput.value.trim().toUpperCase();
+  if (!code) { couponInput.focus(); return; }
+  if (!COUPONS[code]) {
+    toast('Hmm, that coupon doesn\u2019t look right — please check the code');
+    couponInput.select();
+    return;
+  }
+  appliedCoupon = code;
+  couponBox.classList.add('has-coupon');
+  document.getElementById('couponTag').textContent = '🎉 ' + code + ' applied — ' + Math.round(COUPONS[code] * 100) + '% off your total';
+  toast('Coupon applied! Your total just got sweeter 🧡');
+  updatePrice();
+}
+
+document.getElementById('couponApply').addEventListener('click', applyCoupon);
+couponInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.isComposing && e.keyCode !== 229) applyCoupon();
+});
+document.getElementById('couponRemove').addEventListener('click', () => {
+  appliedCoupon = null;
+  couponBox.classList.remove('has-coupon');
+  couponInput.value = '';
+  updatePrice();
+});
 
 function pickLabel(course, sel) {
   if (course.pick === 0) return course.dishes.length > 1 ? 'both included' : 'included';
@@ -523,6 +600,9 @@ function getState() {
     guests,
     service: serviceName(),
     plate: perPlate(),
+    subtotal: subtotal(),
+    coupon: appliedCoupon,
+    discount: couponDiscount(),
     total: currentTotal()
   };
 }
@@ -577,7 +657,8 @@ function renderFinalCard(s) {
   html += '</div>';
   if (s.note) html += '<div class="fc-note">“' + s.note.replace(/</g, '&lt;') + '”</div>';
   html += '<div class="fc-price"><div class="p-label">Your Total</div><div class="p-amount">' + fmtINR(s.total) + '</div>' +
-    '<div class="p-detail">' + fmtINR(s.plate) + ' per guest × ' + s.guests + ' guests · ' + s.service + '</div></div>';
+    '<div class="p-detail">' + fmtINR(s.plate) + ' per guest × ' + s.guests + ' guests · ' + s.service + '</div>' +
+    (s.discount ? '<div class="p-detail" style="color:#1B7A3D;font-weight:600">🏷️ ' + s.coupon + ' applied — you saved ' + fmtINR(s.discount) + '</div>' : '') + '</div>';
   html += '<div class="fc-foot">Pure Vegetarian · FSSAI 12823013000353 · +91 98307 25556 · urbanrasoi.online</div>';
   document.getElementById('finalCard').innerHTML = html;
 }
@@ -598,7 +679,7 @@ async function buildMenuImage(s) {
   h += 90;                // meta line
   s.chosen.forEach(c => { h += 56 + c.dishes.length * 46 + 36; });
   if (s.note) h += 90;
-  h += 210;               // price block
+  h += s.discount ? 250 : 210; // price block (taller when a coupon saving is shown)
   h += 130;               // footer
   const H = Math.max(h, 1080);
 
@@ -675,7 +756,7 @@ async function buildMenuImage(s) {
 
   // price block
   y += 6;
-  const pbH = 168;
+  const pbH = s.discount ? 206 : 168;
   x.fillStyle = '#FDF3E7';
   roundRect(x, pad, y - 34, W - pad * 2, pbH, 22);
   x.fill();
@@ -694,6 +775,11 @@ async function buildMenuImage(s) {
   x.fillStyle = '#6E5D4F';
   x.font = '500 24px Poppins';
   x.fillText(fmtINR(s.plate) + ' per guest × ' + s.guests + ' guests · ' + s.service, W / 2, y + 112);
+  if (s.discount) {
+    x.fillStyle = '#1B7A3D';
+    x.font = '600 24px Poppins';
+    x.fillText('🏷️ ' + s.coupon + ' applied — you saved ' + fmtINR(s.discount), W / 2, y + 150);
+  }
   y += pbH;
 
   // footer
@@ -744,6 +830,7 @@ function waTextSummary(s) {
   s.chosen.forEach(c => { t += '\n✦ *' + c.course + ':* ' + c.dishes.join(', '); });
   if (s.note) t += '\n\n📝 ' + s.note;
   t += '\n\n💰 *Total: ' + fmtINR(s.total) + '* (' + fmtINR(s.plate) + ' per guest × ' + s.guests + ')';
+  if (s.discount) t += '\n🏷️ Coupon *' + s.coupon + '* applied — saved ' + fmtINR(s.discount);
   t += '\n\nPlease confirm my date!';
   return t;
 }
