@@ -1,19 +1,20 @@
 import type { Metadata } from 'next'
-import { Fraunces, Figtree } from 'next/font/google'
+import { Playfair_Display, Jost } from 'next/font/google'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { FloatingWhatsApp } from '@/components/whatsapp-button'
 import { site, defaultWhatsappMessage } from '@/lib/site'
 import './globals.css'
 
-const fraunces = Fraunces({
+const playfair = Playfair_Display({
   subsets: ['latin'],
-  variable: '--font-fraunces',
+  style: ['normal', 'italic'],
+  variable: '--font-playfair',
 })
 
-const figtree = Figtree({
+const jost = Jost({
   subsets: ['latin'],
-  variable: '--font-figtree',
+  variable: '--font-jost',
 })
 
 export const metadata: Metadata = {
@@ -37,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${fraunces.variable} ${figtree.variable} bg-background`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${jost.variable} bg-background`}>
       <body className="font-sans">
         <SiteHeader />
         <main className="min-h-svh">{children}</main>
