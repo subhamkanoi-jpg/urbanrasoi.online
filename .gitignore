@@ -1,4 +1,13 @@
+# local tooling
 .claude/
 .playwright-mcp/
 Thumbs.db
 .DS_Store
+
+# dependencies & build output
+node_modules/
+.next/
+out/
+next-env.d.ts
+pnpm-workspace.yaml
+*.tsbuildinfo

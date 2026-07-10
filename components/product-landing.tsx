@@ -33,12 +33,20 @@ export function ProductLanding({ product }: { product: Product }) {
                 <p className="mt-5 max-w-xl text-base leading-relaxed text-background/85 md:text-lg">
                   {product.promise}
                 </p>
-                <div className="mt-8">
+                <div className="mt-8 flex flex-wrap items-center gap-4">
                   <WhatsAppButton
                     message={product.whatsappMessage}
                     label={product.ctaLabel}
                     size="large"
                   />
+                  {product.builderCta && (
+                    <a
+                      href={product.builderCta.href}
+                      className="text-sm font-medium text-background underline-offset-4 transition-colors hover:text-terracotta hover:underline"
+                    >
+                      {product.builderCta.label} →
+                    </a>
+                  )}
                 </div>
               </Reveal>
             </div>

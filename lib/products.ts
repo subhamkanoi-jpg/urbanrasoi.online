@@ -14,6 +14,7 @@ export type Product = {
   steps: { title: string; detail: string }[]
   whatsappMessage: string
   ctaLabel: string
+  builderCta?: { label: string; href: string }
   closingHeadline: string
   closingCopy: string
   metaTitle: string
@@ -97,6 +98,7 @@ export const products: Product[] = [
     whatsappMessage:
       "Hi Urban Rasoi! I'm planning a house party and would like a menu. Date: ___ | Guests: ___",
     ctaLabel: 'Plan my house party',
+    builderCta: { label: 'Build your own menu', href: '/menu.html' },
     closingHeadline: 'Your home. Our kitchen. One great party.',
     closingCopy:
       'Send us your date and guest count — we will send back a menu that makes hosting effortless.',

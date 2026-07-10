@@ -1,0 +1,552 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Your Celebration Menu — Urban Rasoi Kolkata</title>
+<meta name="description" content="Design your own house party menu from Urban Rasoi's Celebration Menus — pure vegetarian, fully set up & served in your home. Pick your dishes, set your date, and send it to us on WhatsApp.">
+<link rel="canonical" href="https://www.urbanrasoi.online/menu.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Urban Rasoi">
+<meta property="og:title" content="Build Your Celebration Menu — Urban Rasoi">
+<meta property="og:description" content="Pick your dishes course by course, set your party date, and send us your dream menu on WhatsApp. Pure vegetarian, set up & served at your home.">
+<meta property="og:url" content="https://www.urbanrasoi.online/menu.html">
+<meta property="og:image" content="https://www.urbanrasoi.online//images/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.urbanrasoi.online//images/og-image.jpg">
+<link rel="icon" type="image/jpeg" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Poppins:wght@300;400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#EE6B23;
+  --orange-dark:#D4551A;
+  --orange-soft:#FBE3D3;
+  --yellow:#F5A623;
+  --cream:#FFF8F0;
+  --ink:#2B2018;
+  --ink-soft:#6E5D4F;
+  --white:#FFFFFF;
+  --green:#25D366;
+  --radius:18px;
+  --shadow:0 12px 40px rgba(43,32,24,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Poppins',sans-serif;color:var(--ink);background:var(--cream);line-height:1.6;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:'Fraunces',serif;line-height:1.15}
+.script{font-family:'Caveat',cursive;color:var(--orange);font-size:1.3em}
+.container{width:min(880px,92%);margin:0 auto}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,248,240,.94);backdrop-filter:blur(12px);border-bottom:1px solid rgba(238,107,35,.12)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:13px 0}
+.brand{display:flex;align-items:center;gap:11px;font-family:'Fraunces',serif;font-weight:700;font-size:1.2rem}
+.brand img{width:40px;height:40px;border-radius:50%;box-shadow:0 2px 10px rgba(238,107,35,.35)}
+.back-link{font-size:.85rem;font-weight:500;color:var(--orange)}
+
+/* HEADER */
+header{padding:118px 0 34px;text-align:center}
+.kicker{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+header h1{font-size:clamp(1.9rem,5vw,2.9rem);margin-bottom:14px}
+header h1 em{font-style:normal;color:var(--orange)}
+header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
+.mini-steps{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:22px}
+.mini-step{background:var(--white);box-shadow:0 4px 14px rgba(43,32,24,.07);border-radius:999px;padding:8px 16px;font-size:.78rem;font-weight:500}
+.mini-step b{color:var(--orange)}
+
+/* TABS */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:30px 0 8px}
+.tab{background:var(--white);border:2px solid rgba(43,32,24,.1);border-radius:var(--radius);padding:18px 16px;cursor:pointer;text-align:center;transition:all .2s;font-family:'Poppins',sans-serif}
+.tab .t-name{font-family:'Fraunces',serif;font-weight:700;font-size:1.05rem;display:block;margin-bottom:3px}
+.tab .t-sub{font-size:.74rem;color:var(--ink-soft)}
+.tab.active{border-color:var(--orange);background:var(--orange-soft);box-shadow:0 10px 26px rgba(238,107,35,.18)}
+.tab.active .t-name{color:var(--orange-dark)}
+.menu-note{text-align:center;font-size:.8rem;color:var(--ink-soft);margin:12px 0 26px}
+
+/* COURSES */
+.course{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 22px;margin-bottom:18px}
+.course-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.course-title{font-size:.8rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ink)}
+.course-pick{font-size:.75rem;font-weight:600;color:var(--orange);background:var(--orange-soft);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.course-pick.done{background:#DDF5E4;color:#1B7A3D}
+.dish-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.dish{position:relative;border:1.5px solid rgba(43,32,24,.13);border-radius:14px;padding:13px 38px 13px 14px;font-size:.86rem;font-weight:500;cursor:pointer;transition:all .18s;background:var(--cream);user-select:-webkit-user-select;user-select:none;line-height:1.35}
+.dish:hover{border-color:var(--orange)}
+.dish .tick{position:absolute;right:11px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(43,32,24,.25);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:transparent;transition:all .18s;background:var(--white)}
+.dish.selected{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 8px 20px rgba(238,107,35,.3)}
+.dish.selected .tick{background:#fff;border-color:#fff;color:var(--orange)}
+.dish.fixed{cursor:default;background:#FDF3E7;border-style:dashed;border-color:rgba(238,107,35,.4)}
+.dish.fixed .tick{background:var(--orange-soft);border-color:transparent;color:var(--orange-dark)}
+.dish.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* DETAILS */
+.details{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 22px;margin-bottom:18px}
+.details h3{font-size:1.05rem;margin-bottom:16px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.78rem;font-weight:600;margin-bottom:6px;color:var(--ink-soft)}
+.field input,.field textarea{width:100%;border:1.5px solid rgba(43,32,24,.15);border-radius:12px;padding:13px 14px;font-family:'Poppins',sans-serif;font-size:.95rem;background:var(--cream);color:var(--ink);outline:none;transition:border .2s}
+.field input:focus,.field textarea:focus{border-color:var(--orange)}
+.field textarea{resize:vertical;min-height:64px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* SUBMIT */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:15px 26px;border-radius:999px;font-weight:600;font-size:1rem;transition:transform .2s,box-shadow .2s;cursor:pointer;border:none;font-family:'Poppins',sans-serif;width:100%}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--orange);color:#fff;box-shadow:0 8px 24px rgba(238,107,35,.35)}
+.btn-wa{background:var(--green);color:#fff;box-shadow:0 8px 24px rgba(37,211,102,.35)}
+.btn-ghost{background:transparent;color:var(--ink);border:2px solid rgba(43,32,24,.18)}
+.submit-wrap{margin:24px 0 60px}
+
+/* CONFIRMATION */
+#confirm{display:none;padding-bottom:70px}
+#confirm.show{display:block}
+.final-card{background:var(--white);border-radius:24px;box-shadow:0 24px 70px rgba(43,32,24,.16);overflow:hidden;margin-bottom:22px}
+.fc-top{background:linear-gradient(120deg,var(--orange),var(--orange-dark));color:#fff;text-align:center;padding:26px 20px 22px}
+.fc-top img{width:54px;height:54px;border-radius:50%;margin:0 auto 10px;border:2.5px solid rgba(255,255,255,.6)}
+.fc-top .fc-kicker{font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;opacity:.92;display:block;margin-bottom:6px}
+.fc-top h2{font-size:1.55rem}
+.fc-top .fc-for{font-family:'Caveat',cursive;font-size:1.3rem;margin-top:6px;color:#FFE1C9}
+.fc-meta{text-align:center;padding:14px 18px;border-bottom:1px dashed rgba(43,32,24,.15);font-size:.85rem;font-weight:500;color:var(--ink-soft)}
+.fc-body{padding:10px 26px 6px}
+.fc-course{padding:14px 0;border-bottom:1px dashed rgba(43,32,24,.12);text-align:center}
+.fc-course:last-child{border-bottom:none}
+.fc-course .c-name{font-size:.68rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--orange);margin-bottom:7px}
+.fc-course .c-dishes{font-family:'Fraunces',serif;font-size:1.02rem;line-height:1.55}
+.fc-note{text-align:center;font-size:.83rem;color:var(--ink-soft);font-style:italic;padding:12px 26px}
+.fc-foot{text-align:center;font-size:.72rem;color:var(--ink-soft);padding:14px 20px 20px;border-top:1px dashed rgba(43,32,24,.15)}
+.confirm-actions{display:flex;flex-direction:column;gap:12px}
+.confirm-hint{text-align:center;font-size:.78rem;color:var(--ink-soft);margin-top:12px}
+
+/* TOAST */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(90px);background:var(--ink);color:#fff;font-size:.85rem;font-weight:500;padding:13px 22px;border-radius:999px;box-shadow:0 14px 36px rgba(0,0,0,.3);transition:transform .3s;z-index:200;max-width:88%;text-align:center}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(min-width:640px){
+  .dish-grid{grid-template-columns:repeat(3,1fr)}
+  .confirm-actions{flex-direction:row}
+  .confirm-actions .btn{flex:1}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="/house-parties" class="brand"><img src="/images/logo.jpg" alt="Urban Rasoi logo">urban rasoi</a>
+    <a href="/house-parties" class="back-link">← Back to site</a>
+  </div>
+</nav>
+
+<header>
+  <div class="container">
+    <span class="kicker">Pure Vegetarian · Celebration Menus · Est. 2015</span>
+    <h1>Design your own <em>party menu</em></h1>
+    <p>An evening, entirely taken care of — set up in your home, beautifully presented, and served from the first guest to the last plate. Pick your dishes, set your date, and send us your menu.</p>
+    <div class="mini-steps">
+      <span class="mini-step"><b>1</b> Pick your spread</span>
+      <span class="mini-step"><b>2</b> Choose your dishes</span>
+      <span class="mini-step"><b>3</b> Set the date</span>
+      <span class="mini-step"><b>4</b> Send on WhatsApp</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="tabs" id="tabs"></div>
+  <p class="menu-note" id="menuNote"></p>
+  <div id="courses"></div>
+
+  <div class="details">
+    <h3>🗓️ Your get-together</h3>
+    <div class="two-col">
+      <div class="field">
+        <label for="fName">Your name</label>
+        <input type="text" id="fName" placeholder="e.g. Priya" maxlength="30" autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="fDate">Date of the get-together *</label>
+        <input type="date" id="fDate" required>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:0">
+      <label for="fNote">Anything special in mind? (optional)</label>
+      <textarea id="fNote" placeholder="Dietary preferences, a dish you'd love added, occasion details..." maxlength="200"></textarea>
+    </div>
+  </div>
+
+  <div class="submit-wrap">
+    <button class="btn btn-primary" id="submitBtn">✨ Confirm my menu</button>
+  </div>
+
+  <section id="confirm">
+    <div class="final-card" id="finalCard"></div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" id="editBtn">✏️ Edit selections</button>
+      <button class="btn btn-wa" id="sendBtn">💬 Send my menu on WhatsApp</button>
+    </div>
+    <p class="confirm-hint" id="sendHint">Your menu will be shared as an image — send it to us and we'll confirm your date.</p>
+  </section>
+</main>
+
+<div id="toast"></div>
+
+<script>
+const WA_NUMBER = '919830725556';
+
+const MENUS = [
+  {
+    id: 'intimate',
+    name: 'The Intimate Gathering',
+    tagline: 'A complete, beautifully balanced spread',
+    meta: 'For 25 guests · fully set up & served',
+    courses: [
+      { name: 'To Begin', pick: 2, dishes: ['Mini Pav Bhaji Sliders','Mini Dabeli Sliders','Vegetable Cutlet','Bite-Sized Pizza'] },
+      { name: 'Chaat', pick: 1, dishes: ['Papdi Chaat','Rajasthani Dahi Vada'] },
+      { name: 'From the Kitchen', pick: 2, dishes: ['Paneer Mix Vegetable','Pindi Chana Masala','Kashmiri Aloo Dum'] },
+      { name: 'Dal', pick: 1, dishes: ['Yellow Dal Tadka','Dahi Kadhi'] },
+      { name: 'Breads', pick: 2, dishes: ['Masala Kulcha','Pudina Laccha Paratha','Puran Puri'] },
+      { name: 'Rice', pick: 1, dishes: ['Jeera Dhaniya Pulao','Peas Pulao'] },
+      { name: 'To Finish', pick: 0, dishes: ['Rasmalai Kesariya'] }
+    ]
+  },
+  {
+    id: 'signature',
+    name: 'The Signature Celebration',
+    tagline: 'Our fullest table — truly abundant',
+    meta: 'For 25 guests · fully set up & served',
+    courses: [
+      { name: 'To Begin', pick: 3, dishes: ['Mini Pav Bhaji Sliders','Mini Dabeli Sliders','Vegetable Cutlet','Bite-Sized Pizza'] },
+      { name: 'Chaat Station', pick: 2, dishes: ['Mini Raj Kachori Chaat','Papdi Chaat','Rajasthani Dahi Vada'] },
+      { name: 'From the Kitchen', pick: 4, dishes: ['Kashmiri Aloo Dum','Paneer Mix Vegetable','Gatte Ki Subzi','Rajasthani Panchmela','Pindi Chana Masala'] },
+      { name: 'Dal', pick: 2, dishes: ['Black Dal','Yellow Dal Tadka','Dahi Kadhi'] },
+      { name: 'Breads', pick: 3, dishes: ['Belwa Matar Kachori','Masala Kulcha','Pudina Laccha Paratha','Puran Puri'] },
+      { name: 'Rice', pick: 1, dishes: ['Zafrani Pulao','Vegetable Pulao','Jeera Dhaniya Pulao'] },
+      { name: 'To Finish', pick: 0, dishes: ['Rasmalai Kesariya','Chocolate Monte Carlo'] }
+    ]
+  }
+];
+
+let activeMenu = 0;
+// selections[menuIndex][courseIndex] = Set of dish names
+const selections = MENUS.map(m => m.courses.map(() => new Set()));
+
+const tabsEl = document.getElementById('tabs');
+const coursesEl = document.getElementById('courses');
+const menuNoteEl = document.getElementById('menuNote');
+const toastEl = document.getElementById('toast');
+let toastTimer;
+
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+}
+
+function renderTabs() {
+  tabsEl.innerHTML = '';
+  MENUS.forEach((m, i) => {
+    const b = document.createElement('button');
+    b.className = 'tab' + (i === activeMenu ? ' active' : '');
+    b.innerHTML = '<span class="t-name">' + m.name + '</span><span class="t-sub">' + m.tagline + '</span>';
+    b.addEventListener('click', () => { activeMenu = i; renderTabs(); renderCourses(); });
+    tabsEl.appendChild(b);
+  });
+  menuNoteEl.textContent = MENUS[activeMenu].meta + ' · every dish swappable within its course';
+}
+
+function pickLabel(course, sel) {
+  if (course.pick === 0) return course.dishes.length > 1 ? 'both included' : 'included';
+  return sel.size + ' of ' + course.pick + ' chosen';
+}
+
+function renderCourses() {
+  coursesEl.innerHTML = '';
+  const menu = MENUS[activeMenu];
+  menu.courses.forEach((course, ci) => {
+    const sel = selections[activeMenu][ci];
+    const box = document.createElement('div');
+    box.className = 'course';
+    const head = document.createElement('div');
+    head.className = 'course-head';
+    const pickEl = document.createElement('span');
+    pickEl.className = 'course-pick' + ((course.pick === 0 || sel.size === course.pick) ? ' done' : '');
+    pickEl.textContent = pickLabel(course, sel);
+    head.innerHTML = '<span class="course-title">' + course.name + (course.pick > 0 ? ' · choose ' + course.pick : '') + '</span>';
+    head.appendChild(pickEl);
+    box.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'dish-grid';
+    course.dishes.forEach(dish => {
+      const d = document.createElement('div');
+      const isFixed = course.pick === 0;
+      d.className = 'dish' + (isFixed ? ' fixed' : '') + (sel.has(dish) ? ' selected' : '');
+      d.innerHTML = dish + '<span class="tick">✓</span>';
+      if (!isFixed) {
+        d.addEventListener('click', () => {
+          if (sel.has(dish)) {
+            sel.delete(dish);
+          } else if (sel.size >= course.pick) {
+            d.classList.add('shake');
+            setTimeout(() => d.classList.remove('shake'), 400);
+            toast('Choose only ' + course.pick + ' for ' + course.name + ' — deselect one first');
+            return;
+          } else {
+            sel.add(dish);
+          }
+          renderCourses();
+        });
+      }
+      grid.appendChild(d);
+    });
+    box.appendChild(grid);
+    coursesEl.appendChild(box);
+  });
+}
+
+// date min = today
+const fDate = document.getElementById('fDate');
+fDate.min = new Date().toISOString().split('T')[0];
+
+function prettyDate(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function getState() {
+  const menu = MENUS[activeMenu];
+  const chosen = menu.courses.map((course, ci) => ({
+    course: course.name,
+    dishes: course.pick === 0 ? [...course.dishes] : [...selections[activeMenu][ci]]
+  }));
+  return {
+    menu,
+    chosen,
+    name: document.getElementById('fName').value.trim(),
+    date: fDate.value,
+    note: document.getElementById('fNote').value.trim()
+  };
+}
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  const menu = MENUS[activeMenu];
+  const missing = [];
+  menu.courses.forEach((course, ci) => {
+    if (course.pick > 0 && selections[activeMenu][ci].size !== course.pick) {
+      missing.push(course.name + ' (' + selections[activeMenu][ci].size + '/' + course.pick + ')');
+    }
+  });
+  if (missing.length) {
+    toast('Almost there! Complete: ' + missing.join(', '));
+    return;
+  }
+  if (!fDate.value) {
+    toast('Please pick the date of your get-together 🗓️');
+    fDate.focus();
+    return;
+  }
+  renderFinalCard(getState());
+  document.getElementById('confirm').classList.add('show');
+  document.getElementById('confirm').scrollIntoView({ behavior: 'smooth' });
+});
+
+document.getElementById('editBtn').addEventListener('click', () => {
+  document.getElementById('confirm').classList.remove('show');
+  document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+});
+
+function renderFinalCard(s) {
+  const forLine = s.name ? 'for ' + s.name + '’s get-together' : 'your celebration menu';
+  let html = '<div class="fc-top"><img src="/images/logo.jpg" alt="Urban Rasoi">' +
+    '<span class="fc-kicker">Urban Rasoi · Celebration Menu</span>' +
+    '<h2>' + s.menu.name + '</h2>' +
+    '<div class="fc-for">' + forLine + '</div></div>' +
+    '<div class="fc-meta">🗓️ ' + prettyDate(s.date) + ' &nbsp;·&nbsp; ' + s.menu.meta + '</div>' +
+    '<div class="fc-body">';
+  s.chosen.forEach(c => {
+    html += '<div class="fc-course"><div class="c-name">' + c.course + '</div><div class="c-dishes">' + c.dishes.join('<br>') + '</div></div>';
+  });
+  html += '</div>';
+  if (s.note) html += '<div class="fc-note">“' + s.note.replace(/</g, '&lt;') + '”</div>';
+  html += '<div class="fc-foot">Pure Vegetarian · FSSAI 12823013000353 · +91 98307 25556 · urbanrasoi.online</div>';
+  document.getElementById('finalCard').innerHTML = html;
+}
+
+/* ============ JPG GENERATION (hand-drawn canvas) ============ */
+async function buildMenuImage(s) {
+  await document.fonts.load('700 64px Fraunces');
+  await document.fonts.load('700 44px Caveat');
+  await document.fonts.load('500 30px Poppins');
+  await document.fonts.load('600 26px Poppins');
+  await document.fonts.ready;
+
+  const W = 1080;
+  const pad = 80;
+  // measure height
+  let h = 0;
+  h += 300;               // header block
+  h += 90;                // meta line
+  s.chosen.forEach(c => { h += 56 + c.dishes.length * 46 + 36; });
+  if (s.note) h += 90;
+  h += 130;               // footer
+  const H = Math.max(h, 1080);
+
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const x = cv.getContext('2d');
+
+  // background
+  x.fillStyle = '#FFF8F0';
+  x.fillRect(0, 0, W, H);
+  // top band
+  const grad = x.createLinearGradient(0, 0, W, 260);
+  grad.addColorStop(0, '#EE6B23');
+  grad.addColorStop(1, '#D4551A');
+  x.fillStyle = grad;
+  x.fillRect(0, 0, W, 260);
+  // soft circle deco
+  x.fillStyle = 'rgba(255,255,255,.08)';
+  x.beginPath(); x.arc(W - 90, 40, 180, 0, 7); x.fill();
+  x.beginPath(); x.arc(60, 240, 120, 0, 7); x.fill();
+
+  // logo
+  const logo = new Image();
+  logo.src = '/images/logo.jpg';
+  await new Promise(res => { logo.complete ? res() : (logo.onload = res, logo.onerror = res); });
+  x.save();
+  x.beginPath(); x.arc(W / 2, 78, 46, 0, 7); x.closePath(); x.clip();
+  try { x.drawImage(logo, W / 2 - 46, 32, 92, 92); } catch (e) {}
+  x.restore();
+  x.strokeStyle = 'rgba(255,255,255,.65)'; x.lineWidth = 4;
+  x.beginPath(); x.arc(W / 2, 78, 47, 0, 7); x.stroke();
+
+  x.textAlign = 'center';
+  x.fillStyle = 'rgba(255,255,255,.92)';
+  x.font = '600 22px Poppins';
+  x.fillText('U R B A N   R A S O I   ·   C E L E B R A T I O N   M E N U', W / 2, 165);
+  x.fillStyle = '#fff';
+  x.font = '700 58px Fraunces';
+  x.fillText(s.menu.name, W / 2, 225);
+
+  let y = 320;
+  // "for Priya's get-together"
+  x.fillStyle = '#EE6B23';
+  x.font = '700 46px Caveat';
+  x.fillText(s.name ? 'for ' + s.name + '’s get-together' : 'a menu made with love', W / 2, y);
+  y += 52;
+  // meta
+  x.fillStyle = '#6E5D4F';
+  x.font = '500 27px Poppins';
+  x.fillText('🗓️ ' + prettyDate(s.date) + '  ·  ' + s.menu.meta, W / 2, y);
+  y += 30;
+  dashLine(x, pad, y, W - pad);
+  y += 50;
+
+  s.chosen.forEach(c => {
+    x.fillStyle = '#EE6B23';
+    x.font = '600 24px Poppins';
+    x.fillText(c.course.toUpperCase().split('').join(' '), W / 2, y);
+    y += 46;
+    x.fillStyle = '#2B2018';
+    x.font = '600 34px Fraunces';
+    c.dishes.forEach(d => { x.fillText(d, W / 2, y); y += 46; });
+    y += 10;
+    dashLine(x, pad + 140, y - 18, W - pad - 140);
+    y += 36;
+  });
+
+  if (s.note) {
+    x.fillStyle = '#6E5D4F';
+    x.font = 'italic 500 26px Poppins';
+    wrapText(x, '“' + s.note + '”', W / 2, y, W - pad * 2, 36);
+    y += 90;
+  }
+
+  // footer
+  x.fillStyle = '#EE6B23';
+  x.fillRect(0, H - 96, W, 96);
+  x.fillStyle = '#fff';
+  x.font = '500 24px Poppins';
+  x.fillText('Pure Vegetarian  ·  FSSAI 12823013000353  ·  +91 98307 25556  ·  urbanrasoi.online', W / 2, H - 40);
+
+  return new Promise(res => cv.toBlob(res, 'image/jpeg', 0.92));
+}
+
+function dashLine(x, x1, y, x2) {
+  x.save();
+  x.strokeStyle = 'rgba(43,32,24,.22)';
+  x.lineWidth = 2;
+  x.setLineDash([2, 10]);
+  x.beginPath(); x.moveTo(x1, y); x.lineTo(x2, y); x.stroke();
+  x.restore();
+}
+
+function wrapText(x, text, cx, y, maxW, lh) {
+  const words = text.split(' ');
+  let line = '';
+  words.forEach(w => {
+    if (x.measureText(line + w).width > maxW && line) {
+      x.fillText(line.trim(), cx, y); y += lh; line = w + ' ';
+    } else line += w + ' ';
+  });
+  if (line.trim()) x.fillText(line.trim(), cx, y);
+}
+
+function waTextSummary(s) {
+  let t = 'Hi Urban Rasoi! 🧡 I’ve designed my celebration menu';
+  if (s.name) t += ' (this is ' + s.name + ')';
+  t += ':\n\n*' + s.menu.name + '*\n🗓️ ' + prettyDate(s.date) + '\n';
+  s.chosen.forEach(c => { t += '\n✦ *' + c.course + ':* ' + c.dishes.join(', '); });
+  if (s.note) t += '\n\n📝 ' + s.note;
+  t += '\n\nPlease confirm my date!';
+  return t;
+}
+
+document.getElementById('sendBtn').addEventListener('click', async () => {
+  const s = getState();
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = 'Preparing your menu…';
+  try {
+    const blob = await buildMenuImage(s);
+    const fileName = 'urban-rasoi-menu' + (s.name ? '-' + s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : '') + '.jpg';
+    const file = new File([blob], fileName, { type: 'image/jpeg' });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'My Urban Rasoi Celebration Menu',
+        text: waTextSummary(s)
+      });
+    } else {
+      // fallback: download image + open WhatsApp with text
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = fileName; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      toast('Menu image downloaded — attach it in WhatsApp! Opening chat…');
+      setTimeout(() => {
+        window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(waTextSummary(s)), '_blank');
+      }, 1200);
+    }
+  } catch (err) {
+    if (err && err.name !== 'AbortError') {
+      // last-resort fallback: text-only WhatsApp
+      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(waTextSummary(s)), '_blank');
+    }
+  }
+  btn.disabled = false;
+  btn.textContent = '💬 Send my menu on WhatsApp';
+});
+
+renderTabs();
+renderCourses();
+</script>
+</body>
+</html>
