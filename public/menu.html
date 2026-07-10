@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -63,6 +63,7 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
 .tab{background:var(--white);border:2px solid rgba(43,32,24,.1);border-radius:var(--radius);padding:18px 16px;cursor:pointer;text-align:center;transition:all .2s;font-family:'Poppins',sans-serif}
 .tab .t-name{font-family:'Fraunces',serif;font-weight:700;font-size:1.05rem;display:block;margin-bottom:3px}
 .tab .t-sub{font-size:.74rem;color:var(--ink-soft)}
+.tab .t-price{display:block;font-size:.72rem;font-weight:600;color:var(--orange);margin-top:4px}
 .tab.active{border-color:var(--orange);background:var(--orange-soft);box-shadow:0 10px 26px rgba(238,107,35,.18)}
 .tab.active .t-name{color:var(--orange-dark)}
 .menu-note{text-align:center;font-size:.8rem;color:var(--ink-soft);margin:12px 0 26px}
@@ -74,7 +75,7 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
 .course-pick{font-size:.75rem;font-weight:600;color:var(--orange);background:var(--orange-soft);border-radius:999px;padding:4px 12px;white-space:nowrap}
 .course-pick.done{background:#DDF5E4;color:#1B7A3D}
 .dish-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.dish{position:relative;border:1.5px solid rgba(43,32,24,.13);border-radius:14px;padding:13px 38px 13px 14px;font-size:.86rem;font-weight:500;cursor:pointer;transition:all .18s;background:var(--cream);user-select:-webkit-user-select;user-select:none;line-height:1.35}
+.dish{position:relative;border:1.5px solid rgba(43,32,24,.13);border-radius:14px;padding:13px 38px 13px 14px;font-size:.86rem;font-weight:500;cursor:pointer;transition:all .18s;background:var(--cream);user-select:none;line-height:1.35}
 .dish:hover{border-color:var(--orange)}
 .dish .tick{position:absolute;right:11px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(43,32,24,.25);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:transparent;transition:all .18s;background:var(--white)}
 .dish.selected{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 8px 20px rgba(238,107,35,.3)}
@@ -83,6 +84,31 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
 .dish.fixed .tick{background:var(--orange-soft);border-color:transparent;color:var(--orange-dark)}
 .dish.shake{animation:shake .35s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* custom "something else" dish */
+.dish.custom{border-style:dashed}
+.dish.custom .c-label{display:flex;align-items:center;gap:6px}
+.dish.custom input{width:100%;margin-top:8px;border:1.5px solid rgba(43,32,24,.2);border-radius:9px;padding:8px 10px;font-family:'Poppins',sans-serif;font-size:.84rem;background:var(--white);color:var(--ink);outline:none;display:none}
+.dish.custom.selected input{display:block}
+.dish.custom.selected input:focus{border-color:#fff}
+
+/* SERVICE STYLE */
+.svc-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.svc{position:relative;border:2px solid rgba(43,32,24,.12);border-radius:16px;padding:16px 16px 14px;cursor:pointer;transition:all .18s;background:var(--cream);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.svc:hover{border-color:var(--orange)}
+.svc.selected{border-color:var(--orange);background:var(--orange-soft);box-shadow:0 10px 26px rgba(238,107,35,.18)}
+.svc .s-name{font-family:'Fraunces',serif;font-weight:700;font-size:1rem;display:block}
+.svc .s-sub{font-size:.74rem;color:var(--ink-soft);display:block;margin-top:2px}
+.svc .s-price{font-family:'Fraunces',serif;font-weight:700;font-size:1.15rem;color:var(--orange-dark);white-space:nowrap;text-align:right}
+.svc .s-price small{display:block;font-family:'Poppins',sans-serif;font-weight:500;font-size:.66rem;color:var(--ink-soft)}
+.svc .s-badge{position:absolute;top:-10px;right:14px;background:var(--orange);color:#fff;font-size:.62rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 11px}
+
+/* GUEST STEPPER */
+.stepper{display:flex;align-items:center;gap:0;border:1.5px solid rgba(43,32,24,.15);border-radius:12px;background:var(--cream);overflow:hidden}
+.stepper button{width:52px;height:50px;border:none;background:var(--orange-soft);color:var(--orange-dark);font-size:1.4rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:'Poppins',sans-serif;flex-shrink:0}
+.stepper button:hover{background:var(--orange);color:#fff}
+.stepper button:disabled{opacity:.4;cursor:not-allowed;background:var(--orange-soft);color:var(--orange-dark)}
+.stepper .st-val{flex:1;text-align:center;font-family:'Fraunces',serif;font-weight:700;font-size:1.2rem}
+.stepper .st-val small{display:block;font-family:'Poppins',sans-serif;font-weight:500;font-size:.66rem;color:var(--ink-soft)}
 
 /* DETAILS */
 .details{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 22px;margin-bottom:18px}
@@ -93,6 +119,13 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
 .field input:focus,.field textarea:focus{border-color:var(--orange)}
 .field textarea{resize:vertical;min-height:64px}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* LIVE PRICE */
+.price-live{background:linear-gradient(120deg,var(--orange),var(--orange-dark));color:#fff;border-radius:var(--radius);box-shadow:0 14px 36px rgba(238,107,35,.3);padding:20px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.price-live .pl-label{font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;opacity:.92;display:block}
+.price-live .pl-detail{font-size:.8rem;opacity:.92;margin-top:2px}
+.price-live .pl-amount{font-family:'Fraunces',serif;font-weight:700;font-size:2rem;white-space:nowrap}
+.price-live .pl-amount small{font-family:'Poppins',sans-serif;font-weight:500;font-size:.7rem;display:block;text-align:right;opacity:.9}
 
 /* SUBMIT */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:15px 26px;border-radius:999px;font-weight:600;font-size:1rem;transition:transform .2s,box-shadow .2s;cursor:pointer;border:none;font-family:'Poppins',sans-serif;width:100%}
@@ -118,6 +151,10 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
 .fc-course .c-name{font-size:.68rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--orange);margin-bottom:7px}
 .fc-course .c-dishes{font-family:'Fraunces',serif;font-size:1.02rem;line-height:1.55}
 .fc-note{text-align:center;font-size:.83rem;color:var(--ink-soft);font-style:italic;padding:12px 26px}
+.fc-price{text-align:center;padding:18px 26px;border-top:1px dashed rgba(43,32,24,.15);background:#FDF3E7}
+.fc-price .p-label{font-size:.68rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--orange);margin-bottom:4px}
+.fc-price .p-amount{font-family:'Fraunces',serif;font-weight:700;font-size:1.9rem;color:var(--orange-dark)}
+.fc-price .p-detail{font-size:.76rem;color:var(--ink-soft);margin-top:2px}
 .fc-foot{text-align:center;font-size:.72rem;color:var(--ink-soft);padding:14px 20px 20px;border-top:1px dashed rgba(43,32,24,.15)}
 .confirm-actions{display:flex;flex-direction:column;gap:12px}
 .confirm-hint{text-align:center;font-size:.78rem;color:var(--ink-soft);margin-top:12px}
@@ -128,6 +165,9 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
 
 @media(min-width:640px){
   .dish-grid{grid-template-columns:repeat(3,1fr)}
+  .svc-grid{grid-template-columns:repeat(3,1fr)}
+  .svc{flex-direction:column;align-items:flex-start;justify-content:flex-start}
+  .svc .s-price{text-align:left;margin-top:10px}
   .confirm-actions{flex-direction:row}
   .confirm-actions .btn{flex:1}
 }
@@ -150,7 +190,7 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
     <div class="mini-steps">
       <span class="mini-step"><b>1</b> Pick your spread</span>
       <span class="mini-step"><b>2</b> Choose your dishes</span>
-      <span class="mini-step"><b>3</b> Set the date</span>
+      <span class="mini-step"><b>3</b> Guests, date & service</span>
       <span class="mini-step"><b>4</b> Send on WhatsApp</span>
     </div>
   </div>
@@ -160,6 +200,11 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
   <div class="tabs" id="tabs"></div>
   <p class="menu-note" id="menuNote"></p>
   <div id="courses"></div>
+
+  <div class="details">
+    <h3>🍽️ How would you like it served?</h3>
+    <div class="svc-grid" id="svcGrid"></div>
+  </div>
 
   <div class="details">
     <h3>🗓️ Your get-together</h3>
@@ -173,10 +218,26 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
         <input type="date" id="fDate" required>
       </div>
     </div>
+    <div class="field">
+      <label>Number of guests</label>
+      <div class="stepper">
+        <button type="button" id="guestMinus" aria-label="Fewer guests">−</button>
+        <span class="st-val"><span id="guestCount">25</span> guests<small>starts at 25, in steps of 5</small></span>
+        <button type="button" id="guestPlus" aria-label="More guests">+</button>
+      </div>
+    </div>
     <div class="field" style="margin-bottom:0">
       <label for="fNote">Anything special in mind? (optional)</label>
       <textarea id="fNote" placeholder="Dietary preferences, a dish you'd love added, occasion details..." maxlength="200"></textarea>
     </div>
+  </div>
+
+  <div class="price-live" id="priceLive">
+    <div>
+      <span class="pl-label">Your estimated total</span>
+      <div class="pl-detail" id="plDetail"></div>
+    </div>
+    <div class="pl-amount"><span id="plAmount"></span><small id="plPerPlate"></small></div>
   </div>
 
   <div class="submit-wrap">
@@ -197,13 +258,21 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
 
 <script>
 const WA_NUMBER = '919830725556';
+const CUSTOM = '__custom__';
+const GUEST_MIN = 25, GUEST_STEP = 5, GUEST_MAX = 500;
+
+const SERVICES = [
+  { id: 'delivery', name: 'Food Delivery', sub: 'Freshly cooked & delivered warm to your door' },
+  { id: 'semi', name: 'Semi-Catering', sub: 'Food + our kitchen & serving staff at your home' },
+  { id: 'full', name: 'Full Catering', sub: 'Everything — staff, cutlery, crockery & complete setup', badge: 'Most loved' }
+];
 
 const MENUS = [
   {
     id: 'intimate',
     name: 'The Intimate Gathering',
     tagline: 'A complete, beautifully balanced spread',
-    meta: 'For 25 guests · fully set up & served',
+    prices: { delivery: 749, semi: 849, full: 999 },
     courses: [
       { name: 'To Begin', pick: 2, dishes: ['Mini Pav Bhaji Sliders','Mini Dabeli Sliders','Vegetable Cutlet','Bite-Sized Pizza'] },
       { name: 'Chaat', pick: 1, dishes: ['Papdi Chaat','Rajasthani Dahi Vada'] },
@@ -218,7 +287,7 @@ const MENUS = [
     id: 'signature',
     name: 'The Signature Celebration',
     tagline: 'Our fullest table — truly abundant',
-    meta: 'For 25 guests · fully set up & served',
+    prices: { delivery: 849, semi: 949, full: 1199 },
     courses: [
       { name: 'To Begin', pick: 3, dishes: ['Mini Pav Bhaji Sliders','Mini Dabeli Sliders','Vegetable Cutlet','Bite-Sized Pizza'] },
       { name: 'Chaat Station', pick: 2, dishes: ['Mini Raj Kachori Chaat','Papdi Chaat','Rajasthani Dahi Vada'] },
@@ -232,12 +301,17 @@ const MENUS = [
 ];
 
 let activeMenu = 0;
-// selections[menuIndex][courseIndex] = Set of dish names
+let activeService = 'full';
+let guests = GUEST_MIN;
+// selections[menuIndex][courseIndex] = Set of dish names (may include CUSTOM)
 const selections = MENUS.map(m => m.courses.map(() => new Set()));
+// customText[menuIndex][courseIndex] = the "something else" dish typed by the customer
+const customText = MENUS.map(m => m.courses.map(() => ''));
 
 const tabsEl = document.getElementById('tabs');
 const coursesEl = document.getElementById('courses');
 const menuNoteEl = document.getElementById('menuNote');
+const svcGridEl = document.getElementById('svcGrid');
 const toastEl = document.getElementById('toast');
 let toastTimer;
 
@@ -248,16 +322,62 @@ function toast(msg) {
   toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
 }
 
+function fmtINR(n) {
+  return '₹' + n.toLocaleString('en-IN');
+}
+
+function perPlate() {
+  return MENUS[activeMenu].prices[activeService];
+}
+
+// round the raw total to the nearest amount ending in 999 (e.g. 18,725 → 18,999)
+function charmTotal(raw) {
+  return Math.max(999, Math.round((raw + 1) / 1000) * 1000 - 1);
+}
+
+function currentTotal() {
+  return charmTotal(perPlate() * guests);
+}
+
+function serviceName() {
+  return SERVICES.find(s => s.id === activeService).name;
+}
+
 function renderTabs() {
   tabsEl.innerHTML = '';
   MENUS.forEach((m, i) => {
     const b = document.createElement('button');
     b.className = 'tab' + (i === activeMenu ? ' active' : '');
-    b.innerHTML = '<span class="t-name">' + m.name + '</span><span class="t-sub">' + m.tagline + '</span>';
-    b.addEventListener('click', () => { activeMenu = i; renderTabs(); renderCourses(); });
+    b.innerHTML = '<span class="t-name">' + m.name + '</span><span class="t-sub">' + m.tagline + '</span>' +
+      '<span class="t-price">from ' + fmtINR(m.prices.delivery) + ' / guest</span>';
+    b.addEventListener('click', () => { activeMenu = i; renderTabs(); renderCourses(); renderServices(); updatePrice(); });
     tabsEl.appendChild(b);
   });
-  menuNoteEl.textContent = MENUS[activeMenu].meta + ' · every dish swappable within its course';
+  menuNoteEl.textContent = 'Fully customisable · every dish swappable within its course · minimum ' + GUEST_MIN + ' guests';
+}
+
+function renderServices() {
+  svcGridEl.innerHTML = '';
+  const prices = MENUS[activeMenu].prices;
+  SERVICES.forEach(s => {
+    const d = document.createElement('div');
+    d.className = 'svc' + (s.id === activeService ? ' selected' : '');
+    d.setAttribute('role', 'button');
+    d.setAttribute('tabindex', '0');
+    d.innerHTML = (s.badge ? '<span class="s-badge">' + s.badge + '</span>' : '') +
+      '<span><span class="s-name">' + s.name + '</span><span class="s-sub">' + s.sub + '</span></span>' +
+      '<span class="s-price">' + fmtINR(prices[s.id]) + '<small>per guest</small></span>';
+    const choose = () => { activeService = s.id; renderServices(); updatePrice(); };
+    d.addEventListener('click', choose);
+    d.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(); } });
+    svcGridEl.appendChild(d);
+  });
+}
+
+function updatePrice() {
+  document.getElementById('plAmount').textContent = fmtINR(currentTotal());
+  document.getElementById('plPerPlate').textContent = fmtINR(perPlate()) + ' × ' + guests + ' guests';
+  document.getElementById('plDetail').textContent = MENUS[activeMenu].name + ' · ' + serviceName() + ' · ' + guests + ' guests';
 }
 
 function pickLabel(course, sel) {
@@ -305,10 +425,66 @@ function renderCourses() {
       }
       grid.appendChild(d);
     });
+
+    // "Something else" — available in every course
+    grid.appendChild(buildCustomTile(course, ci, sel));
     box.appendChild(grid);
     coursesEl.appendChild(box);
   });
 }
+
+function buildCustomTile(course, ci, sel) {
+  const d = document.createElement('div');
+  const isExtra = course.pick === 0; // for fixed courses it's an optional add-on
+  d.className = 'dish custom' + (sel.has(CUSTOM) ? ' selected' : '');
+  d.innerHTML = '<span class="c-label">✍️ Something else…</span><span class="tick">✓</span>';
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.maxLength = 60;
+  input.placeholder = isExtra ? 'Add a dessert you\'d love' : 'Tell us the dish you\'d love';
+  input.value = customText[activeMenu][ci];
+  input.addEventListener('click', e => e.stopPropagation());
+  input.addEventListener('input', () => { customText[activeMenu][ci] = input.value; });
+  d.appendChild(input);
+
+  d.addEventListener('click', () => {
+    if (sel.has(CUSTOM)) {
+      sel.delete(CUSTOM);
+      renderCourses();
+    } else {
+      if (!isExtra && sel.size >= course.pick) {
+        d.classList.add('shake');
+        setTimeout(() => d.classList.remove('shake'), 400);
+        toast('Choose only ' + course.pick + ' for ' + course.name + ' — deselect one first');
+        return;
+      }
+      sel.add(CUSTOM);
+      renderCourses();
+      // focus the freshly rendered input for this course
+      const inputs = coursesEl.querySelectorAll('.dish.custom.selected input');
+      inputs.forEach(inp => {
+        if (inp.closest('.course') === coursesEl.children[ci]) inp.focus();
+      });
+    }
+  });
+  return d;
+}
+
+// GUEST STEPPER
+const guestCountEl = document.getElementById('guestCount');
+const guestMinusBtn = document.getElementById('guestMinus');
+const guestPlusBtn = document.getElementById('guestPlus');
+
+function setGuests(n) {
+  guests = Math.min(GUEST_MAX, Math.max(GUEST_MIN, n));
+  guestCountEl.textContent = guests;
+  guestMinusBtn.disabled = guests <= GUEST_MIN;
+  guestPlusBtn.disabled = guests >= GUEST_MAX;
+  updatePrice();
+}
+guestMinusBtn.addEventListener('click', () => setGuests(guests - GUEST_STEP));
+guestPlusBtn.addEventListener('click', () => setGuests(guests + GUEST_STEP));
 
 // date min = today
 const fDate = document.getElementById('fDate');
@@ -319,31 +495,57 @@ function prettyDate(iso) {
   return d.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+function dishListFor(course, ci) {
+  const sel = selections[activeMenu][ci];
+  const custom = customText[activeMenu][ci].trim();
+  let dishes;
+  if (course.pick === 0) {
+    dishes = [...course.dishes];
+    if (sel.has(CUSTOM) && custom) dishes.push(custom + ' ✍️');
+  } else {
+    dishes = [...sel].map(x => x === CUSTOM ? custom + ' ✍️' : x);
+  }
+  return dishes;
+}
+
 function getState() {
   const menu = MENUS[activeMenu];
   const chosen = menu.courses.map((course, ci) => ({
     course: course.name,
-    dishes: course.pick === 0 ? [...course.dishes] : [...selections[activeMenu][ci]]
+    dishes: dishListFor(course, ci)
   }));
   return {
     menu,
     chosen,
     name: document.getElementById('fName').value.trim(),
     date: fDate.value,
-    note: document.getElementById('fNote').value.trim()
+    note: document.getElementById('fNote').value.trim(),
+    guests,
+    service: serviceName(),
+    plate: perPlate(),
+    total: currentTotal()
   };
 }
 
 document.getElementById('submitBtn').addEventListener('click', () => {
   const menu = MENUS[activeMenu];
   const missing = [];
+  let emptyCustom = null;
   menu.courses.forEach((course, ci) => {
-    if (course.pick > 0 && selections[activeMenu][ci].size !== course.pick) {
-      missing.push(course.name + ' (' + selections[activeMenu][ci].size + '/' + course.pick + ')');
+    const sel = selections[activeMenu][ci];
+    if (course.pick > 0 && sel.size !== course.pick) {
+      missing.push(course.name + ' (' + sel.size + '/' + course.pick + ')');
+    }
+    if (sel.has(CUSTOM) && !customText[activeMenu][ci].trim() && !emptyCustom) {
+      emptyCustom = course.name;
     }
   });
   if (missing.length) {
     toast('Almost there! Complete: ' + missing.join(', '));
+    return;
+  }
+  if (emptyCustom) {
+    toast('Tell us your "something else" dish for ' + emptyCustom + ' ✍️');
     return;
   }
   if (!fDate.value) {
@@ -367,13 +569,15 @@ function renderFinalCard(s) {
     '<span class="fc-kicker">Urban Rasoi · Celebration Menu</span>' +
     '<h2>' + s.menu.name + '</h2>' +
     '<div class="fc-for">' + forLine + '</div></div>' +
-    '<div class="fc-meta">🗓️ ' + prettyDate(s.date) + ' &nbsp;·&nbsp; ' + s.menu.meta + '</div>' +
+    '<div class="fc-meta">🗓️ ' + prettyDate(s.date) + ' &nbsp;·&nbsp; ' + s.guests + ' guests &nbsp;·&nbsp; ' + s.service + '</div>' +
     '<div class="fc-body">';
   s.chosen.forEach(c => {
-    html += '<div class="fc-course"><div class="c-name">' + c.course + '</div><div class="c-dishes">' + c.dishes.join('<br>') + '</div></div>';
+    html += '<div class="fc-course"><div class="c-name">' + c.course + '</div><div class="c-dishes">' + c.dishes.map(d => d.replace(/</g, '&lt;')).join('<br>') + '</div></div>';
   });
   html += '</div>';
   if (s.note) html += '<div class="fc-note">“' + s.note.replace(/</g, '&lt;') + '”</div>';
+  html += '<div class="fc-price"><div class="p-label">Your Total</div><div class="p-amount">' + fmtINR(s.total) + '</div>' +
+    '<div class="p-detail">' + fmtINR(s.plate) + ' per guest × ' + s.guests + ' guests · ' + s.service + '</div></div>';
   html += '<div class="fc-foot">Pure Vegetarian · FSSAI 12823013000353 · +91 98307 25556 · urbanrasoi.online</div>';
   document.getElementById('finalCard').innerHTML = html;
 }
@@ -394,6 +598,7 @@ async function buildMenuImage(s) {
   h += 90;                // meta line
   s.chosen.forEach(c => { h += 56 + c.dishes.length * 46 + 36; });
   if (s.note) h += 90;
+  h += 210;               // price block
   h += 130;               // footer
   const H = Math.max(h, 1080);
 
@@ -443,7 +648,7 @@ async function buildMenuImage(s) {
   // meta
   x.fillStyle = '#6E5D4F';
   x.font = '500 27px Poppins';
-  x.fillText('🗓️ ' + prettyDate(s.date) + '  ·  ' + s.menu.meta, W / 2, y);
+  x.fillText('🗓️ ' + prettyDate(s.date) + '  ·  ' + s.guests + ' guests  ·  ' + s.service, W / 2, y);
   y += 30;
   dashLine(x, pad, y, W - pad);
   y += 50;
@@ -451,7 +656,7 @@ async function buildMenuImage(s) {
   s.chosen.forEach(c => {
     x.fillStyle = '#EE6B23';
     x.font = '600 24px Poppins';
-    x.fillText(c.course.toUpperCase().split('').join(' '), W / 2, y);
+    x.fillText(c.course.toUpperCase().split('').join(' '), W / 2, y);
     y += 46;
     x.fillStyle = '#2B2018';
     x.font = '600 34px Fraunces';
@@ -468,6 +673,29 @@ async function buildMenuImage(s) {
     y += 90;
   }
 
+  // price block
+  y += 6;
+  const pbH = 168;
+  x.fillStyle = '#FDF3E7';
+  roundRect(x, pad, y - 34, W - pad * 2, pbH, 22);
+  x.fill();
+  x.strokeStyle = 'rgba(238,107,35,.35)';
+  x.lineWidth = 2;
+  x.setLineDash([4, 8]);
+  roundRect(x, pad, y - 34, W - pad * 2, pbH, 22);
+  x.stroke();
+  x.setLineDash([]);
+  x.fillStyle = '#EE6B23';
+  x.font = '600 22px Poppins';
+  x.fillText('Y O U R   T O T A L', W / 2, y + 8);
+  x.fillStyle = '#D4551A';
+  x.font = '700 62px Fraunces';
+  x.fillText(fmtINR(s.total), W / 2, y + 74);
+  x.fillStyle = '#6E5D4F';
+  x.font = '500 24px Poppins';
+  x.fillText(fmtINR(s.plate) + ' per guest × ' + s.guests + ' guests · ' + s.service, W / 2, y + 112);
+  y += pbH;
+
   // footer
   x.fillStyle = '#EE6B23';
   x.fillRect(0, H - 96, W, 96);
@@ -476,6 +704,16 @@ async function buildMenuImage(s) {
   x.fillText('Pure Vegetarian  ·  FSSAI 12823013000353  ·  +91 98307 25556  ·  urbanrasoi.online', W / 2, H - 40);
 
   return new Promise(res => cv.toBlob(res, 'image/jpeg', 0.92));
+}
+
+function roundRect(x, rx, ry, rw, rh, r) {
+  x.beginPath();
+  x.moveTo(rx + r, ry);
+  x.arcTo(rx + rw, ry, rx + rw, ry + rh, r);
+  x.arcTo(rx + rw, ry + rh, rx, ry + rh, r);
+  x.arcTo(rx, ry + rh, rx, ry, r);
+  x.arcTo(rx, ry, rx + rw, ry, r);
+  x.closePath();
 }
 
 function dashLine(x, x1, y, x2) {
@@ -501,9 +739,11 @@ function wrapText(x, text, cx, y, maxW, lh) {
 function waTextSummary(s) {
   let t = 'Hi Urban Rasoi! 🧡 I’ve designed my celebration menu';
   if (s.name) t += ' (this is ' + s.name + ')';
-  t += ':\n\n*' + s.menu.name + '*\n🗓️ ' + prettyDate(s.date) + '\n';
+  t += ':\n\n*' + s.menu.name + '*\n🗓️ ' + prettyDate(s.date) +
+    '\n👥 ' + s.guests + ' guests\n🍽️ ' + s.service + '\n';
   s.chosen.forEach(c => { t += '\n✦ *' + c.course + ':* ' + c.dishes.join(', '); });
   if (s.note) t += '\n\n📝 ' + s.note;
+  t += '\n\n💰 *Total: ' + fmtINR(s.total) + '* (' + fmtINR(s.plate) + ' per guest × ' + s.guests + ')';
   t += '\n\nPlease confirm my date!';
   return t;
 }
@@ -547,6 +787,8 @@ document.getElementById('sendBtn').addEventListener('click', async () => {
 
 renderTabs();
 renderCourses();
+renderServices();
+setGuests(GUEST_MIN);
 </script>
 </body>
 </html>
