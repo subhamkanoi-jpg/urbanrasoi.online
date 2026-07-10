@@ -37,10 +37,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${figtree.variable} bg-background`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${fraunces.variable} ${figtree.variable} bg-background`}>
       <body className="font-sans">
         <SiteHeader />
-        <main>{children}</main>
+        <main className="min-h-svh">{children}</main>
         <SiteFooter />
         <FloatingWhatsApp message={defaultWhatsappMessage} />
       </body>

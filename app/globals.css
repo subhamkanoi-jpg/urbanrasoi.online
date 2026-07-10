@@ -4,20 +4,26 @@
   --font-serif: var(--font-fraunces), Georgia, serif;
   --font-sans: var(--font-figtree), system-ui, sans-serif;
 
-  --color-background: #fdf9f3;
-  --color-foreground: #2b2018;
-  --color-cream: #f6eee2;
-  --color-ink: #2b2018;
-  --color-ink-soft: #6b5d51;
-  --color-terracotta: #e05e1a;
-  --color-terracotta-deep: #b8490f;
+  /* Core palette — warm terracotta + cream + deep ink */
+  --color-background: #fdf8f1;
+  --color-foreground: #1e140b;
+  --color-cream: #f4ead8;
+  --color-cream-dark: #e8d8be;
+  --color-ink: #1e140b;
+  --color-ink-soft: #6b5343;
+  --color-ink-lighter: #9c8070;
+  --color-terracotta: #d4521a;
+  --color-terracotta-deep: #a83d0f;
+  --color-terracotta-light: #f0784a;
   --color-card: #ffffff;
-  --color-border: #e8ddcf;
+  --color-border: #e2d4c0;
 
-  --color-primary: #e05e1a;
-  --color-primary-foreground: #fdf9f3;
-  --color-muted: #f6eee2;
-  --color-muted-foreground: #6b5d51;
+  --color-primary: #d4521a;
+  --color-primary-foreground: #fdf8f1;
+  --color-muted: #f4ead8;
+  --color-muted-foreground: #6b5343;
+
+  --radius: 0.75rem;
 }
 
 html {
@@ -29,6 +35,7 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
@@ -36,10 +43,11 @@ body {
   color: var(--color-primary-foreground);
 }
 
+/* ─── Reveal animations ─────────────────────────────── */
 @keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(32px);
   }
   to {
     opacity: 1;
@@ -47,19 +55,63 @@ body {
   }
 }
 
+@keyframes reveal-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 .reveal {
   opacity: 0;
 }
 
 .reveal.is-visible {
-  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: reveal-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+/* ─── Ticker tape ────────────────────────────────────── */
+.ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-inner {
+  display: inline-flex;
+  animation: ticker-scroll 24s linear infinite;
+  will-change: transform;
+}
+
+/* ─── Image hover zoom ───────────────────────────────── */
+.img-zoom {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.img-zoom:hover {
+  transform: scale(1.06);
+}
+
+/* ─── Section dividers ───────────────────────────────── */
+.section-label {
+  font-size: 0.65rem;
+  font-family: var(--font-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 600;
+}
+
+/* ─── Reduced motion ─────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
   }
   .reveal.is-visible {
+    animation: none;
+  }
+  .ticker-inner {
     animation: none;
   }
   html {
