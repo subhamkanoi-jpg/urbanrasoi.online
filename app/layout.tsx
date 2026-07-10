@@ -1,16 +1,15 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Jost } from 'next/font/google'
+import { Playfair_Display, Jost } from 'next/font/google'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { FloatingWhatsApp } from '@/components/whatsapp-button'
 import { site, defaultWhatsappMessage } from '@/lib/site'
 import './globals.css'
 
-const cormorant = Cormorant_Garamond({
+const playfair = Playfair_Display({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
   style: ['normal', 'italic'],
-  variable: '--font-cormorant',
+  variable: '--font-playfair',
 })
 
 const jost = Jost({
@@ -39,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${cormorant.variable} ${jost.variable} bg-background`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${jost.variable} bg-background`}>
       <body className="font-sans">
         <SiteHeader />
         <main className="min-h-svh">{children}</main>
