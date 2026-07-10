@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 
 @theme inline {
-  --font-serif: var(--font-fraunces), Georgia, serif;
-  --font-sans: var(--font-figtree), system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-sans: var(--font-jost), system-ui, sans-serif;
 
   /* Core palette — warm terracotta + cream + deep ink */
   --color-background: #fdf8f1;
