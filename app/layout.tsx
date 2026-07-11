@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Jost } from 'next/font/google'
-import { SiteHeader } from '@/components/site-header'
-import { SiteFooter } from '@/components/site-footer'
 import { StructuredData } from '@/components/structured-data'
+import { SiteShell } from '@/components/site-shell'
+import { MetaPixel } from '@/components/meta-pixel'
 import { site } from '@/lib/site'
 import './globals.css'
 
@@ -45,9 +45,8 @@ export default function RootLayout({
     <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${jost.variable} bg-background`}>
       <body className="font-sans">
         <StructuredData />
-        <SiteHeader />
-        <main className="min-h-svh">{children}</main>
-        <SiteFooter />
+        <SiteShell>{children}</SiteShell>
+        <MetaPixel />
       </body>
     </html>
   )
