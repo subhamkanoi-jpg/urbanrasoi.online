@@ -3,6 +3,8 @@
 import Script from 'next/script'
 import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
+import { captureAttribution } from '@/lib/meta-tracking'
+import { getProduct } from '@/lib/products'
 
 const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID
 
@@ -17,8 +19,26 @@ export function MetaPixel() {
   const pathname = usePathname()
 
   useEffect(() => {
+    captureAttribution()
+  }, [pathname])
+
+  useEffect(() => {
     if (!pixelId || !window.fbq) return
     window.fbq('track', 'PageView')
+
+    const product = getProduct(pathname.replace(/^\//, ''))
+    if (product) {
+      window.fbq('track', 'ViewContent', {
+        content_name: product.name,
+        content_category: 'Catering',
+        content_type: 'product',
+      })
+    } else if (pathname === '/kolkata-catering') {
+      window.fbq('track', 'ViewContent', {
+        content_name: 'Kolkata Catering Landing',
+        content_category: 'Catering',
+      })
+    }
   }, [pathname])
 
   if (!pixelId) return null

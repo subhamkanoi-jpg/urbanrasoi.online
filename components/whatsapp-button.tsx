@@ -1,4 +1,8 @@
+'use client'
+
+import type { MouseEvent } from 'react'
 import { whatsappUrl } from '@/lib/site'
+import { openWhatsapp } from '@/lib/meta-tracking'
 import { cn } from '@/lib/utils'
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -12,6 +16,8 @@ function WhatsAppIcon({ className }: { className?: string }) {
 type WhatsAppButtonProps = {
   message: string
   label: string
+  placement?: string
+  occasion?: string
   variant?: 'primary' | 'dark' | 'light'
   size?: 'default' | 'large'
   className?: string
@@ -20,13 +26,21 @@ type WhatsAppButtonProps = {
 export function WhatsAppButton({
   message,
   label,
+  placement = 'cta',
+  occasion,
   variant = 'primary',
   size = 'default',
   className,
 }: WhatsAppButtonProps) {
+  function handleClick(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault()
+    openWhatsapp(message, { placement, occasion })
+  }
+
   return (
     <a
       href={whatsappUrl(message)}
+      onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
@@ -46,9 +60,15 @@ export function WhatsAppButton({
 }
 
 export function FloatingWhatsApp({ message }: { message: string }) {
+  function handleClick(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault()
+    openWhatsapp(message, { placement: 'floating-button' })
+  }
+
   return (
     <a
       href={whatsappUrl(message)}
+      onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Get menus and availability on WhatsApp"

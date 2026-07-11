@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { customerStories, storyCategories, type StoryCategory, type VideoStory } from '@/lib/customer-stories'
+import { openWhatsapp } from '@/lib/meta-tracking'
 import { site } from '@/lib/site'
 
 function InstagramGlyph({ className }: { className?: string }) {
@@ -121,6 +122,10 @@ export function EventStories() {
           </p>
           <a
             href={`https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent('Hi Urban Rasoi! I saw your event stories and would like to plan catering for my celebration.')}`}
+            onClick={(event) => {
+              event.preventDefault()
+              openWhatsapp('Hi Urban Rasoi! I saw your event stories and would like to plan catering for my celebration.', { placement: 'event-stories' })
+            }}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex shrink-0 items-center gap-2 rounded-full bg-terracotta px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta"

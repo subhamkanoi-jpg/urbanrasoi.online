@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { products } from '@/lib/products'
+import { openWhatsapp, trackContact } from '@/lib/meta-tracking'
 import { site, whatsappUrl, defaultWhatsappMessage } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
@@ -76,6 +77,10 @@ export function SiteHeader() {
             ))}
             <a
               href={whatsappUrl(defaultWhatsappMessage)}
+              onClick={(event) => {
+                event.preventDefault()
+                openWhatsapp(defaultWhatsappMessage, { placement: 'header' })
+              }}
               target="_blank"
               rel="noopener noreferrer"
               className="rounded-full bg-terracotta px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-terracotta-deep hover:-translate-y-0.5"
@@ -179,6 +184,10 @@ export function SiteHeader() {
           >
             <a
               href={whatsappUrl(defaultWhatsappMessage)}
+              onClick={(event) => {
+                event.preventDefault()
+                openWhatsapp(defaultWhatsappMessage, { placement: 'mobile-menu' })
+              }}
               target="_blank"
               rel="noopener noreferrer"
               className="flex w-full items-center justify-center gap-3 rounded-2xl bg-terracotta py-4 text-base font-semibold text-white"
@@ -190,6 +199,7 @@ export function SiteHeader() {
             </a>
             <a
               href={`tel:${site.phone.replace(/\s/g, '')}`}
+              onClick={() => trackContact('mobile-menu')}
               className="mt-4 block text-center text-sm font-medium text-ink"
             >
               Call {site.phone}
