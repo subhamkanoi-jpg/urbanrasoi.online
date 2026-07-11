@@ -86,23 +86,23 @@ export default function KolkataCateringPage() {
             <div className="max-w-3xl">
               <p className="section-label text-terracotta-light">Party catering in Kolkata · Since 2015</p>
               <h1 className="mt-4 font-serif text-5xl font-semibold leading-[1.02] text-primary-foreground text-balance md:text-7xl">
-                Your get-together deserves better than the maharaj.
+                Skip the maharaj. Host in style.
               </h1>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-primary-foreground/85 md:text-lg">
-                Gourmet, chef-crafted party food — delivered or fully served across Kolkata. Your kitchen stays spotless, and the entire headache is ours.
+                Gourmet party menus from {site.partyMenusFrom} a guest — delivered or served, zero kitchen chaos.
               </p>
               <WhatsAppLink
                 placement="campaign-hero"
                 occasion="Get-together"
                 className="mt-7 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep sm:w-auto"
               >
-                Plan my get-together
+                Plan my party
                 <ArrowRight aria-hidden="true" />
               </WhatsAppLink>
               <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-primary-foreground/85">
                 <li className="flex items-center gap-2"><Check aria-hidden="true" /> Never the same 10 dishes</li>
-                <li className="flex items-center gap-2"><Check aria-hidden="true" /> Your kitchen stays spotless</li>
-                <li className="flex items-center gap-2"><Check aria-hidden="true" /> FSSAI certified · 10+ years</li>
+                <li className="flex items-center gap-2"><Check aria-hidden="true" /> Kitchen stays spotless</li>
+                <li className="flex items-center gap-2"><Check aria-hidden="true" /> FSSAI · Since 2015</li>
               </ul>
             </div>
           </div>
@@ -161,13 +161,12 @@ export default function KolkataCateringPage() {
 
         <section className="bg-background py-14 md:py-20" aria-labelledby="steps-title">
           <div className="mx-auto max-w-6xl px-5 md:px-8">
-            <p className="section-label">Simple from here</p>
-            <h2 id="steps-title" className="mt-3 font-serif text-3xl font-semibold text-ink md:text-5xl">Plan in three easy steps.</h2>
+            <h2 id="steps-title" className="mt-3 font-serif text-3xl font-semibold text-ink md:text-5xl">Three steps. Zero stress.</h2>
             <ol className="mt-8 grid gap-3 md:grid-cols-3 md:gap-5">
               {[
-                { icon: MessageCircle, title: 'Tell us the basics', copy: 'Share your occasion, date, guest count and area on WhatsApp.' },
-                { icon: UtensilsCrossed, title: 'Shape your menu', copy: 'We suggest gourmet menus and service formats around your gathering.' },
-                { icon: Sparkles, title: 'Enjoy your own party', copy: 'We confirm the details and handle the food — you host, we hustle.' },
+                { icon: MessageCircle, title: 'Say hello', copy: 'WhatsApp us your date, guests and area.' },
+                { icon: UtensilsCrossed, title: 'Pick your menu', copy: 'We tailor it. You approve it.' },
+                { icon: Sparkles, title: 'Enjoy your party', copy: 'We cook, deliver and serve.' },
               ].map((step, index) => (
                 <li key={step.title} className="rounded-2xl border border-border bg-card p-5 md:p-7">
                   <div className="flex items-center justify-between text-terracotta"><step.icon aria-hidden="true" /><span className="font-serif text-2xl text-terracotta/35">0{index + 1}</span></div>
@@ -182,9 +181,8 @@ export default function KolkataCateringPage() {
         <section className="bg-ink py-14 text-primary-foreground md:py-20">
           <div className="mx-auto flex max-w-4xl flex-col items-center px-5 text-center md:px-8">
             <ShieldCheck aria-hidden="true" className="text-terracotta-light" />
-            <p className="section-label mt-5 text-terracotta-light">Your date starts with one message</p>
-            <h2 className="mt-3 font-serif text-4xl font-semibold text-balance md:text-6xl">Let&apos;s plan something your guests will love.</h2>
-            <p className="mt-5 max-w-xl text-primary-foreground/75">Tell us the date, guest count and Kolkata area. We&apos;ll guide you to the right menu and service format.</p>
+            <p className="section-label mt-5 text-terracotta-light">One message is all it takes</p>
+            <h2 className="mt-3 font-serif text-4xl font-semibold text-balance md:text-6xl">Your date. Our kitchen.</h2>
             <WhatsAppLink
               placement="campaign-final-cta"
               occasion="Get-together"

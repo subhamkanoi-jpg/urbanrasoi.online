@@ -12,6 +12,7 @@ export const site = {
   rating: '4.9',
   community: '2,000+',
   foundedYear: 2015,
+  partyMenusFrom: '₹749',
 } as const
 
 export function whatsappUrl(message: string): string {

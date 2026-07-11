@@ -61,13 +61,10 @@ export function EventStories() {
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <p className="section-label">Real tables. Real celebrations.</p>
+            <p className="section-label">Real parties. Real hosts.</p>
             <h2 id="event-stories-title" className="mt-3 font-serif text-4xl font-semibold leading-tight tracking-tight text-ink text-balance md:text-6xl">
-              Celebrations we&apos;ve been part of.
+              See it, hear it, taste it.
             </h2>
-            <p className="mt-4 hidden max-w-xl text-base leading-relaxed text-ink-soft md:block md:text-lg">
-              From a quiet dinner at home to a full-scale event, here are a few moments our customers invited us into.
-            </p>
           </div>
           <a
             href={site.instagram}
@@ -118,7 +115,7 @@ export function EventStories() {
 
         <div className="mt-7 flex flex-col items-start justify-between gap-5 border-t border-border pt-7 md:mt-10 md:flex-row md:items-center md:pt-8">
           <p className="max-w-xl font-serif text-xl font-semibold text-ink text-balance md:text-3xl">
-            Planning a gathering?
+            Want yours next?
           </p>
           <a
             href={`https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent('Hi Urban Rasoi! I saw your event stories and would like to plan catering for my celebration.')}`}

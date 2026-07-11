@@ -1,3 +1,5 @@
+import { site } from '@/lib/site'
+
 export type Product = {
   slug: string
   name: string
@@ -27,11 +29,10 @@ export const products: Product[] = [
     name: 'Gourmet Grazing Tables',
     shortName: 'Grazing Tables',
     eyebrow: 'Our Signature',
-    headline: 'A table your guests will gather around all evening.',
-    promise:
-      'Artfully styled gourmet spreads — designed, delivered and set up at your venue, ready to wow.',
+    headline: 'The table everyone gathers around.',
+    promise: 'Styled gourmet spreads — delivered, set up, ready to wow.',
     description:
-      'Our grazing tables are the centrepiece of any celebration. Every board is composed like a still life — layers of colour, texture and flavour that invite guests to linger, graze and photograph. We handle everything from styling to setup, so you simply host.',
+      'Composed like a still life, grazed like a feast. We design, deliver and style it. You host.',
     heroImage: '/images/gallery-event.jpg',
     heroImagePosition: 'object-[80%_center]',
     cardImage: '/images/gallery-event.jpg',
@@ -42,24 +43,23 @@ export const products: Product[] = [
       { src: '/images/gallery-houseparty.jpg', alt: 'A full spread styled and ready for guests' },
     ],
     included: [
-      { title: 'Mediterranean Mezze', detail: 'Hummus, dips, olives, crackers and artisan breads' },
-      { title: 'Live Nacho Station', detail: 'Loaded nachos with salsas, cheese and fresh toppings' },
-      { title: 'Dabeli Sliders', detail: 'A gourmet spin on the beloved street classic' },
-      { title: 'Quesadillas', detail: 'Golden, cheese-pulled and made for grazing' },
-      { title: 'Mango Sandesh & Monte Carlo Cups', detail: 'Signature desserts to end on a high note' },
-      { title: 'Styling, Setup & Service', detail: 'Boards, props, tea and coffee — we arrive, we style, you host' },
+      { title: 'Mediterranean Mezze', detail: 'Hummus, dips, olives, artisan breads' },
+      { title: 'Live Nacho Station', detail: 'Loaded nachos, salsas, fresh toppings' },
+      { title: 'Dabeli Sliders', detail: 'A gourmet spin on the street classic' },
+      { title: 'Quesadillas', detail: 'Golden and cheese-pulled' },
+      { title: 'Signature Desserts', detail: 'Mango sandesh, Monte Carlo cups' },
+      { title: 'Styling & Setup', detail: 'Boards, props, tea and coffee' },
     ],
     steps: [
-      { title: 'Tell us about your occasion', detail: 'Share your date, guest count and the mood you want on WhatsApp.' },
-      { title: 'We design your table', detail: 'A curated menu and styling plan tailored to your gathering — starting at 15 guests.' },
-      { title: 'We set up, you host', detail: 'Our team arrives, styles the spread and leaves your guests something to talk about.' },
+      { title: 'Say hello', detail: 'WhatsApp us your date, guests and mood.' },
+      { title: 'We design it', detail: 'A table styled to your gathering — from 15 guests.' },
+      { title: 'You host', detail: 'We arrive, set up and leave them talking.' },
     ],
     whatsappMessage:
       "Hi Urban Rasoi! I'd love a Grazing Table. Occasion: ___ | Date: ___ | Guests: ___",
     ctaLabel: 'Plan my grazing table',
-    closingHeadline: 'Make your next gathering unforgettable.',
-    closingCopy:
-      'Tell us your date and guest count — we will design a grazing table your guests will remember long after the last bite.',
+    closingHeadline: 'Give them a table to talk about.',
+    closingCopy: 'Send your date and guest count — we design the rest.',
     metaTitle: 'Gourmet Grazing Tables in Kolkata | Urban Rasoi',
     metaDescription:
       'Artfully styled gourmet grazing tables for house parties and celebrations in Kolkata. Designed, delivered and set up by Urban Rasoi — crafting food experiences since 2015.',
@@ -69,11 +69,10 @@ export const products: Product[] = [
     name: 'House Party Catering',
     shortName: 'House Parties',
     eyebrow: 'Celebrations at Home',
-    headline: 'Host the party. We will handle the food.',
-    promise:
-      'Curated menus for birthdays, anniversaries and get-togethers — delivered warm to your doorstep.',
+    headline: 'You host. We handle the food.',
+    promise: `Curated party menus, delivered warm — from ${site.partyMenusFrom} a guest.`,
     description:
-      'From an intimate dinner for ten to a full-house celebration, we build menus around your occasion. Homestyle Indian, Bengali classics, Indo-Chinese favourites, Continental spreads and desserts — cooked fresh in our kitchen and delivered ready to serve.',
+      'Ten guests or a full house. Homestyle Indian, Bengali, Indo-Chinese, Continental and desserts — cooked fresh that day.',
     heroImage: '/images/gallery-diwali.jpg',
     cardImage: '/images/gallery-houseparty.jpg',
     gallery: [
@@ -83,25 +82,24 @@ export const products: Product[] = [
       { src: '/images/gallery-baguette.jpg', alt: 'Freshly baked cheesy baguettes' },
     ],
     included: [
-      { title: 'Menus Built Around You', detail: 'Curated around your guests, preferences and occasion' },
-      { title: 'Six Cuisines, One Kitchen', detail: 'Homestyle Indian, Bengali, South Indian, Indo-Chinese, Continental and desserts' },
-      { title: 'Festive Specials', detail: 'Diwali, Poila Boishakh, Christmas — menus that match the moment' },
-      { title: 'Fresh, Never Reheated', detail: 'Cooked the same day in our FSSAI-certified kitchen' },
-      { title: 'Doorstep Delivery', detail: 'Packed with care, delivered warm and on time' },
-      { title: 'Serving Guidance', detail: 'Portion planning help so nothing runs short — or goes to waste' },
+      { title: 'Menus Built Around You', detail: 'Your guests, your taste, your occasion' },
+      { title: 'Six Cuisines', detail: 'Indian, Bengali, South Indian, Indo-Chinese, Continental, desserts' },
+      { title: 'Festive Specials', detail: 'Diwali, Poila Boishakh, Christmas' },
+      { title: 'Fresh, Never Reheated', detail: 'Cooked same day, FSSAI-certified kitchen' },
+      { title: 'Doorstep Delivery', detail: 'Warm, on time, ready to serve' },
+      { title: 'Portion Planning', detail: 'Nothing runs short, nothing wasted' },
     ],
     steps: [
-      { title: 'Share your occasion', detail: 'Date, guest count and preferences — one WhatsApp message is all it takes.' },
-      { title: 'Approve your menu', detail: 'We propose a curated menu and quote. Tweak it until it feels right.' },
-      { title: 'Dinner is served', detail: 'Fresh food arrives at your door, ready to plate. You take the compliments.' },
+      { title: 'Say hello', detail: 'One WhatsApp with your date and guest count.' },
+      { title: 'Pick your menu', detail: 'We tailor it. You approve it.' },
+      { title: 'Take the compliments', detail: 'Fresh food arrives ready to plate.' },
     ],
     whatsappMessage:
       "Hi Urban Rasoi! I'm planning a house party and would like a menu. Date: ___ | Guests: ___",
     ctaLabel: 'Plan my house party',
     builderCta: { label: 'Build your own menu', href: '/menu.html' },
     closingHeadline: 'Your home. Our kitchen. One great party.',
-    closingCopy:
-      'Send us your date and guest count — we will send back a menu that makes hosting effortless.',
+    closingCopy: 'Send your date and guest count — hosting just got effortless.',
     metaTitle: 'House Party Catering in Kolkata | Urban Rasoi',
     metaDescription:
       'Curated house party catering in Kolkata — birthdays, anniversaries and festive gatherings. Six cuisines, fresh from our FSSAI-certified kitchen since 2015.',
@@ -111,11 +109,10 @@ export const products: Product[] = [
     name: 'Corporate Catering',
     shortName: 'Corporate',
     eyebrow: 'For Teams & Offices',
-    headline: 'Food that makes the whole office look forward to lunch.',
-    promise:
-      'Reliable, delicious catering for meetings, offsites and office celebrations — delivered on schedule, every time.',
+    headline: 'Lunch the whole office looks forward to.',
+    promise: 'Meetings, offsites and office parties — on schedule, every time.',
     description:
-      'Ten years of feeding Kolkata has taught us what workplaces need: consistency, punctuality and food people actually talk about. From daily team lunches to festive office parties and client events, we scale from 10 to 200+ heads without losing the homemade touch.',
+      'Ten years of feeding Kolkata workplaces: 10 to 200+ heads, without losing the homemade touch.',
     heroImage: '/images/gallery-houseparty.jpg',
     cardImage: '/images/gallery-team.jpg',
     gallery: [
@@ -125,24 +122,23 @@ export const products: Product[] = [
       { src: '/images/gallery-kitchen.jpg', alt: 'The Urban Rasoi kitchen team at work' },
     ],
     included: [
-      { title: 'Meetings & Townhalls', detail: 'Working lunches, snack boxes and high-tea spreads' },
-      { title: 'Office Celebrations', detail: 'Festive parties, milestones and team dinners' },
-      { title: 'Client Entertainment', detail: 'Menus that make a quiet, confident impression' },
-      { title: 'Scales With You', detail: 'From 10 to 200+ heads, same quality at every size' },
-      { title: 'On-Time, Every Time', detail: 'A decade of dependable delivery across Kolkata' },
-      { title: 'FSSAI-Certified Kitchen', detail: 'Full hygiene compliance your admin team can vouch for' },
+      { title: 'Meetings & Townhalls', detail: 'Working lunches, snack boxes, high tea' },
+      { title: 'Office Celebrations', detail: 'Festive parties, milestones, team dinners' },
+      { title: 'Client Entertainment', detail: 'Quiet, confident impressions' },
+      { title: 'Scales With You', detail: '10 to 200+ heads, same quality' },
+      { title: 'On Time, Every Time', detail: 'A decade of dependable delivery' },
+      { title: 'FSSAI Certified', detail: 'Compliance your admin team can vouch for' },
     ],
     steps: [
-      { title: 'Tell us your requirement', detail: 'Headcount, date, budget and format — buffet, boxes or platters.' },
-      { title: 'Get a tailored proposal', detail: 'Menu options and transparent pricing, usually within hours.' },
-      { title: 'We deliver, you shine', detail: 'Food arrives on schedule, set up and ready. Your team does the enjoying.' },
+      { title: 'Tell us the brief', detail: 'Headcount, date, format — buffet, boxes or platters.' },
+      { title: 'Get your proposal', detail: 'Menus and clear pricing, usually within hours.' },
+      { title: 'You take the credit', detail: 'Food arrives on schedule, set up, ready.' },
     ],
     whatsappMessage:
       "Hi Urban Rasoi! I'd like corporate catering for our office. Date: ___ | Headcount: ___",
     ctaLabel: 'Get a corporate quote',
-    closingHeadline: 'Give your team something to look forward to.',
-    closingCopy:
-      'Share your headcount and date — we will send a proposal that makes you the office hero.',
+    closingHeadline: 'Be the office hero.',
+    closingCopy: 'Share your headcount and date — the proposal follows fast.',
     metaTitle: 'Corporate Catering in Kolkata | Urban Rasoi',
     metaDescription:
       'Dependable corporate catering in Kolkata — team lunches, office parties and client events from 10 to 200+ heads. FSSAI-certified kitchen, trusted since 2015.',
@@ -152,11 +148,10 @@ export const products: Product[] = [
     name: 'Custom Packed Meals',
     shortName: 'Packed Meals',
     eyebrow: 'Meals, Made Personal',
-    promise:
-      'Wholesome, homestyle meal boxes — customised to your taste and delivered fresh, daily or on demand.',
-    headline: 'Home-cooked goodness, packed and delivered.',
+    promise: 'Custom meal boxes for events, pujas and offices — 20 to 500+.',
+    headline: 'Home-cooked. Packed. Delivered.',
     description:
-      'For events, bulk orders, pujas or daily office tiffins — our packed meals bring the comfort of home cooking in neat, hygienic boxes. Choose your cuisine, portion size and schedule; we handle the rest from our Salt Lake kitchen.',
+      'Pick your cuisine, portions and schedule. We cook fresh in Salt Lake and deliver by mealtime.',
     heroImage: '/images/gallery-baguette.jpg',
     cardImage: '/images/gallery-packedmeal.jpg',
     gallery: [
@@ -166,24 +161,23 @@ export const products: Product[] = [
       { src: '/images/gallery-kitchen.jpg', alt: 'Fresh preparation in the Urban Rasoi kitchen' },
     ],
     included: [
-      { title: 'Fully Customisable', detail: 'Pick cuisine, dishes and portion sizes to suit your need' },
-      { title: 'Event & Bulk Orders', detail: 'Pujas, seminars, family functions — 20 to 500+ boxes' },
-      { title: 'Hygienic Packaging', detail: 'Leak-proof, food-grade boxes packed in our certified kitchen' },
-      { title: 'Six Cuisines', detail: 'Homestyle Indian, Bengali, South Indian, Indo-Chinese, Continental, desserts' },
-      { title: 'Fresh Same-Day Cooking', detail: 'Cooked in the morning, delivered by mealtime' },
-      { title: 'Flexible Scheduling', detail: 'One-time, weekly or daily — on your calendar' },
+      { title: 'Fully Customisable', detail: 'Cuisine, dishes and portion sizes' },
+      { title: 'Event & Bulk Orders', detail: 'Pujas, seminars, functions — 20 to 500+' },
+      { title: 'Hygienic Packaging', detail: 'Leak-proof, food-grade boxes' },
+      { title: 'Six Cuisines', detail: 'Indian, Bengali, South Indian, Indo-Chinese, Continental, desserts' },
+      { title: 'Same-Day Fresh', detail: 'Cooked in the morning, delivered by mealtime' },
+      { title: 'Flexible Scheduling', detail: 'One-time, weekly or daily' },
     ],
     steps: [
-      { title: 'Tell us what you need', detail: 'Number of boxes, cuisine preference and delivery date.' },
-      { title: 'Approve menu & pricing', detail: 'We send box options with transparent per-box pricing.' },
-      { title: 'Fresh boxes, delivered', detail: 'Packed with care and delivered on time to your venue.' },
+      { title: 'Tell us the count', detail: 'Boxes, cuisine and delivery date.' },
+      { title: 'Approve the box', detail: 'Clear per-box pricing, no surprises.' },
+      { title: 'Delivered fresh', detail: 'Packed with care, on time, every time.' },
     ],
     whatsappMessage:
       "Hi Urban Rasoi! I'm interested in your packed meals. Boxes needed: ___ | Date: ___",
     ctaLabel: 'Order packed meals',
     closingHeadline: 'Fresh boxes, zero hassle.',
-    closingCopy:
-      'Tell us how many boxes and when — we will take care of everything in between.',
+    closingCopy: 'Tell us how many and when — done.',
     metaTitle: 'Custom Packed Meals in Kolkata | Urban Rasoi',
     metaDescription:
       'Custom packed meal boxes in Kolkata for events, pujas, offices and bulk orders. Homestyle cooking, hygienic packaging, delivered fresh — since 2015.',

@@ -7,10 +7,10 @@ import { cn } from '@/lib/utils'
 import type { Product } from '@/lib/products'
 
 const serviceFit: Record<string, string[]> = {
-  'grazing-tables': ['Starts at 15 guests', 'Styling and setup included', 'Designed for relaxed grazing'],
-  'house-parties': ['Intimate dinners to full-house parties', 'Menus tailored to your occasion', 'Delivery ready to serve'],
-  corporate: ['10 to 200+ guests', 'Buffets, boxes or platters', 'Meetings, celebrations and client events'],
-  'packed-meals': ['20 to 500+ boxes', 'One-time, weekly or daily', 'Fresh same-day cooking'],
+  'grazing-tables': ['From 15 guests', 'Styled & set up', 'Made for lingering'],
+  'house-parties': [`From ${site.partyMenusFrom} a guest`, 'Any size, any cuisine', 'Delivered ready to serve'],
+  corporate: ['10–200+ guests', 'Buffets, boxes or platters', 'Always on time'],
+  'packed-meals': ['20–500+ boxes', 'One-time or scheduled', 'Cooked same day'],
 }
 
 export function ProductLanding({ product }: { product: Product }) {

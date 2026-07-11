@@ -1,57 +1,43 @@
 import { Reveal } from '@/components/reveal'
-import { WhatsAppButton } from '@/components/whatsapp-button'
-import { structuredWhatsappMessage } from '@/lib/site'
+import { site } from '@/lib/site'
 
 const trustPoints = [
-  { value: 'Since 2015', label: 'Cooking for Kolkata' },
-  { value: '2,000+', label: 'Customers served' },
+  { value: 'Since 2015', label: 'Feeding Kolkata' },
+  { value: site.community, label: 'Hosts served' },
+  { value: `${site.rating}★`, label: 'Host rating' },
   { value: 'FSSAI', label: 'Licensed kitchen' },
-  { value: 'Real events', label: 'Real customer stories' },
 ]
 
 const steps = [
-  { marker: '01', title: 'Tell us your plan', copy: 'Share your date, guest count, area and food preferences.' },
-  { marker: '02', title: 'Receive your options', copy: 'We suggest a suitable menu and service style for your celebration.' },
-  { marker: '03', title: 'Host without the rush', copy: 'We cook fresh and deliver or set up as agreed for your event.' },
-]
-
-const confidencePoints = [
-  'FSSAI-licensed Kolkata kitchen',
-  'Menus tailored to the occasion',
-  'Portions planned around your guest count',
-  'Delivery or event service agreed in advance',
-  'Menus tailored to your preferences',
-  'A written menu shared before confirmation',
+  { marker: '01', title: 'Say hello', copy: 'WhatsApp us your date, guests and area.' },
+  { marker: '02', title: 'Pick your menu', copy: 'We tailor it. You approve it.' },
+  { marker: '03', title: 'Enjoy your party', copy: 'We cook, deliver and serve.' },
 ]
 
 export const faqItems = [
   {
     question: 'How is Urban Rasoi different from calling a maharaj?',
-    answer: 'Everything is cooked fresh in our FSSAI-licensed Salt Lake kitchen and delivered or served at your venue — no one takes over your kitchen and there is no mess to clean up. Menus are chef-crafted across six cuisines and tailored to your occasion, so it is never the same 10 dishes, and the food is gourmet and balanced rather than heavy and oily. The entire headache is ours.',
+    answer: 'Everything is cooked in our FSSAI-licensed kitchen and delivered or served at your venue. No mess, no repeats — chef-crafted menus across six cuisines, never oily-same-old.',
   },
   {
     question: 'What kinds of events do you cater?',
-    answer: 'Urban Rasoi caters get-togethers, house parties, private dinners, birthdays, festive gatherings, corporate meals, grazing tables and larger celebrations in Kolkata.',
+    answer: 'House parties, birthdays, anniversaries, festive gatherings, corporate meals, grazing tables and large celebrations — across Kolkata.',
   },
   {
     question: 'What is the minimum guest count?',
-    answer: 'It depends on the service. Grazing tables start at 15 guests, corporate catering starts at 10 guests, and the Celebration Menu builder starts at 25 guests.',
+    answer: 'Grazing tables from 15 guests, corporate from 10, celebration menus from 25.',
   },
   {
-    question: 'Can the menu be customised?',
-    answer: 'Yes. Share your occasion, preferences and dietary requirements on WhatsApp, and we will suggest suitable options from our Kolkata kitchen.',
-  },
-  {
-    question: 'Can you accommodate dietary requirements?',
-    answer: 'Share any allergies or dietary requirements when you enquire, and our team will guide you through suitable menu options.',
+    question: 'Can menus be customised for taste and diet?',
+    answer: 'Yes — every menu is built around your occasion, preferences, allergies and dietary needs.',
   },
   {
     question: 'Do you provide setup and serving staff?',
-    answer: 'Selected services can include food delivery, semi-catering with kitchen and serving staff, or full catering with staff, cutlery, crockery and setup. Final inclusions are confirmed with your quote.',
+    answer: 'Choose delivery, semi-catering, or full service with staff, crockery and setup.',
   },
   {
     question: 'How do I get a menu and quote?',
-    answer: 'Send your occasion, date, guest count, area, dietary preference and preferred service style on WhatsApp. This gives our team enough context to suggest the right next step.',
+    answer: 'WhatsApp us your date, guest count and area — menu options and pricing usually follow within hours.',
   },
 ]
 
@@ -70,54 +56,22 @@ export function TrustStrip() {
   )
 }
 
-export function EarlyProof() {
-  return (
-    <section className="bg-cream py-12 md:py-16">
-      <div className="mx-auto grid max-w-7xl gap-6 px-5 md:grid-cols-[1.1fr_0.9fr] md:px-10">
-        <Reveal>
-          <div className="rounded-2xl bg-ink p-7 text-primary-foreground md:p-10">
-            <p className="section-label text-terracotta-light">From a recent host</p>
-            <blockquote className="mt-4 font-serif text-2xl font-semibold leading-snug text-balance md:text-4xl">
-              “The food was very nice and the service staff was very helpful. Everyone seemed to be enjoying the food.”
-            </blockquote>
-            <p className="mt-5 text-sm text-primary-foreground/70">Prirti · customer message shared with permission</p>
-          </div>
-        </Reveal>
-        <Reveal delay={90}>
-          <div className="flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-7 md:p-10">
-            <div>
-              <span className="section-label" aria-hidden="true">Urban Rasoi</span>
-              <h2 className="mt-5 font-serif text-3xl font-semibold text-ink text-balance">Built for hosts who want to enjoy their own event.</h2>
-              <p className="mt-4 leading-relaxed text-ink-soft">Real food, practical planning and a team that understands the details behind feeding a room full of guests.</p>
-            </div>
-            <a href="#celebrations" className="mt-7 inline-flex items-center gap-2 font-semibold text-terracotta hover:text-terracotta-deep">
-              See real celebrations <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  )
-}
-
 export function HowItWorks() {
   return (
     <section className="bg-cream py-12 md:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <Reveal>
-          <p className="section-label">Simple from the first message</p>
-          <h2 className="mt-3 max-w-2xl font-serif text-3xl font-semibold text-ink text-balance md:text-5xl"><span className="md:hidden">Plan in three easy steps.</span><span className="hidden md:inline">A celebration should not begin with a complicated ordering process.</span></h2>
+          <h2 className="max-w-2xl font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">
+            Three steps. Zero stress.
+          </h2>
         </Reveal>
         <ol className="mt-9 grid gap-4 md:grid-cols-3">
           {steps.map((step, index) => (
             <Reveal key={step.title} delay={index * 70}>
               <li className="h-full rounded-2xl border border-border bg-card p-5 md:p-8">
-                <div className="flex items-center justify-between">
-                  <span className="section-label">Step</span>
-                  <span className="font-serif text-2xl text-terracotta/30 md:text-3xl">{step.marker}</span>
-                </div>
-                <h3 className="mt-4 font-serif text-xl font-semibold text-ink md:mt-8">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft md:mt-3 md:text-base">{step.copy}</p>
+                <span className="font-serif text-2xl text-terracotta/30 md:text-3xl">{step.marker}</span>
+                <h3 className="mt-3 font-serif text-xl font-semibold text-ink md:mt-6">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft md:text-base">{step.copy}</p>
               </li>
             </Reveal>
           ))}
@@ -127,44 +81,12 @@ export function HowItWorks() {
   )
 }
 
-export function ConfidenceSection() {
-  return (
-    <section className="py-14 md:py-20">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 md:grid-cols-[0.8fr_1.2fr] md:px-10">
-        <Reveal>
-          <div>
-            <p className="section-label">Order with confidence</p>
-            <h2 className="mt-3 font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">Clear details before the cooking begins.</h2>
-            <p className="mt-5 leading-relaxed text-ink-soft">We use your guest count, occasion and service preference to guide the conversation—so expectations are aligned before confirmation.</p>
-          </div>
-        </Reveal>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {confidencePoints.map((point, index) => (
-            <Reveal key={point} delay={index * 45}>
-              <div className="flex h-full gap-3 rounded-xl bg-cream p-5">
-                <span className="mt-0.5 font-semibold text-terracotta" aria-hidden="true">✓</span>
-                <p className="font-medium leading-relaxed text-ink">{point}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export function FAQSection() {
   return (
     <section className="bg-cream py-14 md:py-20">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 md:grid-cols-[0.7fr_1.3fr] md:px-10">
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 md:grid-cols-[0.7fr_1.3fr] md:px-10">
         <Reveal>
-          <div>
-            <p className="section-label">Before you message us</p>
-            <h2 className="mt-3 font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">Questions hosts usually ask.</h2>
-            <p className="mt-6 text-sm leading-relaxed text-ink-soft">
-              Send the event details once, and we can respond with better context.
-            </p>
-          </div>
+          <h2 className="font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">Good to know.</h2>
         </Reveal>
         <div className="divide-y divide-border rounded-2xl border border-border bg-card px-5 md:px-7">
           {faqItems.map((item) => (
@@ -179,18 +101,5 @@ export function FAQSection() {
         </div>
       </div>
     </section>
-  )
-}
-
-export function QuoteCTA({ dark = false }: { dark?: boolean }) {
-  return (
-    <div className={dark ? 'text-primary-foreground' : 'text-ink'}>
-      <WhatsAppButton
-        message={structuredWhatsappMessage}
-        label="Check availability & get menus"
-        size="large"
-        className="justify-center"
-      />
-    </div>
   )
 }

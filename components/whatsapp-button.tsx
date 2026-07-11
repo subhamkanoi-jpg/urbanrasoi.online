@@ -71,11 +71,11 @@ export function FloatingWhatsApp({ message }: { message: string }) {
       onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Get menus and availability on WhatsApp"
-      className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-center gap-2.5 rounded-full bg-terracotta px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta md:bottom-6 md:left-auto md:right-6 md:size-14 md:px-0 md:py-0"
+      aria-label="Plan my party on WhatsApp"
+      className="fixed bottom-3 left-4 right-4 z-50 flex items-center justify-center gap-2.5 rounded-full bg-terracotta px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta md:bottom-6 md:left-auto md:right-6 md:size-14 md:px-0 md:py-0"
     >
       <WhatsAppIcon className="size-5 md:size-7" />
-      <span className="md:sr-only">Get menus & availability</span>
+      <span className="md:sr-only">Plan my party on WhatsApp</span>
     </a>
   )
 }
