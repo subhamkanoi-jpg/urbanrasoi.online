@@ -5,15 +5,25 @@ import { WhatsAppButton } from '@/components/whatsapp-button'
 import { MenuBuilderFloat } from '@/components/menu-builder-float'
 import { products } from '@/lib/products'
 import { site, defaultWhatsappMessage } from '@/lib/site'
-import { cn } from '@/lib/utils'
 
+function InstagramGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" className={className} aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" strokeWidth={0} />
+    </svg>
+  )
+}
+
+// Placeholder feed shots — swap these for real posts from @urbanrasoi_kolkata
 const galleryImages = [
-  { src: '/images/gallery-spread.jpg', alt: 'Gourmet grazing spread' },
-  { src: '/images/gallery-baguette.jpg', alt: 'Freshly baked baguettes' },
-  { src: '/images/gallery-diwali.jpg', alt: 'Festive spread' },
-  { src: '/images/gallery-bengali.jpg', alt: 'Bengali classics' },
-  { src: '/images/gallery-minipartay.jpg', alt: 'Mini party platter' },
-  { src: '/images/gallery-packedmeal.jpg', alt: 'Packed meal box' },
+  { src: '/images/ig-1.png', alt: 'Gourmet grazing spread' },
+  { src: '/images/ig-2.png', alt: 'Bengali fish curry plate' },
+  { src: '/images/ig-3.png', alt: 'House party snack platter' },
+  { src: '/images/ig-4.png', alt: 'Freshly baked baguettes' },
+  { src: '/images/ig-5.png', alt: 'Festive Diwali sweets' },
+  { src: '/images/ig-6.png', alt: 'Packed gourmet meal box' },
 ]
 
 export default function HomePage() {
@@ -126,45 +136,62 @@ export default function HomePage() {
         </Reveal>
       </section>
 
-      {/* ── GALLERY MOSAIC ───────────────────────────────────── */}
-      <section aria-label="From our kitchen" className="bg-cream py-12 md:py-16">
+      {/* ── INSTAGRAM FEED ───────────────────────────────────── */}
+      <section aria-label="Instagram feed" className="bg-cream py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <h2 className="font-serif text-2xl font-semibold text-ink md:text-3xl">From our kitchen</h2>
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <a
                 href={site.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-ink-soft transition-colors hover:border-terracotta hover:text-terracotta"
+                className="group flex items-center gap-3"
               >
-                {site.instagramHandle}
-                <span aria-hidden="true">↗</span>
+                <span className="flex size-12 items-center justify-center rounded-full bg-gradient-to-tr from-terracotta-deep via-terracotta to-terracotta-light">
+                  <InstagramGlyph className="size-6 text-white" />
+                </span>
+                <span>
+                  <span className="block font-serif text-lg font-semibold leading-tight text-ink">
+                    {site.instagramHandle}
+                  </span>
+                  <span className="block text-sm text-ink-soft group-hover:text-terracotta">
+                    Fresh from our kitchen
+                  </span>
+                </span>
+              </a>
+              <a
+                href={site.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-terracotta-deep hover:-translate-y-0.5"
+              >
+                <InstagramGlyph className="size-4" />
+                Follow
               </a>
             </div>
           </Reveal>
 
-          <div className="mt-8 grid grid-cols-3 grid-rows-2 gap-3 md:gap-4">
+          <div className="mt-8 grid grid-cols-3 gap-2 md:gap-3">
             {galleryImages.map((img, i) => (
-              <Reveal
-                key={img.src}
-                delay={i * 60}
-                className={i === 0 ? 'col-span-2 row-span-2' : ''}
-              >
-                <div
-                  className={cn(
-                    'relative overflow-hidden rounded-xl',
-                    i === 0 ? 'aspect-[4/3]' : 'aspect-square',
-                  )}
+              <Reveal key={img.src} delay={i * 60}>
+                <a
+                  href={site.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative block aspect-square overflow-hidden rounded-xl"
+                  aria-label={`View ${img.alt} on Instagram`}
                 >
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
                     className="img-zoom object-cover"
-                    sizes={i === 0 ? '(min-width: 768px) 45vw, 65vw' : '(min-width: 768px) 22vw, 33vw'}
+                    sizes="(min-width: 768px) 22vw, 33vw"
                   />
-                </div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-200 group-hover:bg-ink/40 group-hover:opacity-100">
+                    <InstagramGlyph className="size-7 text-white" />
+                  </div>
+                </a>
               </Reveal>
             ))}
           </div>
