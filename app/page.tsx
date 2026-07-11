@@ -1,25 +1,20 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { EventStories } from '@/components/event-stories'
-import {
-  ConfidenceSection,
-  FAQSection,
-  HowItWorks,
-  TrustStrip,
-} from '@/components/conversion-sections'
+import { FAQSection, HowItWorks, TrustStrip } from '@/components/conversion-sections'
+import { ImageTicker } from '@/components/image-ticker'
 import { MaharajComparison } from '@/components/maharaj-comparison'
-import { TelLink } from '@/components/tracked-links'
-import { TestimonialCarousel } from '@/components/testimonial-carousel'
 import { Reveal } from '@/components/reveal'
+import { TelLink } from '@/components/tracked-links'
 import { WhatsAppButton } from '@/components/whatsapp-button'
 import { products } from '@/lib/products'
 import { site, structuredWhatsappMessage } from '@/lib/site'
 
 const serviceFacts: Record<string, string[]> = {
   'grazing-tables': ['From 15 guests', 'Styled & set up'],
-  'house-parties': ['Intimate to full-house', 'Menus tailored to your guests'],
-  corporate: ['10 to 200+ guests', 'Buffets, boxes or platters'],
-  'packed-meals': ['20 to 500+ boxes', 'One-time or scheduled'],
+  'house-parties': [`From ${site.partyMenusFrom}/guest`, 'Any size, any cuisine'],
+  corporate: ['10–200+ guests', 'Always on time'],
+  'packed-meals': ['20–500+ boxes', 'Cooked same day'],
 }
 
 export default function HomePage() {
@@ -42,18 +37,17 @@ export default function HomePage() {
 
         <div className="absolute inset-x-0 bottom-0 px-5 pb-10 md:px-10 md:pb-16">
           <Reveal>
-            <p className="section-label text-terracotta-light">Catering in {site.location}</p>
-            <h1 className="mt-3 max-w-4xl font-serif text-[2.55rem] font-semibold leading-[1.04] tracking-tight text-primary-foreground text-balance md:text-7xl">
-              Catering that lets you enjoy your own celebration.
+            <p className="section-label text-terracotta-light">House party catering · Kolkata</p>
+            <h1 className="mt-3 max-w-4xl font-serif text-[2.8rem] font-semibold leading-[1.04] tracking-tight text-primary-foreground text-balance md:text-7xl">
+              Finally, enjoy your own party.
             </h1>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-foreground/85 md:mt-5 md:text-lg">
-              <span className="md:hidden">Gourmet menus for get-togethers and parties, delivered or served across Kolkata.</span>
-              <span className="hidden md:inline">Gourmet, chef-crafted menus with dependable delivery or full event service — for get-togethers, house parties, corporate gatherings and celebrations across Kolkata.</span>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-foreground/85 md:text-lg">
+              Gourmet menus, cooked and delivered — from {site.partyMenusFrom} a guest.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <WhatsAppButton
                 message={structuredWhatsappMessage}
-                label="Check availability & get menus"
+                label="Plan my party"
                 placement="home-hero"
                 size="large"
                 className="justify-center"
@@ -62,30 +56,25 @@ export default function HomePage() {
                 href="/menu.html"
                 className="group flex items-center justify-center gap-2 rounded-full border border-primary-foreground/45 bg-ink/20 px-6 py-4 text-base font-semibold text-primary-foreground backdrop-blur-sm transition-colors hover:bg-primary-foreground hover:text-ink"
               >
-                Create your celebration menu
+                See menus & prices
                 <span aria-hidden="true">→</span>
               </a>
             </div>
-            <p className="mt-5 hidden text-sm font-medium text-primary-foreground/75 md:block">
-              Share your date, guest count and area once—we will take the conversation from there.
-            </p>
           </Reveal>
         </div>
       </section>
 
       <TrustStrip />
-      <TestimonialCarousel />
+      <ImageTicker />
 
-      <section className="mx-auto max-w-7xl px-5 py-12 md:px-10 md:py-20">
+      <section className="mx-auto max-w-7xl px-5 pb-12 pt-4 md:px-10 md:pb-20 md:pt-8">
         <Reveal>
-          <p className="section-label">Choose your occasion</p>
-          <h2 className="mt-3 font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">
+          <h2 className="font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">
             What are you planning?
           </h2>
-          <p className="mt-3 hidden max-w-2xl leading-relaxed text-ink-soft md:block">Compare the format and guest-count fit, then explore the service that feels closest to your event.</p>
         </Reveal>
 
-        <div className="mt-9 grid gap-5 sm:grid-cols-2">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2">
           {products.map((product, index) => (
             <Reveal key={product.slug} delay={index * 70}>
               <Link
@@ -102,16 +91,14 @@ export default function HomePage() {
                   />
                 </div>
                 <div className="flex flex-1 flex-col p-5 md:p-6">
-                  <p className="section-label hidden md:block">{product.eyebrow}</p>
-                  <h3 className="font-serif text-2xl font-semibold text-ink md:mt-2">{product.shortName}</h3>
-                  <p className="mt-3 hidden leading-relaxed text-ink-soft md:block">{product.promise}</p>
-                  <ul className="mt-4 flex flex-wrap gap-2 md:mt-5">
+                  <h3 className="font-serif text-2xl font-semibold text-ink">{product.shortName}</h3>
+                  <ul className="mt-3 flex flex-wrap gap-2">
                     {serviceFacts[product.slug].map((fact) => (
                       <li key={fact} className="rounded-full bg-cream px-3 py-1.5 text-sm font-medium text-ink">{fact}</li>
                     ))}
                   </ul>
-                  <span className="mt-6 inline-flex items-center gap-2 font-semibold text-terracotta transition-all group-hover:gap-3">
-                    Explore menus & service <span aria-hidden="true">→</span>
+                  <span className="mt-5 inline-flex items-center gap-2 font-semibold text-terracotta transition-all group-hover:gap-3">
+                    See menus <span aria-hidden="true">→</span>
                   </span>
                 </div>
               </Link>
@@ -122,8 +109,6 @@ export default function HomePage() {
 
       <MaharajComparison placement="home-comparison" />
 
-      <HowItWorks />
-
       <section className="px-5 py-12 md:px-10 md:py-16">
         <Reveal>
           <a
@@ -133,9 +118,9 @@ export default function HomePage() {
             <div className="relative max-w-2xl">
               <p className="section-label text-terracotta-light">Celebration menus · 25+ guests</p>
               <h2 className="mt-3 font-serif text-2xl font-semibold leading-snug text-primary-foreground text-balance md:text-4xl">
-                Prefer to choose every dish? Build a Celebration Menu and get an instant estimate.
+                Want to pick every dish?
               </h2>
-              <p className="mt-3 text-sm text-primary-foreground/70">Food delivery, semi-catering and full-service options are available in the builder.</p>
+              <p className="mt-2 text-sm text-primary-foreground/70">Instant estimate — from {site.partyMenusFrom} a guest.</p>
             </div>
             <span className="relative inline-flex shrink-0 items-center gap-2.5 rounded-full bg-terracotta px-7 py-4 text-base font-semibold text-primary-foreground transition-colors group-hover:bg-terracotta-deep">
               Build my menu <span aria-hidden="true">→</span>
@@ -147,7 +132,7 @@ export default function HomePage() {
       <div id="celebrations">
         <EventStories />
       </div>
-      <ConfidenceSection />
+      <HowItWorks />
       <FAQSection />
 
       <section className="relative overflow-hidden">
@@ -155,12 +140,11 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-ink/80" />
         <div className="relative mx-auto flex max-w-3xl flex-col items-center px-5 py-24 text-center md:py-32">
           <Reveal>
-            <p className="section-label text-terracotta-light">Start with the essentials</p>
-            <h2 className="mt-3 font-serif text-4xl font-semibold leading-tight tracking-tight text-primary-foreground text-balance md:text-6xl">
-              Tell us the date, guest count and occasion. We will help shape the rest.
+            <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-primary-foreground text-balance md:text-6xl">
+              Your date. Our kitchen.
             </h2>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <WhatsAppButton message={structuredWhatsappMessage} label="Get menu options & availability" placement="home-final-cta" size="large" className="justify-center" />
+              <WhatsAppButton message={structuredWhatsappMessage} label="Plan my party" placement="home-final-cta" size="large" className="justify-center" />
               <TelLink placement="home-final-cta" className="flex items-center justify-center rounded-full border border-primary-foreground/30 px-6 py-4 text-base font-medium text-primary-foreground hover:bg-primary-foreground/10">
                 Call {site.phone}
               </TelLink>
