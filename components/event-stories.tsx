@@ -16,7 +16,7 @@ function InstagramGlyph({ className }: { className?: string }) {
 
 function VideoCard({ story, prominent, onPlay }: { story: VideoStory; prominent: boolean; onPlay: (video: HTMLVideoElement) => void }) {
   return (
-    <article className={prominent ? 'md:col-span-2 md:row-span-2' : ''}>
+    <article className={prominent ? 'snap-start md:col-span-2 md:row-span-2' : 'snap-start'}>
       <div className="group relative h-full overflow-hidden rounded-2xl bg-ink shadow-[0_12px_40px_rgba(30,20,11,0.14)]">
         <video
           className={`h-full w-full object-cover ${prominent ? 'aspect-[4/5] md:aspect-[16/12]' : 'aspect-[4/5]'}`}
@@ -56,7 +56,7 @@ export function EventStories() {
   }
 
   return (
-    <section aria-labelledby="event-stories-title" className="bg-cream py-14 md:py-20">
+    <section aria-labelledby="event-stories-title" className="bg-cream py-12 md:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
@@ -64,7 +64,7 @@ export function EventStories() {
             <h2 id="event-stories-title" className="mt-3 font-serif text-4xl font-semibold leading-tight tracking-tight text-ink text-balance md:text-6xl">
               Celebrations we&apos;ve been part of.
             </h2>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-ink-soft md:text-lg">
+            <p className="mt-4 hidden max-w-xl text-base leading-relaxed text-ink-soft md:block md:text-lg">
               From a quiet dinner at home to a full-scale event, here are a few moments our customers invited us into.
             </p>
           </div>
@@ -98,11 +98,11 @@ export function EventStories() {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4" aria-live="polite">
+        <div className="mt-6 grid snap-x snap-mandatory auto-cols-[82%] grid-flow-col gap-4 overflow-x-auto pb-3 sm:auto-cols-auto sm:grid-flow-row sm:grid-cols-2 sm:overflow-visible sm:pb-0 md:grid-cols-4" aria-live="polite">
           {visibleStories.map((story, index) => story.type === 'video' ? (
             <VideoCard key={story.id} story={story} prominent={activeCategory === 'All' && index === 0} onPlay={handlePlay} />
           ) : (
-            <article key={story.id} className="flex min-h-72 flex-col justify-between rounded-2xl border border-border bg-background p-6 shadow-[0_8px_30px_rgba(30,20,11,0.07)] md:min-h-80">
+            <article key={story.id} className="flex min-h-72 snap-start flex-col justify-between rounded-2xl border border-border bg-background p-6 shadow-[0_8px_30px_rgba(30,20,11,0.07)] md:min-h-80">
               <span className="font-serif text-5xl leading-none text-terracotta" aria-hidden="true">“</span>
               <blockquote className="mt-4 font-serif text-xl font-medium leading-relaxed text-ink text-pretty md:text-2xl">
                 {story.quote}
@@ -115,9 +115,9 @@ export function EventStories() {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col items-start justify-between gap-5 border-t border-border pt-8 md:flex-row md:items-center">
-          <p className="max-w-xl font-serif text-2xl font-semibold text-ink text-balance md:text-3xl">
-            Have a gathering in mind? Let&apos;s make the food the easy part.
+        <div className="mt-7 flex flex-col items-start justify-between gap-5 border-t border-border pt-7 md:mt-10 md:flex-row md:items-center md:pt-8">
+          <p className="max-w-xl font-serif text-xl font-semibold text-ink text-balance md:text-3xl">
+            Planning a gathering?
           </p>
           <a
             href={`https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent('Hi Urban Rasoi! I saw your event stories and would like to plan catering for my celebration.')}`}

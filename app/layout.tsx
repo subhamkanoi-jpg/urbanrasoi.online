@@ -2,9 +2,8 @@ import type { Metadata } from 'next'
 import { Playfair_Display, Jost } from 'next/font/google'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { FloatingWhatsApp } from '@/components/whatsapp-button'
 import { StructuredData } from '@/components/structured-data'
-import { site, defaultWhatsappMessage } from '@/lib/site'
+import { site } from '@/lib/site'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -49,7 +48,6 @@ export default function RootLayout({
         <SiteHeader />
         <main className="min-h-svh">{children}</main>
         <SiteFooter />
-        <FloatingWhatsApp message={defaultWhatsappMessage} />
       </body>
     </html>
   )

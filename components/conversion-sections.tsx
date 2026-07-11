@@ -56,9 +56,9 @@ export function TrustStrip() {
     <section aria-label="Why customers choose Urban Rasoi" className="border-b border-border bg-card">
       <div className="mx-auto grid max-w-7xl grid-cols-2 md:grid-cols-4">
         {trustPoints.map((point) => (
-          <div key={point.value} className="border-border px-5 py-5 text-center odd:border-r md:border-r md:last:border-r-0">
-            <p className="font-serif text-xl font-semibold text-ink">{point.value}</p>
-            <p className="mt-1 text-sm text-ink-soft">{point.label}</p>
+          <div key={point.value} className="border-border px-3 py-4 text-center odd:border-r md:border-r md:px-5 md:py-5 md:last:border-r-0">
+            <p className="font-serif text-lg font-semibold text-ink md:text-xl">{point.value}</p>
+            <p className="mt-1 text-xs text-ink-soft md:text-sm">{point.label}</p>
           </div>
         ))}
       </div>
@@ -98,22 +98,22 @@ export function EarlyProof() {
 
 export function HowItWorks() {
   return (
-    <section className="bg-cream py-14 md:py-20">
+    <section className="bg-cream py-12 md:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <Reveal>
           <p className="section-label">Simple from the first message</p>
-          <h2 className="mt-3 max-w-2xl font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">A celebration should not begin with a complicated ordering process.</h2>
+          <h2 className="mt-3 max-w-2xl font-serif text-3xl font-semibold text-ink text-balance md:text-5xl"><span className="md:hidden">Plan in three easy steps.</span><span className="hidden md:inline">A celebration should not begin with a complicated ordering process.</span></h2>
         </Reveal>
         <ol className="mt-9 grid gap-4 md:grid-cols-3">
           {steps.map((step, index) => (
             <Reveal key={step.title} delay={index * 70}>
-              <li className="h-full rounded-2xl border border-border bg-card p-6 md:p-8">
+              <li className="h-full rounded-2xl border border-border bg-card p-5 md:p-8">
                 <div className="flex items-center justify-between">
                   <span className="section-label">Step</span>
-                  <span className="font-serif text-3xl text-terracotta/30">{step.marker}</span>
+                  <span className="font-serif text-2xl text-terracotta/30 md:text-3xl">{step.marker}</span>
                 </div>
-                <h3 className="mt-8 font-serif text-xl font-semibold text-ink">{step.title}</h3>
-                <p className="mt-3 leading-relaxed text-ink-soft">{step.copy}</p>
+                <h3 className="mt-4 font-serif text-xl font-semibold text-ink md:mt-8">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft md:mt-3 md:text-base">{step.copy}</p>
               </li>
             </Reveal>
           ))}

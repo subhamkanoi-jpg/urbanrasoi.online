@@ -25,11 +25,11 @@ export function SiteFooter() {
   return (
     <footer className="bg-ink text-background/85">
       {/* Top portion */}
-      <div className="mx-auto max-w-7xl px-5 pt-16 pb-10 md:px-10 md:pt-20 md:pb-14">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_auto_auto]">
+      <div className="mx-auto max-w-7xl px-5 pb-8 pt-10 md:px-10 md:pb-14 md:pt-20">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-[1fr_auto_auto] md:gap-12">
 
           {/* Brand column */}
-          <div className="max-w-xs">
+          <div className="col-span-2 max-w-xs md:col-span-1">
             <div className="flex items-center gap-3">
               <Image
                 src="/images/logo.jpg"
@@ -40,11 +40,11 @@ export function SiteFooter() {
               />
               <p className="font-serif text-xl font-semibold text-background">Urban Rasoi</p>
             </div>
-            <p className="mt-4 text-sm leading-relaxed text-background/60">
+            <p className="mt-4 hidden text-sm leading-relaxed text-background/60 md:block">
               {site.tagline}
             </p>
             {/* Social + contact */}
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-4 flex items-center gap-3 md:mt-6">
               <a
                 href={site.instagram}
                 target="_blank"
@@ -92,7 +92,7 @@ export function SiteFooter() {
           </nav>
 
           {/* Order CTA */}
-          <div className="flex flex-col gap-5">
+          <div className="col-span-2 flex flex-col items-start gap-4 md:col-span-1 md:gap-5">
             <p className="text-xs font-semibold uppercase tracking-widest text-background/40">
               Order now
             </p>
