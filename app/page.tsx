@@ -30,11 +30,11 @@ export default function HomePage() {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           poster="/media/customer-stories/story-6-poster.png"
           aria-label="Sunidhi event catered by Urban Rasoi"
         >
-          <source src="/media/customer-stories/story-6.mp4" type="video/mp4" />
+          <source src="/media/customer-stories/story-6.mp4#t=17" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-ink/60" />
 
