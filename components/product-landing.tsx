@@ -7,7 +7,7 @@ import type { Product } from '@/lib/products'
 
 const serviceFit: Record<string, string[]> = {
   'grazing-tables': ['Starts at 15 guests', 'Styling and setup included', 'Designed for relaxed grazing'],
-  'house-parties': ['Intimate dinners to full-house parties', 'Vegetarian, non-vegetarian or mixed', 'Delivery ready to serve'],
+  'house-parties': ['Intimate dinners to full-house parties', 'Menus tailored to your occasion', 'Delivery ready to serve'],
   corporate: ['10 to 200+ guests', 'Buffets, boxes or platters', 'Meetings, celebrations and client events'],
   'packed-meals': ['20 to 500+ boxes', 'One-time, weekly or daily', 'Fresh same-day cooking'],
 }

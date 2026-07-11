@@ -24,7 +24,7 @@ Occasion:
 Date:
 Approx. guest count:
 Area in Kolkata:
-Food preference (veg/non-veg):
+Dietary preferences or allergies:
 Service needed (delivery/setup/staff):`
 
 export const defaultWhatsappMessage = structuredWhatsappMessage

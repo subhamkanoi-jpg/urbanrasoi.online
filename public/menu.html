@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Build Your Celebration Menu — Urban Rasoi Kolkata</title>
-<meta name="description" content="Design your own house party menu from Urban Rasoi's Celebration Menus — pure vegetarian, fully set up & served in your home. Pick your dishes, set your date, and send it to us on WhatsApp.">
+<meta name="description" content="Design your own house party menu from Urban Rasoi's Celebration Menus, with delivery, setup and service options. Pick your dishes, set your date, and send it to us on WhatsApp.">
 <link rel="canonical" href="https://urbanrasoi.online/menu.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Urban Rasoi">
 <meta property="og:title" content="Build Your Celebration Menu — Urban Rasoi">
-<meta property="og:description" content="Pick your dishes course by course, set your party date, and send us your dream menu on WhatsApp. Pure vegetarian, set up & served at your home.">
+<meta property="og:description" content="Pick your dishes course by course, set your party date, and send us your dream menu on WhatsApp. Delivery, setup and service options are available.">
 <meta property="og:url" content="https://urbanrasoi.online/menu.html">
 <meta property="og:image" content="https://urbanrasoi.online/images/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,9 +197,9 @@ header p{color:var(--ink-soft);max-width:560px;margin:0 auto;font-size:.95rem}
 
 <header>
   <div class="container">
-<span class="kicker">Pure Vegetarian · 25+ Guests · Est. 2015</span>
+<span class="kicker">25+ Guests · Est. 2015</span>
 <h1>Build your <em>Celebration Menu</em></h1>
-<p>This builder is for our pure-vegetarian Celebration Menus, starting at 25 guests. Choose the dishes and service style, get an instant estimate, then send the enquiry on WhatsApp for availability and final confirmation.</p>
+<p>Choose the dishes and service style, get an instant estimate, then send the enquiry on WhatsApp for availability and final confirmation.</p>
     <div class="mini-steps">
       <span class="mini-step"><b>1</b> Pick your spread</span>
       <span class="mini-step"><b>2</b> Choose your dishes</span>
@@ -659,7 +659,7 @@ function renderFinalCard(s) {
   html += '<div class="fc-price"><div class="p-label">Your Total</div><div class="p-amount">' + fmtINR(s.total) + '</div>' +
     '<div class="p-detail">' + fmtINR(s.plate) + ' per guest × ' + s.guests + ' guests · ' + s.service + '</div>' +
     (s.discount ? '<div class="p-detail" style="color:#1B7A3D;font-weight:600">🏷️ ' + s.coupon + ' applied — you saved ' + fmtINR(s.discount) + '</div>' : '') + '</div>';
-  html += '<div class="fc-foot">Pure Vegetarian · FSSAI 12823013000353 · +91 98307 25556 · urbanrasoi.online</div>';
+  html += '<div class="fc-foot">FSSAI 12823013000353 · +91 98307 25556 · urbanrasoi.online</div>';
   document.getElementById('finalCard').innerHTML = html;
 }
 
@@ -787,7 +787,7 @@ async function buildMenuImage(s) {
   x.fillRect(0, H - 96, W, 96);
   x.fillStyle = '#fff';
   x.font = '500 24px Jost';
-  x.fillText('Pure Vegetarian  ·  FSSAI 12823013000353  ·  +91 98307 25556  ·  urbanrasoi.online', W / 2, H - 40);
+  x.fillText('FSSAI 12823013000353  ·  +91 98307 25556  ·  urbanrasoi.online', W / 2, H - 40);
 
   return new Promise(res => cv.toBlob(res, 'image/jpeg', 0.92));
 }
