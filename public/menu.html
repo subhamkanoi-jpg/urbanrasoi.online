@@ -832,11 +832,69 @@ function waTextSummary(s) {
   t += '\n\n💰 *Total: ' + fmtINR(s.total) + '* (' + fmtINR(s.plate) + ' per guest × ' + s.guests + ')';
   if (s.discount) t += '\n🏷️ Coupon *' + s.coupon + '* applied — saved ' + fmtINR(s.discount);
   t += '\n\nPlease check availability and share the final quote. I understand this estimate is not a confirmed booking.';
+  const attr = getAttribution();
+  const attrParts = ATTR_KEYS.filter(k => k !== 'fbclid' && attr[k]).map(k => k + '=' + attr[k]);
+  if (attrParts.length) t += '\n\nCampaign reference: ' + attrParts.join(' | ');
   return t;
+}
+
+/* ---- Meta ads tracking (pixel + Conversions API) ---- */
+const ATTR_KEYS = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'];
+function getAttribution() {
+  let stored = {};
+  try { stored = JSON.parse(sessionStorage.getItem('ur-attribution') || '{}'); } catch (e) {}
+  const params = new URLSearchParams(location.search);
+  ATTR_KEYS.forEach(k => { const v = params.get(k); if (v) stored[k] = v; });
+  return stored;
+}
+try { sessionStorage.setItem('ur-attribution', JSON.stringify(getAttribution())); } catch (e) {}
+
+fetch('/api/meta/config').then(r => r.json()).then(cfg => {
+  if (!cfg.pixelId || window.fbq) return;
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+  (window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', cfg.pixelId);
+  fbq('track', 'PageView');
+  fbq('track', 'ViewContent', { content_name: 'Celebration Menu Builder', content_category: 'Catering' });
+}).catch(() => {});
+
+function trackMenuLead(s) {
+  const attribution = getAttribution();
+  const eventId = 'ur-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+  if (window.fbq) {
+    fbq('track', 'Lead', {
+      content_name: 'Celebration Menu Builder',
+      content_category: 'Catering',
+      value: s.total,
+      currency: 'INR'
+    }, { eventID: eventId });
+  }
+  try {
+    const payload = JSON.stringify({
+      eventName: 'Lead',
+      eventId: eventId,
+      sourceUrl: location.href,
+      fbclid: attribution.fbclid,
+      customData: {
+        placement: 'menu-builder',
+        content_name: 'Celebration Menu Builder',
+        value: s.total,
+        currency: 'INR',
+        campaign: attribution.utm_campaign || 'direct'
+      }
+    });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/meta/events', new Blob([payload], { type: 'application/json' }));
+    }
+  } catch (e) {}
 }
 
 document.getElementById('sendBtn').addEventListener('click', async () => {
   const s = getState();
+  trackMenuLead(s);
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
   btn.textContent = 'Preparing your menu…';

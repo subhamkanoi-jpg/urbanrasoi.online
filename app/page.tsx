@@ -7,6 +7,8 @@ import {
   HowItWorks,
   TrustStrip,
 } from '@/components/conversion-sections'
+import { MaharajComparison } from '@/components/maharaj-comparison'
+import { TelLink } from '@/components/tracked-links'
 import { TestimonialCarousel } from '@/components/testimonial-carousel'
 import { Reveal } from '@/components/reveal'
 import { WhatsAppButton } from '@/components/whatsapp-button'
@@ -45,13 +47,14 @@ export default function HomePage() {
               Catering that lets you enjoy your own celebration.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-foreground/85 md:mt-5 md:text-lg">
-              <span className="md:hidden">Fresh menus and effortless event catering across Kolkata.</span>
-              <span className="hidden md:inline">Custom menus, fresh cooking and dependable delivery or event service for house parties, corporate gatherings and celebrations across Kolkata.</span>
+              <span className="md:hidden">Gourmet menus for get-togethers and parties, delivered or served across Kolkata.</span>
+              <span className="hidden md:inline">Gourmet, chef-crafted menus with dependable delivery or full event service — for get-togethers, house parties, corporate gatherings and celebrations across Kolkata.</span>
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <WhatsAppButton
                 message={structuredWhatsappMessage}
                 label="Check availability & get menus"
+                placement="home-hero"
                 size="large"
                 className="justify-center"
               />
@@ -117,6 +120,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <MaharajComparison placement="home-comparison" />
+
       <HowItWorks />
 
       <section className="px-5 py-12 md:px-10 md:py-16">
@@ -155,10 +160,10 @@ export default function HomePage() {
               Tell us the date, guest count and occasion. We will help shape the rest.
             </h2>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <WhatsAppButton message={structuredWhatsappMessage} label="Get menu options & availability" size="large" className="justify-center" />
-              <a href={`tel:${site.phone.replace(/\s/g, '')}`} className="flex items-center justify-center rounded-full border border-primary-foreground/30 px-6 py-4 text-base font-medium text-primary-foreground hover:bg-primary-foreground/10">
+              <WhatsAppButton message={structuredWhatsappMessage} label="Get menu options & availability" placement="home-final-cta" size="large" className="justify-center" />
+              <TelLink placement="home-final-cta" className="flex items-center justify-center rounded-full border border-primary-foreground/30 px-6 py-4 text-base font-medium text-primary-foreground hover:bg-primary-foreground/10">
                 Call {site.phone}
-              </a>
+              </TelLink>
             </div>
           </Reveal>
         </div>

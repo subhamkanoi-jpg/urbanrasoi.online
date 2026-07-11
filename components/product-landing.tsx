@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { Reveal } from '@/components/reveal'
+import { TelLink } from '@/components/tracked-links'
 import { WhatsAppButton } from '@/components/whatsapp-button'
 import { site } from '@/lib/site'
 import { cn } from '@/lib/utils'
@@ -30,7 +31,7 @@ export function ProductLanding({ product }: { product: Product }) {
                 {facts.map((fact, index) => <li key={fact} className={cn('rounded-full border border-primary-foreground/25 bg-ink/25 px-3 py-2 text-sm font-medium text-primary-foreground backdrop-blur-sm', index === 2 && 'hidden md:list-item')}>{fact}</li>)}
               </ul>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <WhatsAppButton message={product.whatsappMessage} label={product.ctaLabel} size="large" className="justify-center" />
+                <WhatsAppButton message={product.whatsappMessage} label={product.ctaLabel} placement="product-hero" occasion={product.name} size="large" className="justify-center" />
                 {product.builderCta && <a href={product.builderCta.href} className="flex items-center justify-center rounded-full border border-primary-foreground/40 px-6 py-4 font-semibold text-primary-foreground hover:bg-primary-foreground hover:text-ink">{product.builderCta.label} →</a>}
               </div>
             </div>
@@ -108,8 +109,8 @@ export function ProductLanding({ product }: { product: Product }) {
             <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-primary-foreground text-balance md:text-6xl">{product.closingHeadline}</h2>
             <p className="mx-auto mt-5 hidden max-w-2xl leading-relaxed text-primary-foreground/75 md:block">{product.closingCopy}</p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <WhatsAppButton message={product.whatsappMessage} label={product.ctaLabel} size="large" className="justify-center" />
-              <a href={`tel:${site.phone.replace(/\s/g, '')}`} className="flex items-center justify-center rounded-full border border-primary-foreground/30 px-6 py-4 font-medium text-primary-foreground hover:bg-primary-foreground/10">Call {site.phone}</a>
+              <WhatsAppButton message={product.whatsappMessage} label={product.ctaLabel} placement="product-final-cta" occasion={product.name} size="large" className="justify-center" />
+              <TelLink placement="product-final-cta" className="flex items-center justify-center rounded-full border border-primary-foreground/30 px-6 py-4 font-medium text-primary-foreground hover:bg-primary-foreground/10">Call {site.phone}</TelLink>
             </div>
           </Reveal>
         </div>

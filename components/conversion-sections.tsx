@@ -26,8 +26,12 @@ const confidencePoints = [
 
 export const faqItems = [
   {
+    question: 'How is Urban Rasoi different from calling a maharaj?',
+    answer: 'Everything is cooked fresh in our FSSAI-licensed Salt Lake kitchen and delivered or served at your venue — no one takes over your kitchen and there is no mess to clean up. Menus are chef-crafted across six cuisines and tailored to your occasion, so it is never the same 10 dishes, and the food is gourmet and balanced rather than heavy and oily. The entire headache is ours.',
+  },
+  {
     question: 'What kinds of events do you cater?',
-    answer: 'Urban Rasoi caters house parties, private dinners, birthdays, festive gatherings, corporate meals, grazing tables and larger celebrations in Kolkata.',
+    answer: 'Urban Rasoi caters get-togethers, house parties, private dinners, birthdays, festive gatherings, corporate meals, grazing tables and larger celebrations in Kolkata.',
   },
   {
     question: 'What is the minimum guest count?',

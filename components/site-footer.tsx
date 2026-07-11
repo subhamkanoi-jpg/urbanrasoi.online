@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { products } from '@/lib/products'
-import { site, whatsappUrl, defaultWhatsappMessage } from '@/lib/site'
+import { TelLink, WhatsAppLink } from '@/components/tracked-links'
+import { site } from '@/lib/site'
 
 function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -54,21 +55,19 @@ export function SiteFooter() {
               >
                 <InstagramIcon className="size-4" />
               </a>
-              <a
-                href={whatsappUrl(defaultWhatsappMessage)}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
+              <WhatsAppLink
+                placement="footer-social"
+                ariaLabel="WhatsApp"
                 className="flex size-9 items-center justify-center rounded-full border border-white/15 text-background/70 transition-colors hover:border-[#25D366] hover:text-[#25D366]"
               >
                 <WhatsAppIcon className="size-4" />
-              </a>
-              <a
-                href={`tel:${site.phone.replace(/\s/g, '')}`}
+              </WhatsAppLink>
+              <TelLink
+                placement="footer"
                 className="ml-2 text-sm text-background/60 transition-colors hover:text-terracotta"
               >
                 {site.phone}
-              </a>
+              </TelLink>
             </div>
           </div>
 
@@ -96,15 +95,13 @@ export function SiteFooter() {
             <p className="text-xs font-semibold uppercase tracking-widest text-background/40">
               Order now
             </p>
-            <a
-              href={whatsappUrl(defaultWhatsappMessage)}
-              target="_blank"
-              rel="noopener noreferrer"
+            <WhatsAppLink
+              placement="footer-cta"
               className="inline-flex items-center gap-2.5 rounded-full bg-terracotta px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-terracotta-deep hover:-translate-y-0.5"
             >
               <WhatsAppIcon className="size-4" />
               Chat on WhatsApp
-            </a>
+            </WhatsAppLink>
             <div className="text-xs text-background/40 leading-relaxed">
               <p>{site.location}</p>
               <p className="mt-1">{site.fssai}</p>
