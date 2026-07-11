@@ -43,6 +43,16 @@ body {
   color: var(--color-primary-foreground);
 }
 
+/* Customer stories — tactile editorial media treatment */
+video {
+  accent-color: var(--color-terracotta);
+}
+
+video:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: -2px;
+}
+
 /* ─── Reveal animations ─────────────────────────────── */
 @keyframes reveal-up {
   from {
@@ -66,11 +76,11 @@ body {
 }
 
 .reveal {
-  opacity: 0;
+  opacity: 1;
 }
 
 .reveal.is-visible {
-  animation: reveal-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: reveal-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* ─── Ticker tape ────────────────────────────────────── */

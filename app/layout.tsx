@@ -3,6 +3,7 @@ import { Playfair_Display, Jost } from 'next/font/google'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { FloatingWhatsApp } from '@/components/whatsapp-button'
+import { StructuredData } from '@/components/structured-data'
 import { site, defaultWhatsappMessage } from '@/lib/site'
 import './globals.css'
 
@@ -25,7 +26,11 @@ export const metadata: Metadata = {
   },
   description:
     'Urban Rasoi is a boutique cloud kitchen in Kolkata crafting grazing tables, house party catering, corporate catering and packed meals since 2015.',
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
+    url: '/',
     siteName: 'Urban Rasoi',
     type: 'website',
     images: ['/images/og-image.jpg'],
@@ -40,6 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${jost.variable} bg-background`}>
       <body className="font-sans">
+        <StructuredData />
         <SiteHeader />
         <main className="min-h-svh">{children}</main>
         <SiteFooter />

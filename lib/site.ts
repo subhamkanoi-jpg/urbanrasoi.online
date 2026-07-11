@@ -18,5 +18,13 @@ export function whatsappUrl(message: string): string {
   return `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(message)}`
 }
 
-export const defaultWhatsappMessage =
-  "Hi Urban Rasoi! I came across your website and I'd love to know more about your offerings."
+export const structuredWhatsappMessage = `Hi Urban Rasoi! I am planning an event and would like menu options, pricing and availability.
+
+Occasion:
+Date:
+Approx. guest count:
+Area in Kolkata:
+Food preference (veg/non-veg):
+Service needed (delivery/setup/staff):`
+
+export const defaultWhatsappMessage = structuredWhatsappMessage

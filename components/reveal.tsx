@@ -19,33 +19,19 @@ export function Reveal({
     if (!el) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
-    // Only hide elements that are below the viewport at mount time.
-    // Content stays visible without JS and above the fold.
-    const rect = el.getBoundingClientRect()
-    if (rect.top >= window.innerHeight) {
-      el.classList.add('reveal')
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              el.classList.add('is-visible')
-              observer.disconnect()
-            }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            el.classList.add('is-visible')
+            observer.disconnect()
           }
-        },
-        { threshold: 0.15 },
-      )
-      observer.observe(el)
-      // Safety net: never leave content hidden if the observer fails to fire.
-      const fallback = window.setTimeout(() => {
-        el.classList.add('is-visible')
-        observer.disconnect()
-      }, 4000)
-      return () => {
-        window.clearTimeout(fallback)
-        observer.disconnect()
-      }
-    }
+        }
+      },
+      { threshold: 0.15 },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
   }, [])
 
   return (
