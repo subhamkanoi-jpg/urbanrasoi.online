@@ -9,7 +9,7 @@ export function ProductLanding({ product }: { product: Product }) {
   return (
     <>
       {/* ── FULLSCREEN HERO ──────────────────────────────────── */}
-      <section className="relative h-[100svh] min-h-[580px] overflow-hidden">
+      <section className="relative h-[100svh] min-h-[560px] overflow-hidden">
         <Image
           src={product.heroImage}
           alt={product.name}
@@ -19,50 +19,30 @@ export function ProductLanding({ product }: { product: Product }) {
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-ink/15" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/60 to-transparent" />
 
-        {/* Content — pinned to bottom */}
         <div className="absolute inset-x-0 bottom-0 px-5 pb-12 md:px-10 md:pb-20">
           <Reveal>
             <p className="section-label text-terracotta-light">{product.eyebrow}</p>
-            <h1 className="mt-4 max-w-2xl font-serif text-4xl font-semibold leading-[1.07] tracking-tight text-white text-balance md:text-6xl">
-              {product.headline}
+            <h1 className="mt-3 max-w-2xl font-serif text-4xl font-semibold leading-[1.07] tracking-tight text-white text-balance md:text-6xl">
+              {product.name}
             </h1>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-white/75 md:text-lg">
-              {product.promise}
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <WhatsAppButton
                 message={product.whatsappMessage}
                 label={product.ctaLabel}
                 size="large"
+                className="justify-center"
               />
               {product.builderCta && (
                 <a
                   href={product.builderCta.href}
-                  className="rounded-full border border-white/40 px-6 py-4 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:border-white hover:bg-white/10"
+                  className="flex items-center justify-center gap-2 rounded-full border border-white/40 px-6 py-4 text-base font-medium text-white backdrop-blur-sm transition-colors hover:border-white hover:bg-white/10"
                 >
                   {product.builderCta.label} →
                 </a>
               )}
             </div>
           </Reveal>
-        </div>
-      </section>
-
-      {/* ── TRUST STRIP ──────────────────────────────────────── */}
-      <section className="border-b border-border bg-cream">
-        <div className="mx-auto grid max-w-7xl grid-cols-3 divide-x divide-border">
-          {[
-            { value: `Since ${site.foundedYear}`, label: 'Crafting food' },
-            { value: `${site.rating}★`, label: 'Customer rating' },
-            { value: 'FSSAI', label: 'Certified kitchen' },
-          ].map((item) => (
-            <div key={item.label} className="flex flex-col items-center gap-1 py-6 px-4 text-center">
-              <p className="font-serif text-xl font-semibold text-ink">{item.value}</p>
-              <p className="text-[0.65rem] uppercase tracking-widest text-ink-soft">{item.label}</p>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -90,34 +70,32 @@ export function ProductLanding({ product }: { product: Product }) {
         </div>
       </section>
 
-      {/* ── WHAT'S INCLUDED ──────────────────────────────────── */}
+      {/* ── WHAT'S INCLUDED (scannable chips) ────────────────── */}
       <section className="mx-auto max-w-7xl px-5 py-12 md:px-10 md:py-16">
         <Reveal>
-          <p className="section-label">What you get</p>
+          <h2 className="font-serif text-2xl font-semibold text-ink md:text-3xl">What you get</h2>
         </Reveal>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-6 flex flex-wrap gap-2.5">
           {product.included.map((item, i) => (
-            <Reveal key={item.title} delay={i * 45}>
-              <li className="flex items-center gap-3 rounded-xl bg-cream px-5 py-4">
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-terracotta/15 font-serif text-xs font-semibold text-terracotta">
-                  {`0${i + 1}`}
-                </span>
-                <p className="font-serif text-sm font-semibold text-ink">{item.title}</p>
+            <Reveal key={item.title} delay={i * 40}>
+              <li className="flex items-center gap-2 rounded-full bg-cream px-4 py-2.5 font-serif text-sm font-semibold text-ink">
+                <span className="size-1.5 rounded-full bg-terracotta" aria-hidden="true" />
+                {item.title}
               </li>
             </Reveal>
           ))}
         </ul>
       </section>
 
-      {/* ── HOW IT WORKS ─────────────────────────────────────── */}
+      {/* ── HOW TO ORDER (3 quick steps) ─────────────────────── */}
       <section className="bg-cream py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <Reveal>
-            <p className="section-label">How it works</p>
+            <h2 className="font-serif text-2xl font-semibold text-ink md:text-3xl">How to order</h2>
           </Reveal>
           <ol className="mt-6 grid gap-3 md:grid-cols-3">
             {product.steps.map((step, i) => (
-              <Reveal key={step.title} delay={i * 80}>
+              <Reveal key={step.title} delay={i * 70}>
                 <li className="flex items-center gap-4 rounded-xl bg-card px-6 py-5" style={{ boxShadow: '0 1px 8px rgba(30,20,11,0.06)' }}>
                   <span className="font-serif text-3xl font-semibold leading-none text-terracotta/25 tabular-nums">
                     {`0${i + 1}`}
@@ -145,15 +123,16 @@ export function ProductLanding({ product }: { product: Product }) {
             <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-white text-balance md:text-6xl">
               {product.closingHeadline}
             </h2>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <WhatsAppButton
                 message={product.whatsappMessage}
                 label={product.ctaLabel}
                 size="large"
+                className="justify-center"
               />
               <a
                 href={`tel:${site.phone.replace(/\s/g, '')}`}
-                className="flex items-center gap-2 rounded-full border border-white/30 px-6 py-4 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/10"
+                className="flex items-center justify-center gap-2 rounded-full border border-white/30 px-6 py-4 text-base font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/10"
               >
                 {site.phone}
               </a>
