@@ -6,31 +6,24 @@ import { MenuBuilderFloat } from '@/components/menu-builder-float'
 import { products } from '@/lib/products'
 import { site, defaultWhatsappMessage } from '@/lib/site'
 
-const stats = [
-  { value: 'Since 2015', label: 'A decade of craft' },
-  { value: '4.9★', label: 'Customer rating' },
-  { value: '2,000+', label: 'Happy guests served' },
-  { value: 'FSSAI', label: 'Certified kitchen' },
-]
+function InstagramGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" className={className} aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" strokeWidth={0} />
+    </svg>
+  )
+}
 
+// Placeholder feed shots — swap these for real posts from @urbanrasoi_kolkata
 const galleryImages = [
-  { src: '/images/gallery-spread.jpg',     alt: 'Gourmet grazing spread', span: 'col-span-2 row-span-2' },
-  { src: '/images/gallery-baguette.jpg',   alt: 'Freshly baked baguettes' },
-  { src: '/images/gallery-diwali.jpg',     alt: 'Festive spread' },
-  { src: '/images/gallery-bengali.jpg',    alt: 'Bengali classics' },
-  { src: '/images/gallery-minipartay.jpg', alt: 'Mini party platter' },
-  { src: '/images/gallery-packedmeal.jpg', alt: 'Packed meal box' },
-]
-
-const TICKER_ITEMS = [
-  'Grazing Tables',
-  'House Parties',
-  'Corporate Catering',
-  'Packed Meals',
-  'Bengali Classics',
-  'Continental Spreads',
-  'Festive Menus',
-  'Fresh Daily',
+  { src: '/images/ig-1.png', alt: 'Gourmet grazing spread' },
+  { src: '/images/ig-2.png', alt: 'Bengali fish curry plate' },
+  { src: '/images/ig-3.png', alt: 'House party snack platter' },
+  { src: '/images/ig-4.png', alt: 'Freshly baked baguettes' },
+  { src: '/images/ig-5.png', alt: 'Festive Diwali sweets' },
+  { src: '/images/ig-6.png', alt: 'Packed gourmet meal box' },
 ]
 
 export default function HomePage() {
@@ -38,7 +31,6 @@ export default function HomePage() {
     <>
       {/* ── FULLSCREEN HERO ──────────────────────────────────── */}
       <section className="relative h-[100svh] min-h-[600px] overflow-hidden">
-        {/* Background image */}
         <Image
           src="/images/gallery-houseparty.jpg"
           alt="An Urban Rasoi feast, beautifully styled"
@@ -47,237 +39,159 @@ export default function HomePage() {
           className="object-cover object-center"
           sizes="100vw"
         />
-        {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-ink/10" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-ink/15" />
 
-        {/* Content — pinned to bottom */}
         <div className="absolute inset-x-0 bottom-0 px-5 pb-12 md:px-10 md:pb-16">
           <Reveal>
-            <p className="section-label text-terracotta-light">
-              Cloud kitchen — {site.location}
-            </p>
-            <h1 className="mt-4 font-serif text-[2.6rem] font-semibold leading-[1.05] tracking-tight text-white text-balance md:text-7xl md:max-w-3xl">
-              Food that turns gatherings into memories.
+            <p className="section-label text-terracotta-light">{site.location}</p>
+            <h1 className="mt-3 font-serif text-[2.6rem] font-semibold leading-[1.05] tracking-tight text-white text-balance md:text-7xl md:max-w-3xl">
+              Delicious food, delivered to your celebration.
             </h1>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <WhatsAppButton
                 message={defaultWhatsappMessage}
                 label="Order on WhatsApp"
                 size="large"
+                className="justify-center"
               />
               <a
                 href="/menu.html"
-                className="group flex items-center gap-2 rounded-full bg-white/15 px-6 py-4 text-sm font-semibold text-white ring-1 ring-white/40 backdrop-blur-sm transition-all duration-200 hover:bg-white hover:text-ink"
+                className="group flex items-center justify-center gap-2 rounded-full bg-white/15 px-6 py-4 text-base font-semibold text-white ring-1 ring-white/40 backdrop-blur-sm transition-all duration-200 hover:bg-white hover:text-ink"
               >
                 Build Your Menu
                 <span className="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true">→</span>
               </a>
             </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ── TICKER TAPE ──────────────────────────────────────── */}
-      <div className="overflow-hidden border-y border-border bg-cream py-3.5">
-        <div className="ticker-wrap">
-          <div className="ticker-inner">
-            {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-              <span key={i} className="mx-6 inline-flex items-center gap-6 font-serif text-sm font-medium italic text-ink-soft">
-                {item}
-                <span className="size-1.5 rounded-full bg-terracotta not-italic" aria-hidden="true" />
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ── STATS BAND ───────────────────────────────────────── */}
-      <section aria-label="Why Urban Rasoi" className="bg-cream">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px bg-border md:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} className="flex flex-col gap-1.5 bg-cream px-6 py-8 md:px-10 md:py-10">
-              <p className="font-serif text-2xl font-semibold text-ink md:text-3xl">{s.value}</p>
-              <p className="text-xs uppercase tracking-widest text-ink-soft">{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── STORY ────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-5 py-10 md:px-10 md:py-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center md:gap-12">
-          {/* Image */}
-          <Reveal>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl md:aspect-[3/4]">
-              <Image
-                src="/images/gallery-kitchen.jpg"
-                alt="Inside the Urban Rasoi kitchen"
-                fill
-                className="img-zoom object-cover"
-                sizes="(min-width: 768px) 45vw, 100vw"
-              />
-              {/* Floating badge */}
-              <div className="absolute bottom-5 left-5 rounded-xl bg-cream/90 px-4 py-3 backdrop-blur-sm">
-                <p className="font-serif text-sm font-semibold text-ink">Since 2015</p>
-                <p className="text-xs text-ink-soft">Salt Lake, Kolkata</p>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* Text */}
-          <Reveal delay={100}>
-            <p className="section-label">Our story</p>
-            <h2 className="mt-4 font-serif text-3xl font-semibold leading-snug tracking-tight text-ink text-balance md:text-4xl">
-              Ten years of one simple belief — food made with passion tastes different.
-            </h2>
-            <p className="mt-5 text-sm uppercase tracking-widest text-ink-soft">
-              Salt Lake, Kolkata &nbsp;·&nbsp; FSSAI Certified &nbsp;·&nbsp; Since 2015
+            <p className="mt-5 flex items-center gap-2 text-sm font-medium text-white/80">
+              <span className="text-terracotta-light" aria-hidden="true">★</span>
+              {site.rating} rated · {site.community} served · FSSAI certified
             </p>
           </Reveal>
         </div>
       </section>
 
-      {/* ── OFFERINGS ────────────────────────────────────────── */}
-      <section className="bg-cream py-10 md:py-16">
-        <div className="mx-auto max-w-7xl px-5 md:px-10">
-          <Reveal>
-            <p className="section-label">What we craft</p>
-          </Reveal>
+      {/* ── ORDER: PICK AN OCCASION ──────────────────────────── */}
+      <section className="mx-auto max-w-7xl px-5 py-12 md:px-10 md:py-16">
+        <Reveal>
+          <h2 className="font-serif text-2xl font-semibold text-ink md:text-3xl">
+            What are you planning?
+          </h2>
+          <p className="mt-1 text-sm text-ink-soft">Tap to order — we handle the rest.</p>
+        </Reveal>
 
-          {/* Bento grid of offerings */}
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {products.map((p, i) => (
-              <Reveal key={p.slug} delay={i * 80}>
-                <Link
-                  href={`/${p.slug}`}
-                  className="group relative block overflow-hidden rounded-2xl bg-card"
-                  style={{ boxShadow: '0 2px 16px 0 rgba(30,20,11,0.07)' }}
-                >
-                  {/* Image */}
-                  <div className="relative aspect-[16/9] overflow-hidden">
-                    <Image
-                      src={p.cardImage}
-                      alt={p.name}
-                      fill
-                      className="img-zoom object-cover"
-                      sizes="(min-width: 640px) 50vw, 100vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
-                    {/* Badge on image */}
-                    <div className="absolute top-3 left-3 rounded-full bg-terracotta px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
-                      {p.eyebrow}
-                    </div>
-                  </div>
-
-                  {/* Card body */}
-                  <div className="flex items-center justify-between px-5 py-4 md:px-6">
-                    <h3 className="font-serif text-lg font-semibold text-ink md:text-xl">
-                      {p.name}
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          {products.map((p, i) => (
+            <Reveal key={p.slug} delay={i * 70}>
+              <Link
+                href={`/${p.slug}`}
+                className="group relative block overflow-hidden rounded-2xl bg-card"
+                style={{ boxShadow: '0 2px 16px 0 rgba(30,20,11,0.07)' }}
+              >
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <Image
+                    src={p.cardImage}
+                    alt={p.name}
+                    fill
+                    className="img-zoom object-cover"
+                    sizes="(min-width: 640px) 50vw, 100vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/10 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-5 py-4">
+                    <h3 className="font-serif text-xl font-semibold text-white md:text-2xl">
+                      {p.shortName}
                     </h3>
-                    <span className="text-sm font-semibold text-terracotta transition-all group-hover:translate-x-1" aria-hidden="true">→</span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-terracotta px-4 py-2 text-sm font-semibold text-white transition-all group-hover:gap-2.5">
+                      Order
+                      <span aria-hidden="true">→</span>
+                    </span>
                   </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+                </div>
+              </Link>
+            </Reveal>
+          ))}
         </div>
       </section>
 
       {/* ── MENU BUILDER BANNER ──────────────────────────────── */}
-      <section className="bg-cream px-5 pb-10 md:px-10">
+      <section className="px-5 pb-12 md:px-10 md:pb-16">
         <Reveal>
           <a
             href="/menu.html"
-            className="group relative flex flex-col items-start justify-between gap-6 overflow-hidden rounded-2xl bg-ink px-7 py-8 md:flex-row md:items-center md:px-10 md:py-10"
+            className="group relative flex flex-col items-start justify-between gap-5 overflow-hidden rounded-2xl bg-ink px-7 py-8 md:flex-row md:items-center md:px-10 md:py-10"
           >
-            {/* Subtle background texture — large faded text */}
             <span
-              className="pointer-events-none absolute -right-4 -top-3 select-none font-serif text-[7rem] font-semibold leading-none text-white/[0.04] md:text-[9rem]"
+              className="pointer-events-none absolute -right-4 -top-3 select-none font-serif text-[7rem] font-semibold leading-none text-white/[0.05] md:text-[9rem]"
               aria-hidden="true"
             >
               Menu
             </span>
-
-            <div className="relative max-w-lg">
-              <p className="section-label text-terracotta-light">House parties &amp; celebrations</p>
-              <h2 className="mt-2.5 font-serif text-2xl font-semibold leading-snug text-white text-balance md:text-3xl">
-                Pick every dish. Send us your dream menu in one tap.
-              </h2>
-            </div>
-
-            <div className="relative shrink-0">
-              <span className="inline-flex items-center gap-2.5 rounded-full bg-terracotta px-7 py-4 text-sm font-semibold text-white transition-all duration-200 group-hover:bg-terracotta-deep group-hover:gap-4">
-                Build Your Menu
-                <span aria-hidden="true">→</span>
-              </span>
-            </div>
+            <h2 className="relative max-w-md font-serif text-2xl font-semibold leading-snug text-white text-balance md:text-3xl">
+              Pick every dish. Send your dream menu in one tap.
+            </h2>
+            <span className="relative inline-flex shrink-0 items-center gap-2.5 rounded-full bg-terracotta px-7 py-4 text-base font-semibold text-white transition-all duration-200 group-hover:bg-terracotta-deep group-hover:gap-4">
+              Build Your Menu
+              <span aria-hidden="true">→</span>
+            </span>
           </a>
         </Reveal>
       </section>
 
-      {/* ── GALLERY MOSAIC ───────────────────────────────────── */}
-      <section aria-label="From our kitchen" className="py-10 md:py-16">
+      {/* ── INSTAGRAM FEED ───────────────────────────────────── */}
+      <section aria-label="Instagram feed" className="bg-cream py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
           <Reveal>
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <p className="section-label">From our kitchen</p>
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <a
                 href={site.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-medium text-ink-soft transition-colors hover:border-terracotta hover:text-terracotta"
+                className="group flex items-center gap-3"
               >
-                {site.instagramHandle}
-                <span aria-hidden="true">↗</span>
+                <span className="flex size-12 items-center justify-center rounded-full bg-gradient-to-tr from-terracotta-deep via-terracotta to-terracotta-light">
+                  <InstagramGlyph className="size-6 text-white" />
+                </span>
+                <span>
+                  <span className="block font-serif text-lg font-semibold leading-tight text-ink">
+                    {site.instagramHandle}
+                  </span>
+                  <span className="block text-sm text-ink-soft group-hover:text-terracotta">
+                    Fresh from our kitchen
+                  </span>
+                </span>
+              </a>
+              <a
+                href={site.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-terracotta px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-terracotta-deep hover:-translate-y-0.5"
+              >
+                <InstagramGlyph className="size-4" />
+                Follow
               </a>
             </div>
           </Reveal>
 
-          {/* Mosaic grid */}
-          <div className="mt-8 grid grid-cols-3 grid-rows-2 gap-3 md:gap-4">
+          <div className="mt-8 grid grid-cols-3 gap-2 md:gap-3">
             {galleryImages.map((img, i) => (
-              <Reveal
-                key={img.src}
-                delay={i * 60}
-                className={i === 0 ? 'col-span-2 row-span-2' : ''}
-              >
-                <div
-                  className={cn(
-                    'relative overflow-hidden rounded-xl',
-                    i === 0 ? 'aspect-[4/3] md:aspect-[4/3]' : 'aspect-square',
-                  )}
+              <Reveal key={img.src} delay={i * 60}>
+                <a
+                  href={site.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative block aspect-square overflow-hidden rounded-xl"
+                  aria-label={`View ${img.alt} on Instagram`}
                 >
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
                     className="img-zoom object-cover"
-                    sizes={i === 0 ? '(min-width: 768px) 45vw, 65vw' : '(min-width: 768px) 22vw, 33vw'}
+                    sizes="(min-width: 768px) 22vw, 33vw"
                   />
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── TRUST STRIP ──────────────────────────────────────── */}
-      <section className="bg-cream py-8 md:py-10">
-        <div className="mx-auto max-w-7xl px-5 md:px-10">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {[
-              { icon: '✓', title: 'FSSAI Certified' },
-              { icon: '★', title: '4.9 Customer Rating' },
-              { icon: '♥', title: 'Made Fresh Daily' },
-            ].map((item) => (
-              <Reveal key={item.title}>
-                <div className="flex items-center gap-4 rounded-2xl bg-card px-6 py-5" style={{ boxShadow: '0 1px 8px rgba(30,20,11,0.06)' }}>
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-terracotta/10 font-serif text-base text-terracotta">
-                    {item.icon}
-                  </span>
-                  <p className="font-serif text-base font-semibold text-ink">{item.title}</p>
-                </div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-200 group-hover:bg-ink/40 group-hover:opacity-100">
+                    <InstagramGlyph className="size-7 text-white" />
+                  </div>
+                </a>
               </Reveal>
             ))}
           </div>
@@ -299,17 +213,18 @@ export default function HomePage() {
         <div className="relative mx-auto flex max-w-3xl flex-col items-center px-5 py-24 text-center md:py-32">
           <Reveal>
             <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-white text-balance md:text-6xl">
-              One message is all it takes.
+              Hungry to plan? One message is all it takes.
             </h2>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <WhatsAppButton
                 message={defaultWhatsappMessage}
                 label="Chat on WhatsApp"
                 size="large"
+                className="justify-center"
               />
               <a
                 href={`tel:${site.phone.replace(/\s/g, '')}`}
-                className="flex items-center gap-2 rounded-full border border-white/30 px-6 py-4 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/10"
+                className="flex items-center justify-center gap-2 rounded-full border border-white/30 px-6 py-4 text-base font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/10"
               >
                 {site.phone}
               </a>
@@ -319,9 +234,4 @@ export default function HomePage() {
       </section>
     </>
   )
-}
-
-// Helper needed inside server component
-function cn(...classes: (string | undefined | false)[]) {
-  return classes.filter(Boolean).join(' ')
 }
