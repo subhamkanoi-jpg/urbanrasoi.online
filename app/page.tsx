@@ -3,11 +3,11 @@ import Link from 'next/link'
 import { EventStories } from '@/components/event-stories'
 import {
   ConfidenceSection,
-  EarlyProof,
   FAQSection,
   HowItWorks,
   TrustStrip,
 } from '@/components/conversion-sections'
+import { TestimonialCarousel } from '@/components/testimonial-carousel'
 import { Reveal } from '@/components/reveal'
 import { WhatsAppButton } from '@/components/whatsapp-button'
 import { products } from '@/lib/products'
@@ -23,7 +23,7 @@ const serviceFacts: Record<string, string[]> = {
 export default function HomePage() {
   return (
     <>
-      <section className="relative h-[82svh] min-h-[600px] overflow-hidden md:h-[92svh]">
+      <section className="relative h-[78svh] min-h-[560px] overflow-hidden md:h-[92svh]">
         <video
           className="absolute inset-0 size-full object-cover object-center"
           autoPlay
@@ -44,8 +44,9 @@ export default function HomePage() {
             <h1 className="mt-3 max-w-4xl font-serif text-[2.55rem] font-semibold leading-[1.04] tracking-tight text-primary-foreground text-balance md:text-7xl">
               Catering that lets you enjoy your own celebration.
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-primary-foreground/85 md:text-lg">
-              Custom menus, fresh cooking and dependable delivery or event service for house parties, corporate gatherings and celebrations across Kolkata.
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-foreground/85 md:mt-5 md:text-lg">
+              <span className="md:hidden">Fresh menus and effortless event catering across Kolkata.</span>
+              <span className="hidden md:inline">Custom menus, fresh cooking and dependable delivery or event service for house parties, corporate gatherings and celebrations across Kolkata.</span>
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <WhatsAppButton
@@ -62,7 +63,7 @@ export default function HomePage() {
                 <span aria-hidden="true">→</span>
               </a>
             </div>
-            <p className="mt-5 text-sm font-medium text-primary-foreground/75">
+            <p className="mt-5 hidden text-sm font-medium text-primary-foreground/75 md:block">
               Share your date, guest count and area once—we will take the conversation from there.
             </p>
           </Reveal>
@@ -70,15 +71,15 @@ export default function HomePage() {
       </section>
 
       <TrustStrip />
-      <EarlyProof />
+      <TestimonialCarousel />
 
-      <section className="mx-auto max-w-7xl px-5 py-14 md:px-10 md:py-20">
+      <section className="mx-auto max-w-7xl px-5 py-12 md:px-10 md:py-20">
         <Reveal>
           <p className="section-label">Choose your occasion</p>
           <h2 className="mt-3 font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">
             What are you planning?
           </h2>
-          <p className="mt-3 max-w-2xl leading-relaxed text-ink-soft">Compare the format and guest-count fit, then explore the service that feels closest to your event.</p>
+          <p className="mt-3 hidden max-w-2xl leading-relaxed text-ink-soft md:block">Compare the format and guest-count fit, then explore the service that feels closest to your event.</p>
         </Reveal>
 
         <div className="mt-9 grid gap-5 sm:grid-cols-2">
@@ -97,11 +98,11 @@ export default function HomePage() {
                     sizes="(min-width: 640px) 50vw, 100vw"
                   />
                 </div>
-                <div className="flex flex-1 flex-col p-6">
-                  <p className="section-label">{product.eyebrow}</p>
-                  <h3 className="mt-2 font-serif text-2xl font-semibold text-ink">{product.shortName}</h3>
-                  <p className="mt-3 leading-relaxed text-ink-soft">{product.promise}</p>
-                  <ul className="mt-5 flex flex-wrap gap-2">
+                <div className="flex flex-1 flex-col p-5 md:p-6">
+                  <p className="section-label hidden md:block">{product.eyebrow}</p>
+                  <h3 className="font-serif text-2xl font-semibold text-ink md:mt-2">{product.shortName}</h3>
+                  <p className="mt-3 hidden leading-relaxed text-ink-soft md:block">{product.promise}</p>
+                  <ul className="mt-4 flex flex-wrap gap-2 md:mt-5">
                     {serviceFacts[product.slug].map((fact) => (
                       <li key={fact} className="rounded-full bg-cream px-3 py-1.5 text-sm font-medium text-ink">{fact}</li>
                     ))}

@@ -140,7 +140,7 @@ export function SiteHeader() {
 
         <nav
           aria-label="Mobile navigation"
-          className="flex flex-1 flex-col justify-between px-6 py-8"
+          className="flex flex-1 flex-col justify-between px-5 py-5"
         >
           <ul className="flex flex-col gap-1">
             {products.map((p, i) => (
@@ -158,7 +158,7 @@ export function SiteHeader() {
                   href={`/${p.slug}`}
                   onClick={() => setOpen(false)}
                   className={cn(
-                    'flex items-center justify-between rounded-xl px-4 py-4 text-xl font-serif font-semibold text-ink transition-colors active:bg-cream-dark',
+                    'flex items-center justify-between rounded-xl px-3 py-3.5 text-lg font-serif font-semibold text-ink transition-colors active:bg-cream-dark',
                     pathname === `/${p.slug}` && 'text-terracotta',
                   )}
                 >
@@ -188,15 +188,12 @@ export function SiteHeader() {
               </svg>
               Get menus & availability
             </a>
-            <div className="mt-6 flex flex-col gap-1 text-center">
-              <p className="text-xs uppercase tracking-widest text-ink-soft">{site.location}</p>
-              <a
-                href={`tel:${site.phone.replace(/\s/g, '')}`}
-                className="text-sm font-medium text-ink"
-              >
-                {site.phone}
-              </a>
-            </div>
+            <a
+              href={`tel:${site.phone.replace(/\s/g, '')}`}
+              className="mt-4 block text-center text-sm font-medium text-ink"
+            >
+              Call {site.phone}
+            </a>
           </div>
         </nav>
       </div>
