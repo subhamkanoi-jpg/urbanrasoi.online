@@ -12,14 +12,18 @@ export default function HomePage() {
     <>
       {/* ── FULLSCREEN HERO ──────────────────────────────────── */}
       <section className="relative h-[100svh] min-h-[600px] overflow-hidden">
-        <Image
-          src="/images/gallery-houseparty.jpg"
-          alt="An Urban Rasoi feast, beautifully styled"
-          fill
-          priority
-          className="object-cover object-center"
-          sizes="100vw"
-        />
+        <video
+          className="absolute inset-0 size-full object-cover object-center"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/media/customer-stories/story-6-poster.png"
+          aria-label="Sunidhi event catered by Urban Rasoi"
+        >
+          <source src="/media/customer-stories/story-6.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/40 to-ink/15" />
 
         <div className="absolute inset-x-0 bottom-0 px-5 pb-12 md:px-10 md:pb-16">
