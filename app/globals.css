@@ -43,6 +43,16 @@ body {
   color: var(--color-primary-foreground);
 }
 
+/* Customer stories — tactile editorial media treatment */
+video {
+  accent-color: var(--color-terracotta);
+}
+
+video:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: -2px;
+}
+
 /* ─── Reveal animations ─────────────────────────────── */
 @keyframes reveal-up {
   from {
