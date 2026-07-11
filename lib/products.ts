@@ -83,7 +83,7 @@ export const products: Product[] = [
       { src: '/images/gallery-baguette.jpg', alt: 'Freshly baked cheesy baguettes' },
     ],
     included: [
-      { title: 'Menus Built Around You', detail: 'Veg, non-veg or mixed — curated for your guests and occasion' },
+      { title: 'Menus Built Around You', detail: 'Curated around your guests, preferences and occasion' },
       { title: 'Six Cuisines, One Kitchen', detail: 'Homestyle Indian, Bengali, South Indian, Indo-Chinese, Continental and desserts' },
       { title: 'Festive Specials', detail: 'Diwali, Poila Boishakh, Christmas — menus that match the moment' },
       { title: 'Fresh, Never Reheated', detail: 'Cooked the same day in our FSSAI-certified kitchen' },

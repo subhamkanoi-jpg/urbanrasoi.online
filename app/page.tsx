@@ -15,7 +15,7 @@ import { site, structuredWhatsappMessage } from '@/lib/site'
 
 const serviceFacts: Record<string, string[]> = {
   'grazing-tables': ['From 15 guests', 'Styled & set up'],
-  'house-parties': ['Intimate to full-house', 'Veg, non-veg or mixed'],
+  'house-parties': ['Intimate to full-house', 'Menus tailored to your guests'],
   corporate: ['10 to 200+ guests', 'Buffets, boxes or platters'],
   'packed-meals': ['20 to 500+ boxes', 'One-time or scheduled'],
 }
@@ -59,7 +59,7 @@ export default function HomePage() {
                 href="/menu.html"
                 className="group flex items-center justify-center gap-2 rounded-full border border-primary-foreground/45 bg-ink/20 px-6 py-4 text-base font-semibold text-primary-foreground backdrop-blur-sm transition-colors hover:bg-primary-foreground hover:text-ink"
               >
-                Build a vegetarian menu
+                Create your celebration menu
                 <span aria-hidden="true">→</span>
               </a>
             </div>
@@ -126,7 +126,7 @@ export default function HomePage() {
             className="group relative mx-auto flex max-w-7xl flex-col items-start justify-between gap-5 overflow-hidden rounded-2xl bg-ink px-7 py-9 md:flex-row md:items-center md:px-10 md:py-11"
           >
             <div className="relative max-w-2xl">
-              <p className="section-label text-terracotta-light">Pure vegetarian · 25+ guests</p>
+              <p className="section-label text-terracotta-light">Celebration menus · 25+ guests</p>
               <h2 className="mt-3 font-serif text-2xl font-semibold leading-snug text-primary-foreground text-balance md:text-4xl">
                 Prefer to choose every dish? Build a Celebration Menu and get an instant estimate.
               </h2>

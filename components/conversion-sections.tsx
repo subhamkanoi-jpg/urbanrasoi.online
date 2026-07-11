@@ -20,7 +20,7 @@ const confidencePoints = [
   'Menus tailored to the occasion',
   'Portions planned around your guest count',
   'Delivery or event service agreed in advance',
-  'Vegetarian and non-vegetarian options',
+  'Menus tailored to your preferences',
   'A written menu shared before confirmation',
 ]
 
@@ -31,15 +31,15 @@ export const faqItems = [
   },
   {
     question: 'What is the minimum guest count?',
-    answer: 'It depends on the service. Grazing tables start at 15 guests, corporate catering starts at 10 guests, and the vegetarian Celebration Menu builder starts at 25 guests.',
+    answer: 'It depends on the service. Grazing tables start at 15 guests, corporate catering starts at 10 guests, and the Celebration Menu builder starts at 25 guests.',
   },
   {
     question: 'Can the menu be customised?',
     answer: 'Yes. Share your occasion, preferences and dietary requirements on WhatsApp, and we will suggest suitable options from our Kolkata kitchen.',
   },
   {
-    question: 'Do you offer vegetarian and non-vegetarian food?',
-    answer: 'Yes. Urban Rasoi offers vegetarian and non-vegetarian options. The online Celebration Menu builder is currently a dedicated pure-vegetarian menu experience.',
+    question: 'Can you accommodate dietary requirements?',
+    answer: 'Share any allergies or dietary requirements when you enquire, and our team will guide you through suitable menu options.',
   },
   {
     question: 'Do you provide setup and serving staff?',
