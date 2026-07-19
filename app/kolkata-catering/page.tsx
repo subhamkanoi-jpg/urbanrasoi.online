@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 import { ArrowRight, Check, MessageCircle, ShieldCheck, Sparkles, UtensilsCrossed } from 'lucide-react'
 import { MaharajComparison } from '@/components/maharaj-comparison'
 import { WhatsAppLink } from '@/components/tracked-links'
@@ -20,13 +21,13 @@ export const metadata: Metadata = {
 }
 
 const occasions = [
-  { title: 'Get-togethers', image: '/images/gallery-houseparty.jpg' },
-  { title: 'Birthdays', image: '/images/gallery-minipartay.jpg' },
-  { title: 'Anniversaries', image: '/images/gallery-spread.jpg' },
-  { title: 'Festive gatherings', image: '/images/gallery-diwali.jpg' },
-  { title: 'Corporate events', image: '/images/gallery-corporate.jpg' },
-  { title: 'Grazing tables', image: '/images/gallery-grazing.jpg' },
-  { title: 'Packed meals', image: '/images/gallery-packedmeal.jpg' },
+  { title: 'Get-togethers', image: '/images/gallery-houseparty.jpg', planner: 'house-party' },
+  { title: 'Birthdays', image: '/images/gallery-minipartay.jpg', planner: 'birthday' },
+  { title: 'Anniversaries', image: '/images/gallery-spread.jpg', planner: 'anniversary' },
+  { title: 'Festive gatherings', image: '/images/gallery-diwali.jpg', planner: 'festive' },
+  { title: 'Corporate events', image: '/images/gallery-corporate.jpg', planner: 'office' },
+  { title: 'Grazing tables', image: '/images/gallery-grazing.jpg', planner: 'grazing' },
+  { title: 'Packed meals', image: '/images/gallery-packedmeal.jpg', planner: null },
 ]
 
 const testimonials = [
@@ -91,14 +92,13 @@ export default function KolkataCateringPage() {
               <p className="mt-5 max-w-xl text-base leading-relaxed text-primary-foreground/85 md:text-lg">
                 Gourmet party menus from {site.partyMenusFrom} a guest — delivered or served, zero kitchen chaos.
               </p>
-              <WhatsAppLink
-                placement="campaign-hero"
-                occasion="Get-together"
+              <Link
+                href="/plan?src=campaign-hero"
                 className="mt-7 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep sm:w-auto"
               >
-                Plan my party
+                Plan my party in 30 seconds
                 <ArrowRight aria-hidden="true" />
-              </WhatsAppLink>
+              </Link>
               <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-primary-foreground/85">
                 <li className="flex items-center gap-2"><Check aria-hidden="true" /> Never the same 10 dishes</li>
                 <li className="flex items-center gap-2"><Check aria-hidden="true" /> Kitchen stays spotless</li>
@@ -113,22 +113,34 @@ export default function KolkataCateringPage() {
             <p className="section-label">What are you planning?</p>
             <h2 id="occasions-title" className="mt-3 max-w-2xl font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">One message. A menu made around your occasion.</h2>
             <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
-              {occasions.map((occasion, index) => (
-                <WhatsAppLink
-                  key={occasion.title}
-                  placement="occasion-card"
-                  occasion={occasion.title}
-                  message={`Hi Urban Rasoi, I am planning a celebration in Kolkata.\nOccasion: ${occasion.title}\nDate:\nGuest count:\nArea:\nPlease share suitable menu and service options.`}
-                  className={index === occasions.length - 1 ? 'group relative col-span-2 min-h-44 overflow-hidden rounded-2xl md:col-span-1 md:min-h-60' : 'group relative min-h-44 overflow-hidden rounded-2xl md:min-h-60'}
-                >
-                  <Image src={occasion.image} alt="" fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
-                  <span className="absolute inset-0 bg-ink/45" />
-                  <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 font-serif text-lg font-semibold text-primary-foreground md:p-5 md:text-xl">
-                    {occasion.title}
-                    <ArrowRight aria-hidden="true" />
-                  </span>
-                </WhatsAppLink>
-              ))}
+              {occasions.map((occasion, index) => {
+                const cardClass = index === occasions.length - 1 ? 'group relative col-span-2 min-h-44 overflow-hidden rounded-2xl md:col-span-1 md:min-h-60' : 'group relative min-h-44 overflow-hidden rounded-2xl md:min-h-60'
+                const inner = (
+                  <>
+                    <Image src={occasion.image} alt="" fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <span className="absolute inset-0 bg-ink/45" />
+                    <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 font-serif text-lg font-semibold text-primary-foreground md:p-5 md:text-xl">
+                      {occasion.title}
+                      <ArrowRight aria-hidden="true" />
+                    </span>
+                  </>
+                )
+                return occasion.planner ? (
+                  <Link key={occasion.title} href={`/plan?occasion=${occasion.planner}&src=campaign-card`} className={cardClass}>
+                    {inner}
+                  </Link>
+                ) : (
+                  <WhatsAppLink
+                    key={occasion.title}
+                    placement="occasion-card"
+                    occasion={occasion.title}
+                    message={`Hi Urban Rasoi, I am planning a celebration in Kolkata.\nOccasion: ${occasion.title}\nDate:\nGuest count:\nArea:\nPlease share suitable menu and service options.`}
+                    className={cardClass}
+                  >
+                    {inner}
+                  </WhatsAppLink>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -183,14 +195,22 @@ export default function KolkataCateringPage() {
             <ShieldCheck aria-hidden="true" className="text-terracotta-light" />
             <p className="section-label mt-5 text-terracotta-light">One message is all it takes</p>
             <h2 className="mt-3 font-serif text-4xl font-semibold text-balance md:text-6xl">Your date. Our kitchen.</h2>
-            <WhatsAppLink
-              placement="campaign-final-cta"
-              occasion="Get-together"
-              className="mt-7 inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary px-7 font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep sm:w-auto"
-            >
-              Enquire on WhatsApp
-              <ArrowRight aria-hidden="true" />
-            </WhatsAppLink>
+            <div className="mt-7 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href="/plan?src=campaign-final"
+                className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary px-7 font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep sm:w-auto"
+              >
+                Plan my party
+                <ArrowRight aria-hidden="true" />
+              </Link>
+              <WhatsAppLink
+                placement="campaign-final-cta"
+                occasion="Get-together"
+                className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full border border-primary-foreground/35 px-7 font-semibold text-primary-foreground transition-colors hover:bg-primary-foreground/10 sm:w-auto"
+              >
+                Chat on WhatsApp
+              </WhatsAppLink>
+            </div>
             <p className="mt-5 text-xs text-primary-foreground/55">FSSAI 12823013000353 · Kolkata</p>
           </div>
         </section>

@@ -1,6 +1,5 @@
+import Link from 'next/link'
 import { Reveal } from '@/components/reveal'
-import { WhatsAppButton } from '@/components/whatsapp-button'
-import { structuredWhatsappMessage } from '@/lib/site'
 
 const rows = [
   { old: 'Same 10 dishes, every party', now: 'Six cuisines, chef-crafted' },
@@ -52,13 +51,12 @@ export function MaharajComparison({ placement = 'maharaj-comparison' }: { placem
         <Reveal delay={120}>
           <div className="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="font-serif text-xl font-semibold md:text-2xl">The headache? Ours now.</p>
-            <WhatsAppButton
-              message={structuredWhatsappMessage}
-              label="Plan my party"
-              placement={placement}
-              size="large"
-              className="justify-center"
-            />
+            <Link
+              href={`/plan?src=${placement}`}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-terracotta px-8 py-4 text-base font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-terracotta-deep"
+            >
+              Plan my party <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </Reveal>
       </div>
