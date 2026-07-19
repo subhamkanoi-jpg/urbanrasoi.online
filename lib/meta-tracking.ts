@@ -76,6 +76,8 @@ type LeadDetails = {
   placement: string
   occasion?: string
   contentName?: string
+  value?: number
+  currency?: string
 }
 
 function sendServerEvent(eventName: string, eventId: string, details: LeadDetails, attribution: Attribution) {
@@ -90,6 +92,8 @@ function sendServerEvent(eventName: string, eventId: string, details: LeadDetail
         occasion: details.occasion,
         content_name: details.contentName,
         content_category: 'Catering',
+        value: details.value,
+        currency: details.value != null ? details.currency ?? 'INR' : undefined,
         campaign: attribution.utm_campaign ?? 'direct',
       },
     })
@@ -116,10 +120,14 @@ function sendServerEvent(eventName: string, eventId: string, details: LeadDetail
 export function trackLead(details: LeadDetails): Attribution {
   const attribution = getAttribution()
   const eventId = newEventId()
-  const eventData = {
+  const eventData: Record<string, unknown> = {
     content_name: details.contentName ?? details.occasion ?? 'Catering enquiry',
     content_category: 'Catering',
     placement: details.placement,
+  }
+  if (details.value != null) {
+    eventData.value = details.value
+    eventData.currency = details.currency ?? 'INR'
   }
   window.fbq?.('track', 'Lead', eventData, { eventID: eventId })
   window.fbq?.('trackCustom', 'WhatsAppEnquiry', {

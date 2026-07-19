@@ -16,6 +16,7 @@ export type Product = {
   steps: { title: string; detail: string }[]
   whatsappMessage: string
   ctaLabel: string
+  plannerOccasion?: string
   builderCta?: { label: string; href: string }
   closingHeadline: string
   closingCopy: string
@@ -58,6 +59,7 @@ export const products: Product[] = [
     whatsappMessage:
       "Hi Urban Rasoi! I'd love a Grazing Table. Occasion: ___ | Date: ___ | Guests: ___",
     ctaLabel: 'Plan my grazing table',
+    plannerOccasion: 'grazing',
     closingHeadline: 'Give them a table to talk about.',
     closingCopy: 'Send your date and guest count — we design the rest.',
     metaTitle: 'Gourmet Grazing Tables in Kolkata | Urban Rasoi',
@@ -97,6 +99,7 @@ export const products: Product[] = [
     whatsappMessage:
       "Hi Urban Rasoi! I'm planning a house party and would like a menu. Date: ___ | Guests: ___",
     ctaLabel: 'Plan my house party',
+    plannerOccasion: 'house-party',
     builderCta: { label: 'Build your own menu', href: '/menu.html' },
     closingHeadline: 'Your home. Our kitchen. One great party.',
     closingCopy: 'Send your date and guest count — hosting just got effortless.',
@@ -137,6 +140,7 @@ export const products: Product[] = [
     whatsappMessage:
       "Hi Urban Rasoi! I'd like corporate catering for our office. Date: ___ | Headcount: ___",
     ctaLabel: 'Get a corporate quote',
+    plannerOccasion: 'office',
     closingHeadline: 'Be the office hero.',
     closingCopy: 'Share your headcount and date — the proposal follows fast.',
     metaTitle: 'Corporate Catering in Kolkata | Urban Rasoi',

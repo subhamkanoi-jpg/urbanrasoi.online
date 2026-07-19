@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { Reveal } from '@/components/reveal'
 import { TelLink } from '@/components/tracked-links'
 import { WhatsAppButton } from '@/components/whatsapp-button'
@@ -31,7 +32,16 @@ export function ProductLanding({ product }: { product: Product }) {
                 {facts.map((fact, index) => <li key={fact} className={cn('rounded-full border border-primary-foreground/25 bg-ink/25 px-3 py-2 text-sm font-medium text-primary-foreground backdrop-blur-sm', index === 2 && 'hidden md:list-item')}>{fact}</li>)}
               </ul>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <WhatsAppButton message={product.whatsappMessage} label={product.ctaLabel} placement="product-hero" occasion={product.name} size="large" className="justify-center" />
+                {product.plannerOccasion ? (
+                  <Link
+                    href={`/plan?occasion=${product.plannerOccasion}&src=product-${product.slug}`}
+                    className="flex items-center justify-center gap-2 rounded-full bg-terracotta px-8 py-4 text-base font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-terracotta-deep"
+                  >
+                    {product.ctaLabel} <span aria-hidden="true">→</span>
+                  </Link>
+                ) : (
+                  <WhatsAppButton message={product.whatsappMessage} label={product.ctaLabel} placement="product-hero" occasion={product.name} size="large" className="justify-center" />
+                )}
                 {product.builderCta && <a href={product.builderCta.href} className="flex items-center justify-center rounded-full border border-primary-foreground/40 px-6 py-4 font-semibold text-primary-foreground hover:bg-primary-foreground hover:text-ink">{product.builderCta.label} →</a>}
               </div>
             </div>

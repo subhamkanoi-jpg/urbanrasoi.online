@@ -38,6 +38,11 @@ export function MetaPixel() {
         content_name: 'Kolkata Catering Landing',
         content_category: 'Catering',
       })
+    } else if (pathname === '/plan') {
+      window.fbq('track', 'ViewContent', {
+        content_name: 'Party Planner',
+        content_category: 'Catering',
+      })
     }
   }, [pathname])
 

@@ -45,13 +45,12 @@ export default function HomePage() {
               Gourmet menus, cooked and delivered — from {site.partyMenusFrom} a guest.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <WhatsAppButton
-                message={structuredWhatsappMessage}
-                label="Plan my party"
-                placement="home-hero"
-                size="large"
-                className="justify-center"
-              />
+              <Link
+                href="/plan?src=home-hero"
+                className="flex items-center justify-center gap-2 rounded-full bg-terracotta px-8 py-4 text-base font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-terracotta-deep"
+              >
+                Plan my party <span aria-hidden="true">→</span>
+              </Link>
               <a
                 href="/menu.html"
                 className="group flex items-center justify-center gap-2 rounded-full border border-primary-foreground/45 bg-ink/20 px-6 py-4 text-base font-semibold text-primary-foreground backdrop-blur-sm transition-colors hover:bg-primary-foreground hover:text-ink"
@@ -60,6 +59,7 @@ export default function HomePage() {
                 <span aria-hidden="true">→</span>
               </a>
             </div>
+            <p className="mt-4 text-sm font-medium text-primary-foreground/70">30 seconds · no signup · reply within hours</p>
           </Reveal>
         </div>
       </section>
@@ -144,11 +144,17 @@ export default function HomePage() {
               Your date. Our kitchen.
             </h2>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <WhatsAppButton message={structuredWhatsappMessage} label="Plan my party" placement="home-final-cta" size="large" className="justify-center" />
-              <TelLink placement="home-final-cta" className="flex items-center justify-center rounded-full border border-primary-foreground/30 px-6 py-4 text-base font-medium text-primary-foreground hover:bg-primary-foreground/10">
-                Call {site.phone}
-              </TelLink>
+              <Link
+                href="/plan?src=home-final"
+                className="flex items-center justify-center gap-2 rounded-full bg-terracotta px-8 py-4 text-base font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-terracotta-deep"
+              >
+                Plan my party <span aria-hidden="true">→</span>
+              </Link>
+              <WhatsAppButton message={structuredWhatsappMessage} label="Chat on WhatsApp" placement="home-final-cta" variant="light" size="large" className="justify-center" />
             </div>
+            <p className="mt-4 text-sm text-primary-foreground/60">
+              or call <TelLink placement="home-final-cta" className="font-semibold underline-offset-2 hover:underline">{site.phone}</TelLink>
+            </p>
           </Reveal>
         </div>
       </section>
