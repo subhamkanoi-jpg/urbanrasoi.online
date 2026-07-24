@@ -51,13 +51,13 @@ export default function HomePage() {
               >
                 Plan my party <span aria-hidden="true">→</span>
               </Link>
-              <a
-                href="/menu.html"
+              <Link
+                href="/order"
                 className="group flex items-center justify-center gap-2 rounded-full border border-primary-foreground/45 bg-ink/20 px-6 py-4 text-base font-semibold text-primary-foreground backdrop-blur-sm transition-colors hover:bg-primary-foreground hover:text-ink"
               >
-                See menus & prices
+                Order à la carte
                 <span aria-hidden="true">→</span>
-              </a>
+              </Link>
             </div>
             <p className="mt-4 text-sm font-medium text-primary-foreground/70">30 seconds · no signup · reply within hours</p>
           </Reveal>

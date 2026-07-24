@@ -23,12 +23,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   if (isBarePage) return <main className="min-h-svh">{children}</main>
 
+  // The order page owns the bottom of the screen with its cart bar.
+  const showPlanBar = pathname !== '/order'
+
   return (
     <>
       <SiteHeader />
-      <main className="min-h-svh pb-16 md:pb-0">{children}</main>
+      <main className={showPlanBar ? 'min-h-svh pb-16 md:pb-0' : 'min-h-svh'}>{children}</main>
       <SiteFooter />
-      <FloatingPlanBar />
+      {showPlanBar && <FloatingPlanBar />}
     </>
   )
 }

@@ -95,6 +95,14 @@ export function SiteFooter() {
                   Puja Bhog & Prasad
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/order"
+                  className="text-sm text-background/70 transition-colors hover:text-terracotta"
+                >
+                  Order à la carte
+                </Link>
+              </li>
             </ul>
           </nav>
 

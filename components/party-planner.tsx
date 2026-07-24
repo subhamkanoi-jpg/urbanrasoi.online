@@ -380,9 +380,12 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
             <p className="mt-3 text-center text-sm text-ink-soft">No payment now. Menus & quote usually within hours.</p>
 
             <div className="mt-5 flex flex-col items-center gap-2 text-sm">
+              <Link href="/order" className="font-semibold text-terracotta hover:text-terracotta-deep">
+                Prefer to pick dish by dish? Order à la carte →
+              </Link>
               {plan.guests >= CELEBRATION_MIN_GUESTS && (
-                <a href="/menu.html" className="font-semibold text-terracotta hover:text-terracotta-deep">
-                  Prefer to hand-pick every dish? Open the menu builder →
+                <a href="/menu.html" className="text-ink-soft hover:text-ink">
+                  Or build a set celebration menu →
                 </a>
               )}
               <a href={`tel:${site.phone.replace(/\s/g, '')}`} className="text-ink-soft hover:text-ink">
