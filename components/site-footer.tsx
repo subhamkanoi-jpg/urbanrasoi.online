@@ -87,6 +87,14 @@ export function SiteFooter() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/rudrabhishek-catering"
+                  className="text-sm text-background/70 transition-colors hover:text-terracotta"
+                >
+                  Puja Bhog & Prasad
+                </Link>
+              </li>
             </ul>
           </nav>
 

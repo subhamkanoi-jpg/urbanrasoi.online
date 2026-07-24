@@ -65,6 +65,16 @@ export default function HomePage() {
       </section>
 
       <TrustStrip />
+
+      <Link
+        href="/rudrabhishek-catering"
+        className="group flex items-center justify-center gap-2.5 bg-ink px-5 py-3.5 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep"
+      >
+        <span aria-hidden="true">🪔</span>
+        <span>Shravan special — satvik bhog & prasad for Rudrabhishek at home</span>
+        <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>
+      </Link>
+
       <ImageTicker />
 
       <section className="mx-auto max-w-7xl px-5 pb-12 pt-4 md:px-10 md:pb-20 md:pt-8">
