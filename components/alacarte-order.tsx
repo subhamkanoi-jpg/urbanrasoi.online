@@ -21,11 +21,14 @@ const STORAGE_KEY = 'ur-alacarte-v1'
 type Cart = Record<string, number>
 type Services = { backend: boolean; frontend: boolean }
 type Details = { date: string; time: string; area: string; name: string; note: string }
+/** An off-menu request. Priced by the kitchen, so it carries no amount. */
+type CustomItem = { id: string; sectionName: string; name: string; qty: number }
 
 const emptyDetails: Details = { date: '', time: '', area: '', name: '', note: '' }
 
 export function AlacarteOrder() {
   const [cart, setCart] = useState<Cart>({})
+  const [customItems, setCustomItems] = useState<CustomItem[]>([])
   const [services, setServices] = useState<Services>({ backend: false, frontend: false })
   const [details, setDetails] = useState<Details>(emptyDetails)
   const [query, setQuery] = useState('')
@@ -33,6 +36,7 @@ export function AlacarteOrder() {
   const [cartOpen, setCartOpen] = useState(false)
   const [hydrated, setHydrated] = useState(false)
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
+  const menuTopRef = useRef<HTMLDivElement>(null)
   const suppressSpy = useRef(false)
 
   useEffect(() => {
@@ -41,6 +45,7 @@ export function AlacarteOrder() {
       if (raw) {
         const saved = JSON.parse(raw)
         if (saved.cart) setCart(saved.cart)
+        if (Array.isArray(saved.customItems)) setCustomItems(saved.customItems)
         if (saved.services) setServices(saved.services)
         if (saved.details) setDetails({ ...emptyDetails, ...saved.details })
       }
@@ -52,9 +57,9 @@ export function AlacarteOrder() {
   useEffect(() => {
     if (!hydrated) return
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ cart, services, details }))
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ cart, customItems, services, details }))
     } catch {}
-  }, [cart, services, details, hydrated])
+  }, [cart, customItems, services, details, hydrated])
 
   // Highlight the section currently in view.
   useEffect(() => {
@@ -89,6 +94,22 @@ export function AlacarteOrder() {
     })
   }, [])
 
+  const addCustomItem = useCallback((sectionName: string, name: string, qty: number) => {
+    const trimmed = name.trim()
+    if (!trimmed) return
+    setCustomItems((current) => [
+      ...current,
+      { id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, sectionName, name: trimmed, qty },
+    ])
+    window.fbq?.('trackCustom', 'CustomItemRequested', { item: trimmed, section: sectionName })
+  }, [])
+
+  const setCustomQty = useCallback((id: string, next: number) => {
+    setCustomItems((current) =>
+      next <= 0 ? current.filter((entry) => entry.id !== id) : current.map((entry) => (entry.id === id ? { ...entry, qty: next } : entry)),
+    )
+  }, [])
+
   const lines = useMemo(
     () =>
       Object.entries(cart).flatMap(([id, qty]) => {
@@ -102,7 +123,7 @@ export function AlacarteOrder() {
   const servicesTotal =
     (services.backend ? serviceAddOns[0].price : 0) + (services.frontend ? serviceAddOns[1].price : 0)
   const grandTotal = foodTotal + servicesTotal
-  const itemCount = lines.length
+  const itemCount = lines.length + customItems.length
 
   const filteredSections = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -124,15 +145,38 @@ export function AlacarteOrder() {
     window.setTimeout(() => { suppressSpy.current = false }, 700)
   }
 
-  function sendOrder() {
-    const parts = ['Hi Urban Rasoi! 🧡 I would like to place an à la carte order.', '', '🍽️ *MY ORDER*']
-    for (const line of lines) {
-      parts.push(`• ${line.name} (${line.unit}) × ${line.qty} = ${formatINR(line.lineTotal)}`)
+  // Bring results into view — otherwise searching from deep in the menu
+  // leaves the shortened list off-screen above the fold.
+  function handleSearch(next: string) {
+    const wasEmpty = query.trim() === ''
+    setQuery(next)
+    if (next.trim() && wasEmpty) {
+      window.requestAnimationFrame(() => menuTopRef.current?.scrollIntoView({ block: 'start' }))
     }
-    parts.push('', `💰 Food total: ${formatINR(foodTotal)}`)
+  }
+
+  function sendOrder() {
+    const parts = ['Hi Urban Rasoi! 🧡 I would like to place an à la carte order.', '']
+    if (lines.length) {
+      parts.push('🍽️ *MY ORDER*')
+      for (const line of lines) {
+        parts.push(`• ${line.name} (${line.unit}) × ${line.qty} = ${formatINR(line.lineTotal)}`)
+      }
+      parts.push('', `💰 Food total: ${formatINR(foodTotal)}`)
+    }
+    if (customItems.length) {
+      parts.push('', '✨ *SPECIAL REQUESTS* (please quote)')
+      for (const custom of customItems) {
+        parts.push(`• ${custom.name} × ${custom.qty} — ${custom.sectionName}`)
+      }
+    }
     if (services.backend) parts.push(`🧑‍🍳 ${serviceAddOns[0].name} — ${formatINR(serviceAddOns[0].price)}`)
     if (services.frontend) parts.push(`🙋 ${serviceAddOns[1].name} — ${formatINR(serviceAddOns[1].price)}`)
-    if (servicesTotal) parts.push(`*Estimated total: ${formatINR(grandTotal)}*`)
+    if (servicesTotal || customItems.length) {
+      parts.push(
+        `*Estimated total: ${formatINR(grandTotal)}${customItems.length ? ' + special requests' : ''}*`,
+      )
+    }
     parts.push('')
     if (details.name) parts.push(`🙋 Name: ${details.name}`)
     parts.push(`🗓️ Date: ${details.date || '—'}`)
@@ -182,7 +226,7 @@ export function AlacarteOrder() {
             <input
               type="search"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => handleSearch(event.target.value)}
               placeholder="Search dishes — paneer, momo, dessert…"
               className="w-full rounded-full border border-border bg-card py-3 pl-11 pr-4 text-ink placeholder:text-ink-lighter focus:border-terracotta focus:outline-none"
             />
@@ -209,11 +253,22 @@ export function AlacarteOrder() {
       </div>
 
       {/* Menu */}
-      <div className="mx-auto max-w-5xl px-5 md:px-8">
+      <div ref={menuTopRef} className="mx-auto max-w-5xl scroll-mt-40 px-5 md:px-8">
         {filteredSections.length === 0 && (
-          <p className="py-16 text-center text-ink-soft">
-            No dishes match “{query}”. <button type="button" onClick={() => setQuery('')} className="font-semibold text-terracotta">Clear search</button>
-          </p>
+          <div className="py-14 text-center">
+            <p className="text-ink-soft">
+              No dishes match “{query}”.{' '}
+              <button type="button" onClick={() => setQuery('')} className="font-semibold text-terracotta">Clear search</button>
+            </p>
+            <div className="mx-auto mt-6 max-w-md text-left">
+              <CustomItemAdder
+                sectionName="Special request"
+                prefill={query.trim()}
+                label={`Ask us for “${query.trim()}”`}
+                onAdd={(name, qty) => { addCustomItem('Special request', name, qty); setQuery('') }}
+              />
+            </div>
+          </div>
         )}
 
         {filteredSections.map((section) => (
@@ -221,8 +276,10 @@ export function AlacarteOrder() {
             key={section.id}
             section={section}
             cart={cart}
+            customCount={customItems.filter((entry) => entry.sectionName === section.name).length}
             onAdd={addItem}
             onQty={setQty}
+            onAddCustom={(name, qty) => addCustomItem(section.name, name, qty)}
             registerRef={(el) => { sectionRefs.current[section.id] = el }}
           />
         ))}
@@ -277,8 +334,11 @@ export function AlacarteOrder() {
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 backdrop-blur-sm md:p-4">
           <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
             <div>
-              <p className="font-serif text-xl font-semibold text-ink">{formatINR(grandTotal)}</p>
-              <p className="text-xs text-ink-soft">{itemCount} {itemCount === 1 ? 'dish' : 'dishes'} · plus delivery</p>
+              <p className="font-serif text-xl font-semibold text-ink">
+                {grandTotal > 0 ? formatINR(grandTotal) : 'Quote on request'}
+                {customItems.length > 0 && grandTotal > 0 && <span className="text-sm font-medium text-ink-soft"> + requests</span>}
+              </p>
+              <p className="text-xs text-ink-soft">{itemCount} {itemCount === 1 ? 'item' : 'items'} · plus delivery</p>
             </div>
             <button
               type="button"
@@ -319,10 +379,40 @@ export function AlacarteOrder() {
               ))}
             </ul>
 
+            {customItems.length > 0 && (
+              <div className="mt-5">
+                <p className="section-label">Special requests · we will quote these</p>
+                <ul className="mt-2 divide-y divide-border">
+                  {customItems.map((custom) => (
+                    <li key={custom.id} className="flex items-center justify-between gap-3 py-3">
+                      <div className="min-w-0">
+                        <p className="font-medium text-ink">{custom.name}</p>
+                        <p className="text-sm text-ink-soft">{custom.sectionName} · price on request</p>
+                      </div>
+                      <div className="flex shrink-0 items-center gap-3">
+                        <Stepper qty={custom.qty} onChange={(next) => setCustomQty(custom.id, next)} allowSingle />
+                        <button
+                          type="button"
+                          onClick={() => setCustomQty(custom.id, 0)}
+                          aria-label={`Remove ${custom.name}`}
+                          className="w-20 text-right text-sm font-semibold text-ink-soft hover:text-terracotta"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div className="mt-4 rounded-2xl bg-cream p-4">
               <Row label="Food total" value={formatINR(foodTotal)} />
               {services.backend && <Row label={serviceAddOns[0].name} value={formatINR(serviceAddOns[0].price)} />}
               {services.frontend && <Row label={serviceAddOns[1].name} value={formatINR(serviceAddOns[1].price)} />}
+              {customItems.length > 0 && (
+                <Row label={`Special requests (${customItems.length})`} value="To be quoted" />
+              )}
               <p className="mt-2 border-t border-border pt-2 text-xs text-ink-soft">Delivery charge as per actuals. Final quote confirmed on WhatsApp.</p>
             </div>
 
@@ -353,9 +443,16 @@ export function AlacarteOrder() {
 
             {/* Pinned footer — total and CTA stay reachable while scrolling */}
             <div className="border-t border-border bg-background px-5 py-4 md:px-8">
-              <div className="flex items-baseline justify-between">
+              <div className="flex items-baseline justify-between gap-3">
                 <p className="font-serif text-lg font-semibold text-ink">Estimated total</p>
-                <p className="font-serif text-2xl font-semibold text-ink">{formatINR(grandTotal)}</p>
+                <p className="text-right">
+                  <span className="font-serif text-2xl font-semibold text-ink">
+                    {grandTotal > 0 ? formatINR(grandTotal) : 'On request'}
+                  </span>
+                  {customItems.length > 0 && grandTotal > 0 && (
+                    <span className="block text-xs text-ink-soft">+ special requests</span>
+                  )}
+                </p>
               </div>
               <button
                 type="button"
@@ -376,14 +473,18 @@ export function AlacarteOrder() {
 function MenuSectionBlock({
   section,
   cart,
+  customCount,
   onAdd,
   onQty,
+  onAddCustom,
   registerRef,
 }: {
   section: MenuSection
   cart: Cart
+  customCount: number
   onAdd: (item: MenuItem) => void
   onQty: (item: MenuItem, next: number) => void
+  onAddCustom: (name: string, qty: number) => void
   registerRef: (el: HTMLElement | null) => void
 }) {
   return (
@@ -422,22 +523,138 @@ function MenuSectionBlock({
           )
         })}
       </ul>
+
+      <div className="mt-3">
+        <CustomItemAdder
+          sectionName={section.name}
+          label={`Something else from ${section.name}?`}
+          addedCount={customCount}
+          onAdd={onAddCustom}
+        />
+      </div>
     </section>
   )
 }
 
+/**
+ * Lets a guest request a dish that is not on the menu. The kitchen prices it
+ * later, so the request carries a quantity but no amount.
+ */
+function CustomItemAdder({
+  sectionName,
+  label,
+  prefill = '',
+  addedCount = 0,
+  onAdd,
+}: {
+  sectionName: string
+  label: string
+  prefill?: string
+  addedCount?: number
+  onAdd: (name: string, qty: number) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [name, setName] = useState(prefill)
+  const [qty, setQty] = useState(MIN_PORTIONS)
+  const [justAdded, setJustAdded] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (open) inputRef.current?.focus()
+  }, [open])
+
+  function submit() {
+    if (!name.trim()) return
+    onAdd(name, qty)
+    setName('')
+    setQty(MIN_PORTIONS)
+    setOpen(false)
+    setJustAdded(true)
+    window.setTimeout(() => setJustAdded(false), 2600)
+  }
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => { setOpen(true); setName(prefill) }}
+        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-terracotta/50 bg-cream/60 px-4 py-3.5 text-sm font-semibold text-terracotta transition-colors hover:border-terracotta hover:bg-cream"
+      >
+        <span aria-hidden="true">+</span>
+        {justAdded ? 'Added — request another?' : label}
+        {addedCount > 0 && !justAdded && (
+          <span className="rounded-full bg-terracotta px-2 py-0.5 text-xs text-primary-foreground">{addedCount}</span>
+        )}
+      </button>
+    )
+  }
+
+  return (
+    <div className="rounded-2xl border border-terracotta bg-cream/60 p-4">
+      <label className="block">
+        <span className="text-sm font-semibold text-ink">Tell us what you would like</span>
+        <input
+          ref={inputRef}
+          type="text"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') submit()
+            if (event.key === 'Escape') setOpen(false)
+          }}
+          placeholder={`e.g. a dish you loved, or a twist on our ${sectionName.toLowerCase()}`}
+          className="mt-2 w-full rounded-xl border border-border bg-background p-3 text-ink placeholder:text-ink-lighter focus:border-terracotta focus:outline-none"
+        />
+      </label>
+      <div className="mt-3 flex items-center gap-2">
+        <span className="text-sm text-ink-soft">Portions</span>
+        <Stepper qty={qty} onChange={(next) => setQty(Math.max(1, next))} allowSingle />
+      </div>
+      <div className="mt-3 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={submit}
+          disabled={!name.trim()}
+          className="flex-1 whitespace-nowrap rounded-full bg-terracotta px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep disabled:opacity-40"
+        >
+          Add request
+        </button>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="shrink-0 whitespace-nowrap rounded-full px-4 py-3 text-sm font-medium text-ink-soft hover:text-ink"
+        >
+          Cancel
+        </button>
+      </div>
+      <p className="mt-2.5 text-xs text-ink-soft">We will confirm if we can make it and quote the price on WhatsApp.</p>
+    </div>
+  )
+}
+
 /** Quantity control. Stepping below the 2-portion minimum removes the item. */
-function Stepper({ qty, onChange }: { qty: number; onChange: (next: number) => void }) {
-  const atMinimum = qty <= MIN_PORTIONS
+function Stepper({
+  qty,
+  onChange,
+  allowSingle = false,
+}: {
+  qty: number
+  onChange: (next: number) => void
+  /** Custom requests can be a single item; menu dishes floor at MIN_PORTIONS. */
+  allowSingle?: boolean
+}) {
+  const floor = allowSingle ? 1 : MIN_PORTIONS
+  const atMinimum = qty <= floor
   return (
     <div className="flex items-center gap-1 rounded-full border border-terracotta bg-cream p-1">
       <button
         type="button"
-        onClick={() => onChange(atMinimum ? 0 : qty - 1)}
-        aria-label={atMinimum ? 'Remove from order' : 'Fewer portions'}
-        className="flex size-8 items-center justify-center rounded-full text-lg font-semibold text-terracotta transition-colors hover:bg-background"
+        onClick={() => onChange(atMinimum ? (allowSingle ? qty : 0) : qty - 1)}
+        disabled={allowSingle && atMinimum}
+        aria-label={atMinimum ? (allowSingle ? 'Minimum one' : 'Remove from order') : 'Fewer portions'}
+        className="flex size-8 items-center justify-center rounded-full text-lg font-semibold text-terracotta transition-colors hover:bg-background disabled:opacity-30"
       >
-        {atMinimum ? '🗑' : '−'}
+        {atMinimum && !allowSingle ? '🗑' : '−'}
       </button>
       <span className="min-w-8 text-center text-sm font-semibold tabular-nums text-ink">{qty}</span>
       <button
