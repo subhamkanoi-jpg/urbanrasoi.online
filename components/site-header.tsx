@@ -76,6 +76,32 @@ export function SiteHeader() {
               </Link>
             ))}
             <Link
+              href="/rudrabhishek-catering"
+              className={cn(
+                'text-sm font-medium transition-colors hover:text-terracotta',
+                pathname === '/rudrabhishek-catering'
+                  ? 'text-terracotta'
+                  : scrolled
+                    ? 'text-ink-soft'
+                    : 'text-background/85',
+              )}
+            >
+              Puja Bhog
+            </Link>
+            <Link
+              href="/order"
+              className={cn(
+                'text-sm font-medium transition-colors hover:text-terracotta',
+                pathname === '/order'
+                  ? 'text-terracotta'
+                  : scrolled
+                    ? 'text-ink-soft'
+                    : 'text-background/85',
+              )}
+            >
+              Order à la carte
+            </Link>
+            <Link
               href="/plan?src=header"
               className="rounded-full bg-terracotta px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-terracotta-deep hover:-translate-y-0.5"
             >
@@ -167,6 +193,46 @@ export function SiteHeader() {
                 <div className="mx-4 h-px bg-border" />
               </li>
             ))}
+            <li
+              style={{ transitionDelay: open ? `${products.length * 60 + 80}ms` : '0ms' }}
+              className={cn(
+                'transition-all duration-500',
+                open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
+              )}
+            >
+              <Link
+                href="/rudrabhishek-catering"
+                onClick={() => setOpen(false)}
+                className={cn(
+                  'flex items-center justify-between rounded-xl px-3 py-3.5 text-lg font-serif font-semibold text-ink transition-colors active:bg-cream-dark',
+                  pathname === '/rudrabhishek-catering' && 'text-terracotta',
+                )}
+              >
+                Puja Bhog & Prasad
+                <span className="text-ink-soft text-base font-sans font-normal">→</span>
+              </Link>
+              <div className="mx-4 h-px bg-border" />
+            </li>
+            <li
+              style={{ transitionDelay: open ? `${(products.length + 1) * 60 + 80}ms` : '0ms' }}
+              className={cn(
+                'transition-all duration-500',
+                open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
+              )}
+            >
+              <Link
+                href="/order"
+                onClick={() => setOpen(false)}
+                className={cn(
+                  'flex items-center justify-between rounded-xl px-3 py-3.5 text-lg font-serif font-semibold text-ink transition-colors active:bg-cream-dark',
+                  pathname === '/order' && 'text-terracotta',
+                )}
+              >
+                Order à la carte
+                <span className="text-ink-soft text-base font-sans font-normal">→</span>
+              </Link>
+              <div className="mx-4 h-px bg-border" />
+            </li>
           </ul>
 
           <div

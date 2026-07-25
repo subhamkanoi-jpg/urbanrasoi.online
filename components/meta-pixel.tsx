@@ -43,6 +43,17 @@ export function MetaPixel() {
         content_name: 'Party Planner',
         content_category: 'Catering',
       })
+    } else if (pathname === '/order') {
+      window.fbq('track', 'ViewContent', {
+        content_name: 'À la carte menu',
+        content_category: 'Catering',
+        content_type: 'product_group',
+      })
+    } else if (pathname === '/rudrabhishek-catering') {
+      window.fbq('track', 'ViewContent', {
+        content_name: 'Rudrabhishek Puja Catering',
+        content_category: 'Catering',
+      })
     }
   }, [pathname])
 

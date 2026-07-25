@@ -51,13 +51,13 @@ export default function HomePage() {
               >
                 Plan my party <span aria-hidden="true">→</span>
               </Link>
-              <a
-                href="/menu.html"
+              <Link
+                href="/order"
                 className="group flex items-center justify-center gap-2 rounded-full border border-primary-foreground/45 bg-ink/20 px-6 py-4 text-base font-semibold text-primary-foreground backdrop-blur-sm transition-colors hover:bg-primary-foreground hover:text-ink"
               >
-                See menus & prices
+                Order à la carte
                 <span aria-hidden="true">→</span>
-              </a>
+              </Link>
             </div>
             <p className="mt-4 text-sm font-medium text-primary-foreground/70">30 seconds · no signup · reply within hours</p>
           </Reveal>
@@ -65,6 +65,16 @@ export default function HomePage() {
       </section>
 
       <TrustStrip />
+
+      <Link
+        href="/rudrabhishek-catering"
+        className="group flex items-center justify-center gap-2.5 bg-ink px-5 py-3.5 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep"
+      >
+        <span aria-hidden="true">🪔</span>
+        <span>Shravan special — satvik bhog & prasad for Rudrabhishek at home</span>
+        <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>
+      </Link>
+
       <ImageTicker />
 
       <section className="mx-auto max-w-7xl px-5 pb-12 pt-4 md:px-10 md:pb-20 md:pt-8">
