@@ -71,7 +71,7 @@ export default function HomePage() {
         className="group flex items-center justify-center gap-2.5 bg-ink px-5 py-3.5 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep"
       >
         <span aria-hidden="true">🪔</span>
-        <span>Shravan special — satvik bhog & prasad for Rudrabhishek at home</span>
+        <span>Sawan special — satvik Rudra Abhishek catering, ₹30,000 for 40 guests</span>
         <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>
       </Link>
 

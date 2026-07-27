@@ -23,8 +23,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   if (isBarePage) return <main className="min-h-svh">{children}</main>
 
-  // The order page owns the bottom of the screen with its cart bar.
-  const showPlanBar = pathname !== '/order'
+  // Pages that own the bottom of the screen with their own sticky CTA.
+  const showPlanBar = pathname !== '/order' && pathname !== '/rudrabhishek-catering'
 
   return (
     <>
