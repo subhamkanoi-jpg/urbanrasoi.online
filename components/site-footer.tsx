@@ -92,7 +92,7 @@ export function SiteFooter() {
                   href="/rudrabhishek-catering"
                   className="text-sm text-background/70 transition-colors hover:text-terracotta"
                 >
-                  Puja Bhog & Prasad
+                  Rudra Abhishek Puja Catering
                 </Link>
               </li>
               <li>

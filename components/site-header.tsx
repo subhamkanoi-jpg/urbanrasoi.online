@@ -86,7 +86,7 @@ export function SiteHeader() {
                     : 'text-background/85',
               )}
             >
-              Puja Bhog
+              Puja Catering
             </Link>
             <Link
               href="/order"
@@ -208,7 +208,7 @@ export function SiteHeader() {
                   pathname === '/rudrabhishek-catering' && 'text-terracotta',
                 )}
               >
-                Puja Bhog & Prasad
+                Rudra Abhishek Puja
                 <span className="text-ink-soft text-base font-sans font-normal">→</span>
               </Link>
               <div className="mx-4 h-px bg-border" />
