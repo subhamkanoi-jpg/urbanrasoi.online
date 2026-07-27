@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --cream:#FBF5EC; --rust:#C0522C; --ink:#2B2018; --muted:#7C6A5B; --olive:#6E7A4F; }
+  body { width:1200px; height:630px; overflow:hidden; background:var(--cream);
+         font-family:'Jost', system-ui, sans-serif; position:relative; }
+
+  .art { position:absolute; right:0; top:0; width:472px; height:630px; overflow:hidden; }
+  .art svg { display:block; width:100%; height:100%; }
+
+  .panel { position:absolute; left:0; top:0; width:728px; height:630px;
+           padding:46px 44px 42px 58px; display:flex; flex-direction:column; }
+
+  .brand { display:flex; align-items:center; gap:13px; }
+  .mark { width:52px; height:52px; border-radius:50%; background:var(--rust); color:#fff;
+          display:flex; align-items:center; justify-content:center; font-weight:600; font-size:24px; }
+  .name { font-size:26px; color:var(--ink); line-height:1.1; }
+  .name small { display:block; font-size:12px; letter-spacing:2.4px; color:var(--muted); margin-top:3px; }
+
+  .badge { display:inline-flex; align-items:center; gap:9px; align-self:flex-start;
+           background:var(--rust); color:#fff; border-radius:999px;
+           padding:11px 22px; font-size:15px; font-weight:600; letter-spacing:2.4px; margin-top:30px; }
+
+  h1 { font-family:'Playfair Display', Georgia, serif; color:var(--ink);
+       font-size:58px; font-weight:600; line-height:1.08; margin-top:26px;
+       letter-spacing:-.4px; max-width:610px; }
+  h1 em { display:block; font-style:italic; color:var(--rust); font-weight:600; margin-top:4px; }
+
+  .rule { display:flex; align-items:center; gap:14px; margin-top:26px; width:380px; }
+  .rule span { flex:1; height:1px; background:#DCCFBD; }
+  .rule i { color:var(--olive); font-style:normal; font-size:19px; }
+
+  .price { margin-top:22px; font-size:25px; color:var(--ink); font-weight:500; line-height:1.35; }
+  .price b { font-weight:600; color:var(--rust); }
+  .price small { display:block; font-size:17px; color:var(--muted); font-weight:400; margin-top:5px; }
+
+  .foot { margin-top:auto; display:flex; align-items:center; gap:16px; }
+  .chip { border:1.5px solid var(--olive); color:var(--olive); border-radius:999px;
+          padding:9px 18px; font-size:12.5px; font-weight:600; letter-spacing:1.7px; white-space:nowrap; }
+  .wa { font-size:19px; color:var(--ink); font-weight:600; }
+  .wa span { color:var(--rust); }
+</style>
+</head>
+<body>
+  <div class="art">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="60 0 500 630" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="bg" x1="0.1" y1="0" x2="0.6" y2="1">
+          <stop offset="0%" stop-color="#B84A26"/>
+          <stop offset="55%" stop-color="#96371A"/>
+          <stop offset="100%" stop-color="#6E2612"/>
+        </linearGradient>
+        <radialGradient id="halo" cx="50%" cy="42%" r="46%">
+          <stop offset="0%" stop-color="#FFD9A0" stop-opacity="0.30"/>
+          <stop offset="60%" stop-color="#FFC078" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#FFB060" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="gold" gradientUnits="userSpaceOnUse" x1="180" y1="90" x2="440" y2="560">
+          <stop offset="0%" stop-color="#FBE6BC"/>
+          <stop offset="45%" stop-color="#EFCB90"/>
+          <stop offset="100%" stop-color="#CF9E58"/>
+        </linearGradient>
+      </defs>
+
+      <rect x="60" width="500" height="630" fill="url(#bg)"/>
+      <rect x="60" width="500" height="630" fill="url(#halo)"/>
+
+      <circle cx="310" cy="300" r="186" fill="none" stroke="#F7DCA8" stroke-opacity="0.20" stroke-width="1.6"/>
+      <circle cx="310" cy="300" r="196" fill="none" stroke="#F7DCA8" stroke-opacity="0.11" stroke-width="1"/>
+
+      <g stroke="url(#gold)" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M310 232 L310 470"/>
+        <path d="M310 232 L310 128"/>
+        <path d="M310 108 L300 136 M310 108 L320 136"/>
+        <path d="M310 246 Q256 236 252 186 L252 150"/>
+        <path d="M252 130 L243 158 M252 130 L261 158"/>
+        <path d="M310 246 Q364 236 368 186 L368 150"/>
+        <path d="M368 130 L359 158 M368 130 L377 158"/>
+        <path d="M286 252 L334 252"/>
+      </g>
+
+      <g stroke="url(#gold)" fill="none" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M276 316 L344 356 M276 356 L344 316"/>
+        <path d="M276 316 L276 356 M344 316 L344 356"/>
+      </g>
+
+      <g fill="url(#gold)" opacity="0.95">
+        <g transform="translate(232,404) rotate(-18)">
+          <path d="M0 0 q-13 -22 0 -38 q13 16 0 38z"/>
+          <path d="M-4 -4 q-24 -10 -30 -30 q22 3 30 30z"/>
+          <path d="M4 -4 q24 -10 30 -30 q-22 3 -30 30z"/>
+        </g>
+        <g transform="translate(388,404) rotate(18)">
+          <path d="M0 0 q-13 -22 0 -38 q13 16 0 38z"/>
+          <path d="M-4 -4 q-24 -10 -30 -30 q22 3 30 30z"/>
+          <path d="M4 -4 q24 -10 30 -30 q-22 3 -30 30z"/>
+        </g>
+      </g>
+      <g stroke="url(#gold)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8">
+        <path d="M232 404 q-8 22 -26 32"/>
+        <path d="M388 404 q8 22 26 32"/>
+      </g>
+
+      <g stroke="url(#gold)" fill="none" stroke-width="5" stroke-linecap="round">
+        <path d="M258 470 L362 470"/>
+        <path d="M240 486 L380 486"/>
+      </g>
+
+      <g fill="url(#gold)" opacity="0.75">
+        <circle cx="268" cy="504" r="5"/><circle cx="288" cy="509" r="5"/><circle cx="310" cy="511" r="5"/>
+        <circle cx="332" cy="509" r="5"/><circle cx="352" cy="504" r="5"/>
+      </g>
+
+      <text x="310" y="566" text-anchor="middle" fill="#F7DCA8" fill-opacity="0.88"
+            font-family="Georgia, serif" font-size="27" letter-spacing="3">ॐ नमः शिवाय</text>
+    </svg>
+  </div>
+
+  <div class="panel">
+    <div class="brand">
+      <div class="mark">ur</div>
+      <div class="name">urban rasoi<small>KOLKATA · PURE VEGETARIAN</small></div>
+    </div>
+
+    <div class="badge">ॐ RUDRABHISHEK CATERING</div>
+
+    <h1>You stay in the puja.<em>We take care of the bhojan.</em></h1>
+
+    <div class="rule"><span></span><i>✿</i><span></span></div>
+
+    <div class="price">
+      <b>₹30,000</b> for 40 guests
+      <small>Satvik menu · 2 kitchen staff · 2 stewards · disposables included</small>
+    </div>
+
+    <div class="foot">
+      <div class="chip">NO ONION · NO GARLIC</div>
+      <div class="wa">WhatsApp <span>98307 25556</span></div>
+    </div>
+  </div>
+</body>
+</html>

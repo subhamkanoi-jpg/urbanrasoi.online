@@ -17,7 +17,23 @@ export const metadata: Metadata = {
     description:
       'You stay in the puja. We take care of the bhojan. Satvik family get-together catering from ₹30,000 for 40 guests — staff and disposables included.',
     url: '/rudrabhishek-catering',
-    images: ['/images/gallery-diwali.jpg'],
+    type: 'website',
+    locale: 'en_IN',
+    images: [
+      {
+        url: '/images/og-rudrabhishek.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Urban Rasoi Rudra Abhishek puja catering — satvik menu from ₹30,000 for 40 guests',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Rudra Abhishek Puja Catering in Kolkata | Urban Rasoi',
+    description:
+      'Satvik family get-together catering from ₹30,000 for 40 guests — staff and disposables included.',
+    images: ['/images/og-rudrabhishek.jpg'],
   },
 }
 
@@ -77,7 +93,7 @@ const schema = {
   description:
     'Satvik (no onion, no garlic) family get-together catering for Rudra Abhishek and Sawan pujas in Kolkata. Includes 2 kitchen staff, 2 stewards and disposables.',
   brand: { '@type': 'Brand', name: site.name },
-  image: `${site.url}/images/gallery-diwali.jpg`,
+  image: `${site.url}/images/og-rudrabhishek.jpg`,
   offers: {
     '@type': 'Offer',
     price: BASE_PRICE,

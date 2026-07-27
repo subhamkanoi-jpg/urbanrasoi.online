@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --cream:#FBF5EC; --rust:#C0522C; --ink:#2B2018; --muted:#7C6A5B;
+    --olive:#6E7A4F; --gold:#A98B45;
+  }
+  body { width:1200px; height:630px; overflow:hidden; background:var(--cream);
+         font-family:'Jost', system-ui, sans-serif; position:relative; }
+
+  .photo { position:absolute; inset:0 0 0 auto; width:700px; height:630px; }
+  .photo img { width:100%; height:100%; object-fit:cover; object-position:58% 60%; }
+  .photo::after { content:''; position:absolute; inset:0;
+    background:linear-gradient(to right,
+      var(--cream) 0%, rgba(251,245,236,.985) 10%, rgba(251,245,236,.90) 20%,
+      rgba(251,245,236,.66) 31%, rgba(251,245,236,.34) 43%,
+      rgba(251,245,236,.12) 55%, rgba(251,245,236,0) 68%); }
+
+  .panel { position:absolute; left:0; top:0; width:690px; height:630px;
+           padding:44px 30px 42px 58px; display:flex; flex-direction:column; }
+
+  .brand { display:flex; align-items:center; gap:13px; }
+  .mark { width:52px; height:52px; border-radius:50%; background:var(--rust); color:#fff;
+          display:flex; align-items:center; justify-content:center;
+          font-weight:600; font-size:24px; letter-spacing:-.5px; }
+  .name { font-size:26px; color:var(--ink); letter-spacing:.2px; line-height:1.1; }
+  .name small { display:block; font-size:12px; letter-spacing:2.4px; color:var(--muted); margin-top:3px; }
+
+  .badge { display:inline-flex; align-items:center; gap:9px; align-self:flex-start;
+           background:var(--rust); color:#fff; border-radius:999px;
+           padding:11px 22px; font-size:15px; font-weight:600; letter-spacing:2.4px;
+           margin-top:30px; }
+
+  h1 { font-family:'Playfair Display', Georgia, serif; color:var(--ink);
+       font-size:57px; font-weight:600; line-height:1.08; margin-top:26px;
+       letter-spacing:-.4px; max-width:600px; }
+  h1 em { display:block; font-style:italic; color:var(--rust); font-weight:600; margin-top:4px; }
+
+  .rule { display:flex; align-items:center; gap:14px; margin-top:26px; width:390px; }
+  .rule span { flex:1; height:1px; background:#DCCFBD; }
+  .rule i { color:var(--olive); font-style:normal; font-size:19px; }
+
+  .price { margin-top:22px; font-size:25px; color:var(--ink); font-weight:500; line-height:1.35; }
+  .price b { font-weight:600; color:var(--rust); }
+  .price small { display:block; font-size:17px; color:var(--muted); font-weight:400; margin-top:5px; }
+
+  .foot { margin-top:auto; display:flex; align-items:center; gap:16px; }
+  .chip { border:1.5px solid var(--olive); color:var(--olive); border-radius:999px;
+          padding:9px 18px; font-size:12.5px; font-weight:600; letter-spacing:1.7px; white-space:nowrap; }
+  .wa { font-size:19px; color:var(--ink); font-weight:600; letter-spacing:.3px; }
+  .wa span { color:var(--rust); }
+</style>
+</head>
+<body>
+  <div class="photo"><img src="../../public/images/ig-5.png" alt=""></div>
+
+  <div class="panel">
+    <div class="brand">
+      <div class="mark">ur</div>
+      <div class="name">urban rasoi<small>KOLKATA · PURE VEGETARIAN</small></div>
+    </div>
+
+    <div class="badge">ॐ RUDRABHISHEK CATERING</div>
+
+    <h1>You stay in the puja.<em>We take care of the bhojan.</em></h1>
+
+    <div class="rule"><span></span><i>✿</i><span></span></div>
+
+    <div class="price">
+      <b>₹30,000</b> for 40 guests
+      <small>Satvik menu · 2 kitchen staff · 2 stewards · disposables included</small>
+    </div>
+
+    <div class="foot">
+      <div class="chip">NO ONION · NO GARLIC</div>
+      <div class="wa">WhatsApp <span>98307 25556</span></div>
+    </div>
+  </div>
+</body>
+</html>
