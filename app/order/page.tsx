@@ -12,7 +12,13 @@ export const metadata: Metadata = {
     title: 'Order À La Carte | Urban Rasoi House Party Menu',
     description: 'Pick exactly the dishes you want, see your total as you go, and order on WhatsApp.',
     url: '/order',
-    images: ['/images/og-image.jpg'],
+    images: [{ url: '/images/og-order.jpg', width: 1200, height: 630, alt: 'Urban Rasoi House Party Menu' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Order À La Carte | Urban Rasoi House Party Menu',
+    description: 'Pick exactly the dishes you want, see your total as you go, and order on WhatsApp.',
+    images: ['/images/og-order.jpg'],
   },
 }
 

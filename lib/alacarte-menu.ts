@@ -129,12 +129,12 @@ export const menuSections: MenuSection[] = [
     name: 'Bengali Specialities',
     group: 'Mains',
     items: [
-      { id: 'beetroot-cutlet', name: 'Beetroot Cutlet', unit: '8 pcs', price: 400 },
-      { id: 'narkel-cholar-dal', name: 'Narkel Cholar Dal', unit: '500 ml', price: 440 },
-      { id: 'basanti-pulao', name: 'Basanti Pulao', unit: '500 ml', price: 450 },
-      { id: 'radhavallabhi', name: 'Radhavallabhi', unit: '6 pcs', price: 450 },
-      { id: 'dum-aloo', name: 'Dum Aloo', unit: '500 ml', price: 450 },
-      { id: 'tamatar-khejur-chutney', name: 'Tamatar Khejur Chutney', unit: '500 ml', price: 450 },
+      { id: 'beetroot-cutlet', name: 'Beetroot Cutlet', unit: '8 pcs', price: 350 },
+      { id: 'narkel-cholar-dal', name: 'Narkel Cholar Dal', unit: '500 ml', price: 380 },
+      { id: 'basanti-pulao', name: 'Basanti Pulao', unit: '500 ml', price: 390 },
+      { id: 'radhavallabhi', name: 'Radhavallabhi', unit: '6 pcs', price: 390 },
+      { id: 'dum-aloo', name: 'Dum Aloo', unit: '500 ml', price: 390 },
+      { id: 'tamatar-khejur-chutney', name: 'Tamatar Khejur Chutney', unit: '500 ml', price: 390 },
     ],
   },
   {
@@ -155,10 +155,10 @@ export const menuSections: MenuSection[] = [
     name: 'Continental Dishes',
     group: 'Mains',
     items: [
-      { id: 'stroganoff', name: 'Exotic Veg Stroganoff with Herbed Rice', unit: '500 ml', price: 370 },
-      { id: 'thai-curry', name: 'Green Thai Curry with Steamed Rice', unit: '500 ml', price: 370 },
-      { id: 'au-gratin', name: 'Classic Au Gratin', unit: '750 ml', price: 370 },
-      { id: 'lasagna', name: 'Baked Exotic Veg Lasagna', unit: '750 ml', price: 370 },
+      { id: 'stroganoff', name: 'Exotic Veg Stroganoff with Herbed Rice', unit: '500 ml', price: 380 },
+      { id: 'thai-curry', name: 'Green Thai Curry with Steamed Rice', unit: '500 ml', price: 380 },
+      { id: 'au-gratin', name: 'Classic Au Gratin', unit: '750 ml', price: 380 },
+      { id: 'lasagna', name: 'Baked Exotic Veg Lasagna', unit: '750 ml', price: 380 },
     ],
   },
   {
