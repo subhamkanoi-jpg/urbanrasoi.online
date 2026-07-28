@@ -381,7 +381,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
 
             <div className="mt-5 flex flex-col items-center gap-2 text-sm">
               <Link href="/order" className="font-semibold text-terracotta hover:text-terracotta-deep">
-                Prefer to pick dish by dish? Order à la carte →
+                Prefer to pick dish by dish? Order Online →
               </Link>
               {plan.guests >= CELEBRATION_MIN_GUESTS && (
                 <a href="/menu.html" className="text-ink-soft hover:text-ink">

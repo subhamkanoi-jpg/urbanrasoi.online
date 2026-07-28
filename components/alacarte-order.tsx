@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { openWhatsapp } from '@/lib/meta-tracking'
 import {
@@ -321,12 +320,6 @@ export function AlacarteOrder() {
           </ul>
         </section>
 
-        <p className="mt-8 text-center text-sm text-ink-soft">
-          Planning a full celebration instead?{' '}
-          <Link href="/plan?src=alacarte" className="font-semibold text-terracotta hover:text-terracotta-deep">
-            Use the Party Planner →
-          </Link>
-        </p>
       </div>
 
       {/* Sticky cart bar */}

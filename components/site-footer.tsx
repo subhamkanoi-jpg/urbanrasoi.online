@@ -100,7 +100,7 @@ export function SiteFooter() {
                   href="/order"
                   className="text-sm text-background/70 transition-colors hover:text-terracotta"
                 >
-                  Order à la carte
+                  Order Online
                 </Link>
               </li>
             </ul>

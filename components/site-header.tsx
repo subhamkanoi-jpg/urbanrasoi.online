@@ -99,7 +99,7 @@ export function SiteHeader() {
                     : 'text-background/85',
               )}
             >
-              Order à la carte
+              Order Online
             </Link>
             <Link
               href="/plan?src=header"
@@ -228,7 +228,7 @@ export function SiteHeader() {
                   pathname === '/order' && 'text-terracotta',
                 )}
               >
-                Order à la carte
+                Order Online
                 <span className="text-ink-soft text-base font-sans font-normal">→</span>
               </Link>
               <div className="mx-4 h-px bg-border" />

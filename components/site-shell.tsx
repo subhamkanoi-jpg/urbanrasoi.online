@@ -19,7 +19,9 @@ function FloatingPlanBar() {
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const isBarePage = pathname === '/kolkata-catering' || pathname === '/plan'
+  // /order is a focused, standalone page: no header, footer or nav out — the
+  // only way forward is placing the order on WhatsApp.
+  const isBarePage = pathname === '/kolkata-catering' || pathname === '/plan' || pathname === '/order'
 
   if (isBarePage) return <main className="min-h-svh">{children}</main>
 
