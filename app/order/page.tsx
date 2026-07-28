@@ -4,19 +4,19 @@ import { menuSections } from '@/lib/alacarte-menu'
 import { site } from '@/lib/site'
 
 export const metadata: Metadata = {
-  title: 'Order À La Carte | House Party Menu — Urban Rasoi Kolkata',
+  title: 'Order Online | House Party Menu — Urban Rasoi Kolkata',
   description:
     'Build your own house party order dish by dish — starters, mains, Bengali and Rajasthani specialities, Chinese, continental and desserts. See your total live and send it to our Kolkata kitchen on WhatsApp.',
   alternates: { canonical: '/order' },
   openGraph: {
-    title: 'Order À La Carte | Urban Rasoi House Party Menu',
+    title: 'Order Online | Urban Rasoi House Party Menu',
     description: 'Pick exactly the dishes you want, see your total as you go, and order on WhatsApp.',
     url: '/order',
     images: [{ url: '/images/og-order.jpg', width: 1200, height: 630, alt: 'Urban Rasoi House Party Menu' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Order À La Carte | Urban Rasoi House Party Menu',
+    title: 'Order Online | Urban Rasoi House Party Menu',
     description: 'Pick exactly the dishes you want, see your total as you go, and order on WhatsApp.',
     images: ['/images/og-order.jpg'],
   },
