@@ -10,6 +10,7 @@ export type Product = {
   description: string
   heroImage: string
   heroImagePosition?: string
+  heroVideo?: string
   cardImage: string
   gallery: { src: string; alt: string }[]
   included: { title: string; detail: string }[]
@@ -36,6 +37,7 @@ export const products: Product[] = [
       'Composed like a still life, grazed like a feast. We design, deliver and style it. You host.',
     heroImage: '/images/gallery-event.jpg',
     heroImagePosition: 'object-[80%_center]',
+    heroVideo: '/media/grazing-table-hero.mp4',
     cardImage: '/images/gallery-event.jpg',
     gallery: [
       { src: '/images/gallery-event.jpg', alt: 'Dabeli sliders and mezze styled on a grazing board' },

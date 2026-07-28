@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { HeroVideo } from '@/components/hero-video'
 import { Reveal } from '@/components/reveal'
 import { TelLink } from '@/components/tracked-links'
 import { WhatsAppButton } from '@/components/whatsapp-button'
@@ -20,7 +21,11 @@ export function ProductLanding({ product }: { product: Product }) {
   return (
     <>
       <section className="relative min-h-[600px] overflow-hidden md:h-[92svh] md:min-h-[680px]">
-        <Image src={product.heroImage} alt={product.name} fill priority className={cn('object-cover', product.heroImagePosition)} sizes="100vw" />
+        {product.heroVideo ? (
+          <HeroVideo src={product.heroVideo} poster={product.heroImage} alt={product.name} positionClassName={product.heroImagePosition} />
+        ) : (
+          <Image src={product.heroImage} alt={product.name} fill priority className={cn('object-cover', product.heroImagePosition)} sizes="100vw" />
+        )}
         <div className="absolute inset-0 bg-ink/65" />
         <div className="relative mx-auto flex min-h-[600px] max-w-7xl items-end px-5 pb-9 pt-28 md:h-[92svh] md:min-h-[680px] md:px-10 md:pb-20">
           <Reveal>
