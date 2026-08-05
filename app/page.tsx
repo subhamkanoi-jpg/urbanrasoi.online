@@ -29,8 +29,8 @@ export default function HomePage() {
             alt="Urban Rasoi serving guests at a home celebration in Kolkata"
             fill
             priority
-            quality={88}
-            className="object-cover object-center"
+            quality={78}
+            className="object-cover object-[center_42%]"
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/20" />
@@ -79,9 +79,9 @@ export default function HomePage() {
 
         <section className="mx-auto max-w-7xl px-5 py-14 md:px-10 md:py-20">
           <Reveal>
-            <p className="section-label">Choose what you need</p>
+            <p className="section-label">Start here</p>
             <h2 className="mt-3 max-w-2xl font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">
-              Three simple ways to order.
+              Pick the right fit for your gathering.
             </h2>
           </Reveal>
 

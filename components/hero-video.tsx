@@ -27,8 +27,14 @@ export function HeroVideo({
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (!reduceMotion) setShowVideo(true)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    // Let the poster paint and the first interaction become responsive before
+    // asking the browser to fetch the large ambient video.
+    const start = () => setShowVideo(true)
+    const timeoutId = window.setTimeout(start, 1200)
+
+    return () => window.clearTimeout(timeoutId)
   }, [])
 
   return (
