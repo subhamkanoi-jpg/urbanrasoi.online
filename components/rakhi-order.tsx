@@ -472,7 +472,7 @@ function AlaCarteTab() {
     window.setTimeout(() => { suppressSpy.current = false }, 700)
   }
 
-  function buildWhatsappMessage() {
+  function buildWhatsappText() {
     const parts = [
       'Raksha Bandhan Order — Urban Rasoi',
       '',
@@ -493,21 +493,202 @@ function AlaCarteTab() {
     parts.push(`Name: ${details.name}`)
     if (details.phone) parts.push(`Phone: ${details.phone}`)
     if (details.note) parts.push(`Note: ${details.note}`)
-    // The menu image card URL is appended so it appears inline in the chat
-    parts.push('')
-    parts.push(`Menu reference: ${site.url}/images/og-rakhi.png`)
     return parts.join('\n')
   }
 
-  function sendOrder() {
-    if (!canOrder) return
-    window.fbq?.('track', 'InitiateCheckout', { num_items: itemCount, value: grandTotal, currency: 'INR' })
-    openWhatsapp(buildWhatsappMessage(), {
-      placement: 'rakhi-order',
-      contentName: 'Rakhi Festive Order',
-      value: grandTotal,
-      currency: 'INR',
+  /** Draw the order slip onto a canvas and return a PNG blob */
+  function renderOrderSlip(): Promise<Blob> {
+    return new Promise((resolve) => {
+      const W = 800
+      const lineH = 36
+      const headerH = 180
+      const billRows = lines.length
+      const footerH = 180
+      const H = headerH + billRows * lineH + footerH
+      const canvas = document.createElement('canvas')
+      canvas.width = W
+      canvas.height = H
+      const ctx = canvas.getContext('2d')!
+
+      // ── Background ──
+      ctx.fillStyle = '#fdf5e6'
+      ctx.fillRect(0, 0, W, H)
+
+      // ── Top saffron band ──
+      ctx.fillStyle = '#c8621a'
+      ctx.fillRect(0, 0, W, 8)
+
+      // ── Brand header ──
+      ctx.fillStyle = '#2d1a0a'
+      ctx.font = 'bold 13px system-ui, sans-serif'
+      ctx.letterSpacing = '3px'
+      ctx.textAlign = 'center'
+      ctx.fillText('URBAN RASOI', W / 2, 44)
+
+      ctx.fillStyle = '#c8621a'
+      ctx.font = '600 11px system-ui, sans-serif'
+      ctx.letterSpacing = '2px'
+      ctx.fillText('RAKSHA BANDHAN 2026  ·  FESTIVE ORDER', W / 2, 66)
+
+      // ── Divider ──
+      ctx.strokeStyle = '#c9973a'
+      ctx.lineWidth = 0.8
+      ctx.setLineDash([4, 4])
+      ctx.beginPath()
+      ctx.moveTo(48, 80)
+      ctx.lineTo(W - 48, 80)
+      ctx.stroke()
+      ctx.setLineDash([])
+
+      // ── Customer info ──
+      ctx.fillStyle = '#2d1a0a'
+      ctx.textAlign = 'left'
+      ctx.font = '600 13px system-ui, sans-serif'
+      ctx.letterSpacing = '0px'
+      ctx.fillText(`Name: ${details.name}`, 48, 106)
+      if (details.phone) ctx.fillText(`Phone: ${details.phone}`, 48, 126)
+      ctx.fillStyle = '#7a5535'
+      ctx.font = '12px system-ui, sans-serif'
+      ctx.fillText(`Pickup: ${RAKHI_PICKUP_ADDRESS}`, 48, 146)
+      ctx.fillText(`Date: ${RAKHI_PICKUP_DATE}  ·  Time: ${details.time}`, 48, 164)
+
+      // ── Items header row ──
+      let y = headerH
+      ctx.fillStyle = '#c9973a'
+      ctx.globalAlpha = 0.15
+      ctx.fillRect(0, y, W, lineH)
+      ctx.globalAlpha = 1
+      ctx.fillStyle = '#c8621a'
+      ctx.font = '700 10px system-ui, sans-serif'
+      ctx.letterSpacing = '1.5px'
+      ctx.fillText('ITEM', 48, y + 22)
+      ctx.textAlign = 'right'
+      ctx.fillText('QTY', W - 200, y + 22)
+      ctx.fillText('PRICE', W - 100, y + 22)
+      ctx.fillText('TOTAL', W - 48, y + 22)
+      y += lineH
+
+      // ── Item rows ──
+      lines.forEach((line, i) => {
+        ctx.fillStyle = i % 2 === 0 ? '#faebd0' : '#fdf5e6'
+        ctx.fillRect(0, y, W, lineH)
+        ctx.fillStyle = '#2d1a0a'
+        ctx.textAlign = 'left'
+        ctx.font = '500 13px system-ui, sans-serif'
+        ctx.letterSpacing = '0px'
+        // Truncate long names
+        const maxW = W - 300
+        let name = line.name
+        ctx.font = '500 13px system-ui, sans-serif'
+        while (ctx.measureText(name).width > maxW && name.length > 10) {
+          name = name.slice(0, -1)
+        }
+        if (name !== line.name) name += '…'
+        ctx.fillText(name, 48, y + 23)
+        ctx.textAlign = 'right'
+        ctx.font = '500 13px system-ui, sans-serif'
+        ctx.fillText(`×${line.qty}`, W - 200, y + 23)
+        ctx.fillText(formatINR(line.price), W - 100, y + 23)
+        ctx.font = '600 13px system-ui, sans-serif'
+        ctx.fillStyle = '#c8621a'
+        ctx.fillText(formatINR(line.lineTotal), W - 48, y + 23)
+        y += lineH
+      })
+
+      // ── Total band ──
+      ctx.fillStyle = '#c8621a'
+      ctx.fillRect(0, y, W, 52)
+      ctx.fillStyle = '#ffffff'
+      ctx.textAlign = 'left'
+      ctx.font = '600 13px system-ui, sans-serif'
+      ctx.letterSpacing = '2px'
+      ctx.fillText('ORDER TOTAL', 48, y + 32)
+      ctx.textAlign = 'right'
+      ctx.font = 'bold 22px system-ui, sans-serif'
+      ctx.letterSpacing = '0px'
+      ctx.fillText(formatINR(grandTotal), W - 48, y + 34)
+      y += 52
+
+      // ── Bottom divider ──
+      ctx.strokeStyle = '#c9973a'
+      ctx.lineWidth = 0.8
+      ctx.setLineDash([4, 4])
+      ctx.beginPath()
+      ctx.moveTo(48, y + 20)
+      ctx.lineTo(W - 48, y + 20)
+      ctx.stroke()
+      ctx.setLineDash([])
+
+      // ── Footer ──
+      ctx.fillStyle = '#7a5535'
+      ctx.textAlign = 'center'
+      ctx.font = '12px system-ui, sans-serif'
+      ctx.fillText('Pure Vegetarian  ·  FSSAI 12823013000353', W / 2, y + 46)
+      ctx.fillStyle = '#2d1a0a'
+      ctx.font = '600 13px system-ui, sans-serif'
+      ctx.fillText('urbanrasoi.online  |  9830725556', W / 2, y + 70)
+
+      // ── Bottom saffron band ──
+      ctx.fillStyle = '#c8621a'
+      ctx.fillRect(0, H - 8, W, 8)
+
+      canvas.toBlob((blob) => resolve(blob!), 'image/png')
     })
+  }
+
+  const [sharing, setSharing] = useState(false)
+
+  async function sendOrder() {
+    if (!canOrder) return
+    setSharing(true)
+    window.fbq?.('track', 'InitiateCheckout', { num_items: itemCount, value: grandTotal, currency: 'INR' })
+
+    const text = buildWhatsappText()
+
+    try {
+      const blob = await renderOrderSlip()
+      const file = new File([blob], 'urban-rasoi-rakhi-order.png', { type: 'image/png' })
+
+      const canShareFiles =
+        typeof navigator.share === 'function' &&
+        typeof navigator.canShare === 'function' &&
+        navigator.canShare({ files: [file] })
+
+      if (canShareFiles) {
+        // Mobile: native share sheet — user picks WhatsApp, image attaches directly
+        await navigator.share({
+          files: [file],
+          text,
+          title: 'Raksha Bandhan Order — Urban Rasoi',
+        })
+      } else {
+        // Desktop fallback: download the image, then open WhatsApp web with text
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'urban-rasoi-rakhi-order.png'
+        a.click()
+        URL.revokeObjectURL(url)
+        // Small delay so download dialog opens before WhatsApp redirect
+        await new Promise((r) => window.setTimeout(r, 600))
+        openWhatsapp(text, {
+          placement: 'rakhi-order',
+          contentName: 'Rakhi Festive Order',
+          value: grandTotal,
+          currency: 'INR',
+        })
+      }
+    } catch {
+      // User dismissed share sheet or canvas failed — fall back to text-only
+      openWhatsapp(text, {
+        placement: 'rakhi-order',
+        contentName: 'Rakhi Festive Order',
+        value: grandTotal,
+        currency: 'INR',
+      })
+    }
+
+    setSharing(false)
     setOrderSent(true)
     setCartOpen(false)
   }
@@ -735,19 +916,30 @@ function AlaCarteTab() {
                 <button
                   type="button"
                   onClick={sendOrder}
-                  disabled={!canOrder}
+                  disabled={!canOrder || sharing}
                   className={cn(
                     'flex w-full items-center justify-center gap-2.5 rounded-2xl py-4 font-semibold text-base transition-all',
-                    canOrder
+                    canOrder && !sharing
                       ? 'bg-rakhi-saffron text-white hover:bg-rakhi-saffron-deep active:scale-[0.98]'
                       : 'bg-rakhi-cream text-rakhi-muted cursor-not-allowed',
                   )}
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                    <path d="M5.077 19.938A11.924 11.924 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12c0 2.185.627 4.236 1.718 5.961L2 22l3.077-2.062zM12 4a8 8 0 1 1 0 16A8 8 0 0 1 12 4z" />
-                  </svg>
-                  Send order on WhatsApp
+                  {sharing ? (
+                    <>
+                      <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                      </svg>
+                      Preparing graphic…
+                    </>
+                  ) : (
+                    <>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                        <path d="M5.077 19.938A11.924 11.924 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12c0 2.185.627 4.236 1.718 5.961L2 22l3.077-2.062zM12 4a8 8 0 1 1 0 16A8 8 0 0 1 12 4z" />
+                      </svg>
+                      Send order on WhatsApp
+                    </>
+                  )}
                 </button>
                 {orderSent && (
                   <p className="mt-3 text-center text-sm text-green-700 font-medium">
@@ -755,7 +947,11 @@ function AlaCarteTab() {
                   </p>
                 )}
                 <p className="mt-3 text-center text-xs text-rakhi-muted">
-                  Sends to <span className="font-medium text-rakhi-deep">{site.phone}</span> on WhatsApp
+                  On mobile, your order graphic opens the share sheet — pick WhatsApp to send it directly.
+                  On desktop, the graphic is saved to your downloads; then WhatsApp opens with the order text.
+                </p>
+                <p className="mt-1.5 text-center text-xs font-medium text-rakhi-deep">
+                  {site.phone}
                 </p>
               </div>
             </div>
