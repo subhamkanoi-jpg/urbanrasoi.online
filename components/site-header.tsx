@@ -102,6 +102,17 @@ export function SiteHeader() {
               Order Online
             </Link>
             <Link
+              href="/rakhi"
+              className={cn(
+                'text-sm font-semibold transition-colors',
+                pathname === '/rakhi'
+                  ? 'text-rakhi-saffron'
+                  : 'text-rakhi-gold hover:text-rakhi-saffron',
+              )}
+            >
+              Rakhi Order
+            </Link>
+            <Link
               href="/plan?src=header"
               className="rounded-full bg-terracotta px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-terracotta-deep hover:-translate-y-0.5"
             >
@@ -230,6 +241,26 @@ export function SiteHeader() {
               >
                 Order Online
                 <span className="text-ink-soft text-base font-sans font-normal">→</span>
+              </Link>
+              <div className="mx-4 h-px bg-border" />
+            </li>
+            <li
+              style={{ transitionDelay: open ? `${(products.length + 2) * 60 + 80}ms` : '0ms' }}
+              className={cn(
+                'transition-all duration-500',
+                open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
+              )}
+            >
+              <Link
+                href="/rakhi"
+                onClick={() => setOpen(false)}
+                className={cn(
+                  'flex items-center justify-between rounded-xl px-3 py-3.5 text-lg font-serif font-semibold transition-colors active:bg-cream-dark',
+                  pathname === '/rakhi' ? 'text-rakhi-saffron' : 'text-rakhi-gold',
+                )}
+              >
+                Rakhi Order
+                <span className="text-base font-sans font-normal">→</span>
               </Link>
               <div className="mx-4 h-px bg-border" />
             </li>
