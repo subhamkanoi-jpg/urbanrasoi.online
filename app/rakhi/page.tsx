@@ -23,9 +23,10 @@ const liveMetadata: Metadata = {
     locale: 'en_IN',
     images: [
       {
-        url: `${site.url}/images/og-rakhi.png`,
+        url: `${site.url}/images/og-rakhi.jpg`,
         width: 1200,
         height: 630,
+        type: 'image/jpeg',
         alt: 'Urban Rasoi Raksha Bandhan Festive Menu 2026',
       },
     ],
@@ -35,7 +36,7 @@ const liveMetadata: Metadata = {
     title: 'Raksha Bandhan Festive Menu 2026 — Urban Rasoi',
     description:
       'Gourmet vegetarian Rakhi spread · pickup from Salt Lake Sector-1 · 28 August 2026.',
-    images: [`${site.url}/images/og-rakhi.png`],
+    images: [`${site.url}/images/og-rakhi.jpg`],
   },
 }
 
