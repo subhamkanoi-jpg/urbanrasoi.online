@@ -1,39 +1,25 @@
 'use client'
 
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 
-function FloatingPlanBar() {
-  return (
-    <Link
-      href="/plan?src=floating"
-      className="fixed bottom-3 left-4 right-4 z-50 flex items-center justify-center gap-2 rounded-full bg-terracotta px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta md:bottom-6 md:left-auto md:right-6 md:w-auto md:px-6"
-    >
-      Plan my party <span aria-hidden="true">→</span>
-    </Link>
-  )
-}
-
 export function SiteShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  // /order is a focused, standalone page: no header, footer or nav out — the
-  // only way forward is placing the order on WhatsApp.
-  const isBarePage = pathname === '/kolkata-catering' || pathname === '/plan' || pathname === '/order'
+  // Focused standalone pages with no chrome
+  const isBarePage =
+    pathname === '/kolkata-catering' ||
+    pathname === '/plan' ||
+    pathname === '/order'
 
   if (isBarePage) return <main className="min-h-svh">{children}</main>
-
-  // Pages that own the bottom of the screen with their own sticky CTA.
-  const showPlanBar = pathname !== '/order' && pathname !== '/rudrabhishek-catering'
 
   return (
     <>
       <SiteHeader />
-      <main className={showPlanBar ? 'min-h-svh pb-16 md:pb-0' : 'min-h-svh'}>{children}</main>
+      <main className="min-h-svh">{children}</main>
       <SiteFooter />
-      {showPlanBar && <FloatingPlanBar />}
     </>
   )
 }

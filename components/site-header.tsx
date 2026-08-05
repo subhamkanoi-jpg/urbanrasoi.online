@@ -2,17 +2,27 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { products } from '@/lib/products'
 import { trackContact } from '@/lib/meta-tracking'
 import { site } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
+type NavItem = { label: string; href: string; highlight?: boolean }
+
+const navItems: NavItem[] = [
+  ...products.map((p) => ({ label: p.shortName, href: `/${p.slug}` })),
+  { label: 'Puja Catering', href: '/rudrabhishek-catering' },
+  { label: 'Order Online', href: '/order' },
+  { label: 'Rakhi Order', href: '/rakhi', highlight: true },
+]
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 48)
@@ -20,107 +30,138 @@ export function SiteHeader() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close menu on route change
+  // Close on route change
   useEffect(() => { setOpen(false) }, [pathname])
 
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return
+    function handleClick(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
   return (
-    <>
-      <header
-        className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-          scrolled
-            ? 'bg-background/95 backdrop-blur-md border-b border-border shadow-sm'
-            : 'bg-transparent',
-        )}
-      >
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:h-18 md:px-8">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 z-10"
-            onClick={() => setOpen(false)}
+    <header
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        scrolled
+          ? 'bg-background/95 backdrop-blur-md border-b border-border shadow-sm'
+          : 'bg-transparent',
+      )}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:h-18 md:px-8">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 z-10">
+          <Image
+            src="/images/logo.jpg"
+            alt="Urban Rasoi"
+            width={36}
+            height={36}
+            className="size-9 rounded-full object-cover ring-2 ring-cream/50"
+          />
+          <span
+            className={cn(
+              'font-serif text-lg font-semibold tracking-tight transition-colors duration-300',
+              scrolled ? 'text-ink' : 'text-background',
+            )}
           >
-            <Image
-              src="/images/logo.jpg"
-              alt="Urban Rasoi"
-              width={36}
-              height={36}
-              className="size-9 rounded-full object-cover ring-2 ring-cream/50"
-            />
-            <span
+            Urban Rasoi
+          </span>
+        </Link>
+
+        {/* Right side: phone + menu trigger */}
+        <div className="flex items-center gap-3">
+          <a
+            href={`tel:${site.phone.replace(/\s/g, '')}`}
+            onClick={() => trackContact('header')}
+            className={cn(
+              'hidden text-sm font-medium transition-colors md:block',
+              scrolled ? 'text-ink-soft hover:text-ink' : 'text-white/80 hover:text-white',
+            )}
+          >
+            {site.phone}
+          </a>
+
+          {/* Desktop menu button */}
+          <div className="relative hidden md:block" ref={dropdownRef}>
+            <button
+              type="button"
+              onClick={() => setOpen(!open)}
+              aria-expanded={open}
+              aria-label={open ? 'Close menu' : 'Open menu'}
               className={cn(
-                'font-serif text-lg font-semibold tracking-tight transition-colors duration-300',
-                scrolled ? 'text-ink' : 'text-background',
+                'flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200',
+                scrolled
+                  ? 'bg-cream text-ink hover:bg-cream-dark'
+                  : 'bg-white/15 text-white hover:bg-white/25 backdrop-blur-sm',
               )}
             >
-              Urban Rasoi
-            </span>
-          </Link>
-
-          {/* Desktop nav */}
-          <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">
-            {products.map((p) => (
-              <Link
-                key={p.slug}
-                href={`/${p.slug}`}
-                className={cn(
-                  'text-sm font-medium transition-colors hover:text-terracotta',
-                  pathname === `/${p.slug}`
-                    ? 'text-terracotta'
-                    : scrolled
-                      ? 'text-ink-soft'
-                      : 'text-background/85',
-                )}
+              Menu
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                className={cn('transition-transform duration-200', open && 'rotate-180')}
+                aria-hidden="true"
               >
-                {p.shortName}
-              </Link>
-            ))}
-            <Link
-              href="/rudrabhishek-catering"
-              className={cn(
-                'text-sm font-medium transition-colors hover:text-terracotta',
-                pathname === '/rudrabhishek-catering'
-                  ? 'text-terracotta'
-                  : scrolled
-                    ? 'text-ink-soft'
-                    : 'text-background/85',
-              )}
-            >
-              Puja Catering
-            </Link>
-            <Link
-              href="/order"
-              className={cn(
-                'text-sm font-medium transition-colors hover:text-terracotta',
-                pathname === '/order'
-                  ? 'text-terracotta'
-                  : scrolled
-                    ? 'text-ink-soft'
-                    : 'text-background/85',
-              )}
-            >
-              Order Online
-            </Link>
-            <Link
-              href="/rakhi"
-              className={cn(
-                'text-sm font-semibold transition-colors',
-                pathname === '/rakhi'
-                  ? 'text-rakhi-saffron'
-                  : 'text-rakhi-gold hover:text-rakhi-saffron',
-              )}
-            >
-              Rakhi Order
-            </Link>
-            <Link
-              href="/plan?src=header"
-              className="rounded-full bg-terracotta px-5 py-2 text-sm font-semibold text-white transition-all duration-200 hover:bg-terracotta-deep hover:-translate-y-0.5"
-            >
-              Plan my party
-            </Link>
-          </nav>
+                <path d="M2 4l5 5 5-5" />
+              </svg>
+            </button>
 
-          {/* Hamburger */}
+            {/* Dropdown */}
+            {open && (
+              <nav
+                aria-label="Site navigation"
+                className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-border bg-background shadow-xl overflow-hidden"
+              >
+                <ul className="py-1.5">
+                  {navItems.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          'flex items-center justify-between px-4 py-2.5 text-sm transition-colors hover:bg-cream',
+                          pathname === item.href
+                            ? item.highlight
+                              ? 'text-rakhi-saffron font-semibold'
+                              : 'text-terracotta font-semibold'
+                            : item.highlight
+                              ? 'text-rakhi-saffron font-medium'
+                              : 'text-ink font-medium',
+                        )}
+                      >
+                        {item.label}
+                        {pathname === item.href && (
+                          <span className="size-1.5 rounded-full bg-current" aria-hidden="true" />
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                  <li className="mx-3 my-1.5 border-t border-border" />
+                  <li>
+                    <Link
+                      href="/plan?src=nav-dropdown"
+                      className="flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-terracotta transition-colors hover:bg-cream"
+                    >
+                      Plan my party
+                      <span aria-hidden="true" className="text-xs opacity-60">→</span>
+                    </Link>
+                  </li>
+                </ul>
+              </nav>
+            )}
+          </div>
+
+          {/* Mobile hamburger */}
           <button
             type="button"
             onClick={() => setOpen(!open)}
@@ -136,9 +177,7 @@ export function SiteHeader() {
                 'h-[2px] w-5 rounded-full transition-all duration-300',
                 open
                   ? 'translate-y-[7px] rotate-45 bg-ink'
-                  : scrolled
-                    ? 'bg-ink'
-                    : 'bg-white',
+                  : scrolled ? 'bg-ink' : 'bg-white',
               )}
             />
             <span
@@ -152,14 +191,12 @@ export function SiteHeader() {
                 'h-[2px] w-5 rounded-full transition-all duration-300',
                 open
                   ? '-translate-y-[7px] -rotate-45 bg-ink'
-                  : scrolled
-                    ? 'bg-ink'
-                    : 'bg-white',
+                  : scrolled ? 'bg-ink' : 'bg-white',
               )}
             />
           </button>
         </div>
-      </header>
+      </div>
 
       {/* Mobile fullscreen overlay */}
       <div
@@ -171,103 +208,41 @@ export function SiteHeader() {
         )}
         aria-hidden={!open}
       >
-        {/* Top bar placeholder height */}
         <div className="h-16 shrink-0" />
-
         <nav
           aria-label="Mobile navigation"
           className="flex flex-1 flex-col justify-between px-5 py-5"
         >
           <ul className="flex flex-col gap-1">
-            {products.map((p, i) => (
+            {navItems.map((item, i) => (
               <li
-                key={p.slug}
-                style={{
-                  transitionDelay: open ? `${i * 60 + 80}ms` : '0ms',
-                }}
+                key={item.href}
+                style={{ transitionDelay: open ? `${i * 50 + 60}ms` : '0ms' }}
                 className={cn(
                   'transition-all duration-500',
                   open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
                 )}
               >
                 <Link
-                  href={`/${p.slug}`}
+                  href={item.href}
                   onClick={() => setOpen(false)}
                   className={cn(
-                    'flex items-center justify-between rounded-xl px-3 py-3.5 text-lg font-serif font-semibold text-ink transition-colors active:bg-cream-dark',
-                    pathname === `/${p.slug}` && 'text-terracotta',
+                    'flex items-center justify-between rounded-xl px-3 py-3 text-base font-serif font-semibold transition-colors active:bg-cream-dark',
+                    pathname === item.href
+                      ? item.highlight ? 'text-rakhi-saffron' : 'text-terracotta'
+                      : item.highlight ? 'text-rakhi-saffron' : 'text-ink',
                   )}
                 >
-                  {p.name}
-                  <span className="text-ink-soft text-base font-sans font-normal">→</span>
+                  {item.label}
+                  <span className="text-ink-soft text-sm font-sans font-normal">→</span>
                 </Link>
-                <div className="mx-4 h-px bg-border" />
+                <div className="mx-3 h-px bg-border" />
               </li>
             ))}
-            <li
-              style={{ transitionDelay: open ? `${products.length * 60 + 80}ms` : '0ms' }}
-              className={cn(
-                'transition-all duration-500',
-                open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
-              )}
-            >
-              <Link
-                href="/rudrabhishek-catering"
-                onClick={() => setOpen(false)}
-                className={cn(
-                  'flex items-center justify-between rounded-xl px-3 py-3.5 text-lg font-serif font-semibold text-ink transition-colors active:bg-cream-dark',
-                  pathname === '/rudrabhishek-catering' && 'text-terracotta',
-                )}
-              >
-                Rudra Abhishek Puja
-                <span className="text-ink-soft text-base font-sans font-normal">→</span>
-              </Link>
-              <div className="mx-4 h-px bg-border" />
-            </li>
-            <li
-              style={{ transitionDelay: open ? `${(products.length + 1) * 60 + 80}ms` : '0ms' }}
-              className={cn(
-                'transition-all duration-500',
-                open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
-              )}
-            >
-              <Link
-                href="/order"
-                onClick={() => setOpen(false)}
-                className={cn(
-                  'flex items-center justify-between rounded-xl px-3 py-3.5 text-lg font-serif font-semibold text-ink transition-colors active:bg-cream-dark',
-                  pathname === '/order' && 'text-terracotta',
-                )}
-              >
-                Order Online
-                <span className="text-ink-soft text-base font-sans font-normal">→</span>
-              </Link>
-              <div className="mx-4 h-px bg-border" />
-            </li>
-            <li
-              style={{ transitionDelay: open ? `${(products.length + 2) * 60 + 80}ms` : '0ms' }}
-              className={cn(
-                'transition-all duration-500',
-                open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
-              )}
-            >
-              <Link
-                href="/rakhi"
-                onClick={() => setOpen(false)}
-                className={cn(
-                  'flex items-center justify-between rounded-xl px-3 py-3.5 text-lg font-serif font-semibold transition-colors active:bg-cream-dark',
-                  pathname === '/rakhi' ? 'text-rakhi-saffron' : 'text-rakhi-gold',
-                )}
-              >
-                Rakhi Order
-                <span className="text-base font-sans font-normal">→</span>
-              </Link>
-              <div className="mx-4 h-px bg-border" />
-            </li>
           </ul>
 
           <div
-            style={{ transitionDelay: open ? '320ms' : '0ms' }}
+            style={{ transitionDelay: open ? `${navItems.length * 50 + 80}ms` : '0ms' }}
             className={cn(
               'transition-all duration-500',
               open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
@@ -290,6 +265,6 @@ export function SiteHeader() {
           </div>
         </nav>
       </div>
-    </>
+    </header>
   )
 }

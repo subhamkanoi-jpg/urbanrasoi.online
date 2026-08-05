@@ -1,13 +1,13 @@
 /**
- * Raksha Bandhan 2025 festive menu for Urban Rasoi.
+ * Raksha Bandhan 2026 festive menu for Urban Rasoi.
  * Pickup only — AE-287, Salt Lake Sector-1, Kolkata.
- * Fixed pickup date: 28 August 2025.
+ * Fixed pickup date: 28 August 2026.
  * Minimum order value: ₹3,000.
  */
 
 export const RAKHI_MIN_ORDER = 3000
-export const RAKHI_PICKUP_DATE = '28 August 2025'
-export const RAKHI_PICKUP_DATE_VALUE = '2025-08-28'
+export const RAKHI_PICKUP_DATE = '28 August 2026'
+export const RAKHI_PICKUP_DATE_VALUE = '2026-08-28'
 export const RAKHI_PICKUP_ADDRESS = 'Urban Rasoi, AE-287, Saltlake Sector-1, Kolkata'
 export const RAKHI_WHATSAPP = '919830725556'
 

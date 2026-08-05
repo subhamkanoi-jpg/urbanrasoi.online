@@ -4,14 +4,14 @@ import { site } from '@/lib/site'
 import { rakhiSections } from '@/lib/rakhi-menu'
 
 export const metadata: Metadata = {
-  title: 'Raksha Bandhan Festive Menu 2025 | Urban Rasoi Kolkata',
+  title: 'Raksha Bandhan Festive Menu 2026 | Urban Rasoi Kolkata',
   description:
-    'Order your Raksha Bandhan festive spread from Urban Rasoi — gourmet vegetarian bites curated for home celebrations. Pickup from AE-287, Saltlake Sector-1 on 28 August 2025. Minimum order ₹3,000.',
+    'Order your Raksha Bandhan festive spread from Urban Rasoi — gourmet vegetarian bites curated for home celebrations. Pickup from AE-287, Saltlake Sector-1 on 28 August 2026. Minimum order ₹3,000.',
   alternates: { canonical: '/rakhi' },
   openGraph: {
-    title: 'Raksha Bandhan Festive Menu 2025 — Urban Rasoi',
+    title: 'Raksha Bandhan Festive Menu 2026 — Urban Rasoi',
     description:
-      'Celebrate Rakhi with a gourmet vegetarian feast. Curated festive bites · pickup from Salt Lake Sector-1 · 28 August 2025.',
+      'Celebrate Rakhi with a gourmet vegetarian feast. Curated festive bites · pickup from Salt Lake Sector-1 · 28 August 2026.',
     url: `${site.url}/rakhi`,
     siteName: 'Urban Rasoi',
     type: 'website',
@@ -21,15 +21,15 @@ export const metadata: Metadata = {
         url: `${site.url}/images/og-rakhi.png`,
         width: 1200,
         height: 630,
-        alt: 'Urban Rasoi Raksha Bandhan Festive Menu 2025',
+        alt: 'Urban Rasoi Raksha Bandhan Festive Menu 2026',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Raksha Bandhan Festive Menu 2025 — Urban Rasoi',
+    title: 'Raksha Bandhan Festive Menu 2026 — Urban Rasoi',
     description:
-      'Gourmet vegetarian Rakhi spread · pickup from Salt Lake Sector-1 · 28 August 2025.',
+      'Gourmet vegetarian Rakhi spread · pickup from Salt Lake Sector-1 · 28 August 2026.',
     images: [`${site.url}/images/og-rakhi.png`],
   },
 }
@@ -37,11 +37,11 @@ export const metadata: Metadata = {
 const menuSchema = {
   '@context': 'https://schema.org',
   '@type': 'FoodEvent',
-  name: 'Urban Rasoi Raksha Bandhan Festive Menu 2025',
+  name: 'Urban Rasoi Raksha Bandhan Festive Menu 2026',
   description:
-    'Gourmet vegetarian festive menu for Raksha Bandhan 2025. Pre-order and self-pickup from AE-287, Saltlake Sector-1, Kolkata.',
-  startDate: '2025-08-28',
-  endDate: '2025-08-28',
+    'Gourmet vegetarian festive menu for Raksha Bandhan 2026. Pre-order and self-pickup from AE-287, Saltlake Sector-1, Kolkata.',
+  startDate: '2026-08-28',
+  endDate: '2026-08-28',
   location: {
     '@type': 'Place',
     name: 'Urban Rasoi',
@@ -66,8 +66,8 @@ const menuSchema = {
     priceCurrency: 'INR',
     price: '3000',
     availability: 'https://schema.org/InStock',
-    validFrom: '2025-08-01',
-    validThrough: '2025-08-28',
+    validFrom: '2026-08-01',
+    validThrough: '2026-08-28',
   },
   hasMenu: {
     '@type': 'Menu',
