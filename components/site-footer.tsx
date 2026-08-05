@@ -64,7 +64,7 @@ export function SiteFooter() {
               </WhatsAppLink>
               <TelLink
                 placement="footer"
-                className="ml-2 text-sm text-background/60 transition-colors hover:text-terracotta"
+                className="ml-2 inline-block py-1.5 text-sm text-background/60 transition-colors hover:text-terracotta"
               >
                 {site.phone}
               </TelLink>
@@ -81,7 +81,7 @@ export function SiteFooter() {
                 <li key={p.slug}>
                   <Link
                     href={`/${p.slug}`}
-                    className="text-sm text-background/70 transition-colors hover:text-terracotta"
+                    className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
                   >
                     {p.name}
                   </Link>
@@ -95,14 +95,6 @@ export function SiteFooter() {
                   Rudra Abhishek Puja Catering
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/order"
-                  className="text-sm text-background/70 transition-colors hover:text-terracotta"
-                >
-                  Order Online
-                </Link>
-              </li>
             </ul>
           </nav>
 
@@ -111,13 +103,27 @@ export function SiteFooter() {
             <p className="text-xs font-semibold uppercase tracking-widest text-background/40">
               Order now
             </p>
-            <WhatsAppLink
-              placement="footer-cta"
-              className="inline-flex items-center gap-2.5 rounded-full bg-terracotta px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-terracotta-deep hover:-translate-y-0.5"
-            >
-              <WhatsAppIcon className="size-4" />
-              Chat on WhatsApp
-            </WhatsAppLink>
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/plan?src=footer"
+                className="inline-flex items-center gap-2.5 rounded-full bg-terracotta px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-terracotta-deep hover:-translate-y-0.5"
+              >
+                Plan my party <span aria-hidden="true">→</span>
+              </Link>
+              <Link
+                href="/order"
+                className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
+              >
+                Order à la carte →
+              </Link>
+              <WhatsAppLink
+                placement="footer-cta"
+                className="inline-flex items-center gap-2 py-1.5 text-sm text-background/70 transition-colors hover:text-[#25D366]"
+              >
+                <WhatsAppIcon className="size-4" />
+                Chat on WhatsApp
+              </WhatsAppLink>
+            </div>
             <div className="text-xs text-background/40 leading-relaxed">
               <p>{site.location}</p>
               <p className="mt-1">{site.fssai}</p>

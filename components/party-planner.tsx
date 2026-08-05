@@ -383,11 +383,6 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
               <Link href="/order" className="font-semibold text-terracotta hover:text-terracotta-deep">
                 Prefer to pick dish by dish? Order Online →
               </Link>
-              {plan.guests >= CELEBRATION_MIN_GUESTS && (
-                <a href="/menu.html" className="text-ink-soft hover:text-ink">
-                  Or build a set celebration menu →
-                </a>
-              )}
               <a href={`tel:${site.phone.replace(/\s/g, '')}`} className="text-ink-soft hover:text-ink">
                 In a rush? Call {site.phone}
               </a>

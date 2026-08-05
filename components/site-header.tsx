@@ -11,12 +11,19 @@ import { cn } from '@/lib/utils'
 
 type NavItem = { label: string; href: string; highlight?: boolean }
 
-const navItems: NavItem[] = [
-  ...products.map((p) => ({ label: p.shortName, href: `/${p.slug}` })),
-  { label: 'Puja Catering', href: '/rudrabhishek-catering' },
-  { label: 'Order Online', href: '/order' },
+// The two ways to actually order come first; browsing pages sit underneath.
+const primaryNav: NavItem[] = [
+  { label: 'Plan my party', href: '/plan?src=nav' },
+  { label: 'Order à la carte', href: '/order' },
   { label: 'Rakhi Order', href: '/rakhi', highlight: true },
 ]
+
+const browseNav: NavItem[] = [
+  ...products.map((p) => ({ label: p.shortName, href: `/${p.slug}` })),
+  { label: 'Puja Catering', href: '/rudrabhishek-catering' },
+]
+
+const navItems: NavItem[] = [...primaryNav, ...browseNav]
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
@@ -124,19 +131,30 @@ export function SiteHeader() {
                 className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-border bg-background shadow-xl overflow-hidden"
               >
                 <ul className="py-1.5">
-                  {navItems.map((item) => (
+                  {primaryNav.map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          'flex items-center justify-between px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-cream',
+                          item.highlight ? 'text-rakhi-saffron' : 'text-terracotta',
+                        )}
+                      >
+                        {item.label}
+                        <span aria-hidden="true" className="text-xs opacity-60">→</span>
+                      </Link>
+                    </li>
+                  ))}
+                  <li className="mx-3 my-1.5 border-t border-border" aria-hidden="true" />
+                  {browseNav.map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
                         className={cn(
                           'flex items-center justify-between px-4 py-2.5 text-sm transition-colors hover:bg-cream',
                           pathname === item.href
-                            ? item.highlight
-                              ? 'text-rakhi-saffron font-semibold'
-                              : 'text-terracotta font-semibold'
-                            : item.highlight
-                              ? 'text-rakhi-saffron font-medium'
-                              : 'text-ink font-medium',
+                            ? 'text-terracotta font-semibold'
+                            : 'text-ink font-medium',
                         )}
                       >
                         {item.label}
@@ -146,16 +164,6 @@ export function SiteHeader() {
                       </Link>
                     </li>
                   ))}
-                  <li className="mx-3 my-1.5 border-t border-border" />
-                  <li>
-                    <Link
-                      href="/plan?src=nav-dropdown"
-                      className="flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-terracotta transition-colors hover:bg-cream"
-                    >
-                      Plan my party
-                      <span aria-hidden="true" className="text-xs opacity-60">→</span>
-                    </Link>
-                  </li>
                 </ul>
               </nav>
             )}
@@ -214,31 +222,38 @@ export function SiteHeader() {
           className="flex flex-1 flex-col justify-between px-5 py-5"
         >
           <ul className="flex flex-col gap-1">
-            {navItems.map((item, i) => (
-              <li
-                key={item.href}
-                style={{ transitionDelay: open ? `${i * 50 + 60}ms` : '0ms' }}
-                className={cn(
-                  'transition-all duration-500',
-                  open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
-                )}
-              >
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
+            {navItems.map((item, i) => {
+              const isPrimary = i < primaryNav.length
+              return (
+                <li
+                  key={item.href}
+                  style={{ transitionDelay: open ? `${i * 50 + 60}ms` : '0ms' }}
                   className={cn(
-                    'flex items-center justify-between rounded-xl px-3 py-3 text-base font-serif font-semibold transition-colors active:bg-cream-dark',
-                    pathname === item.href
-                      ? item.highlight ? 'text-rakhi-saffron' : 'text-terracotta'
-                      : item.highlight ? 'text-rakhi-saffron' : 'text-ink',
+                    'transition-all duration-500',
+                    open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
+                    i === primaryNav.length && 'mt-3 border-t border-border pt-3',
                   )}
                 >
-                  {item.label}
-                  <span className="text-ink-soft text-sm font-sans font-normal">→</span>
-                </Link>
-                <div className="mx-3 h-px bg-border" />
-              </li>
-            ))}
+                  <Link
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      'flex items-center justify-between rounded-xl px-3 py-3 font-serif font-semibold transition-colors active:bg-cream-dark',
+                      isPrimary ? 'text-lg' : 'text-base',
+                      item.highlight
+                        ? 'text-rakhi-saffron'
+                        : isPrimary || pathname === item.href
+                          ? 'text-terracotta'
+                          : 'text-ink',
+                    )}
+                  >
+                    {item.label}
+                    <span className="text-ink-soft text-sm font-sans font-normal">→</span>
+                  </Link>
+                  {!isPrimary && <div className="mx-3 h-px bg-border" />}
+                </li>
+              )
+            })}
           </ul>
 
           <div
@@ -248,17 +263,10 @@ export function SiteHeader() {
               open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
             )}
           >
-            <Link
-              href="/plan?src=mobile-menu"
-              onClick={() => setOpen(false)}
-              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-terracotta py-4 text-base font-semibold text-white"
-            >
-              Plan my party <span aria-hidden="true">→</span>
-            </Link>
             <a
               href={`tel:${site.phone.replace(/\s/g, '')}`}
               onClick={() => trackContact('mobile-menu')}
-              className="mt-4 block text-center text-sm font-medium text-ink"
+              className="block rounded-2xl border border-border py-4 text-center text-base font-semibold text-ink"
             >
               Call {site.phone}
             </a>

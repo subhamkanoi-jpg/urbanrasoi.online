@@ -2,7 +2,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { EventStories } from '@/components/event-stories'
 import { FAQSection, HowItWorks, TrustStrip } from '@/components/conversion-sections'
-import { ImageTicker } from '@/components/image-ticker'
 import { MaharajComparison } from '@/components/maharaj-comparison'
 import { Reveal } from '@/components/reveal'
 import { TelLink } from '@/components/tracked-links'
@@ -29,7 +28,7 @@ export default function HomePage() {
           playsInline
           preload="auto"
           poster="/media/customer-stories/story-6-poster.png"
-          aria-label="Sunidhi event catered by Urban Rasoi"
+          aria-hidden="true"
         >
           <source src="/media/customer-stories/story-6.mp4#t=17" type="video/mp4" />
         </video>
@@ -75,9 +74,7 @@ export default function HomePage() {
         <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>
       </Link>
 
-      <ImageTicker />
-
-      <section className="mx-auto max-w-7xl px-5 pb-12 pt-4 md:px-10 md:pb-20 md:pt-8">
+      <section className="mx-auto max-w-7xl px-5 pb-12 pt-10 md:px-10 md:pb-20 md:pt-16">
         <Reveal>
           <h2 className="font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">
             What are you planning?
@@ -89,25 +86,25 @@ export default function HomePage() {
             <Reveal key={product.slug} delay={index * 70}>
               <Link
                 href={`/${product.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-transform duration-200 hover:-translate-y-1"
+                className="group flex h-full flex-row overflow-hidden rounded-2xl border border-border bg-card transition-transform duration-200 hover:-translate-y-1 sm:flex-col"
               >
-                <div className="relative aspect-[16/9] overflow-hidden">
+                <div className="relative aspect-square w-28 shrink-0 overflow-hidden sm:aspect-[16/9] sm:w-full">
                   <Image
                     src={product.cardImage}
                     alt={product.name}
                     fill
                     className="img-zoom object-cover"
-                    sizes="(min-width: 640px) 50vw, 100vw"
+                    sizes="(min-width: 640px) 50vw, 112px"
                   />
                 </div>
-                <div className="flex flex-1 flex-col p-5 md:p-6">
-                  <h3 className="font-serif text-2xl font-semibold text-ink">{product.shortName}</h3>
-                  <ul className="mt-3 flex flex-wrap gap-2">
+                <div className="flex flex-1 flex-col justify-center p-4 sm:p-5 md:p-6">
+                  <h3 className="font-serif text-xl font-semibold text-ink sm:text-2xl">{product.shortName}</h3>
+                  <ul className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
                     {serviceFacts[product.slug].map((fact) => (
-                      <li key={fact} className="rounded-full bg-cream px-3 py-1.5 text-sm font-medium text-ink">{fact}</li>
+                      <li key={fact} className="rounded-full bg-cream px-2.5 py-1 text-xs font-medium text-ink sm:px-3 sm:py-1.5 sm:text-sm">{fact}</li>
                     ))}
                   </ul>
-                  <span className="mt-5 inline-flex items-center gap-2 font-semibold text-terracotta transition-all group-hover:gap-3">
+                  <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-terracotta transition-all group-hover:gap-3 sm:mt-5 sm:text-base">
                     See menus <span aria-hidden="true">→</span>
                   </span>
                 </div>
@@ -118,26 +115,6 @@ export default function HomePage() {
       </section>
 
       <MaharajComparison placement="home-comparison" />
-
-      <section className="px-5 py-12 md:px-10 md:py-16">
-        <Reveal>
-          <a
-            href="/menu.html"
-            className="group relative mx-auto flex max-w-7xl flex-col items-start justify-between gap-5 overflow-hidden rounded-2xl bg-ink px-7 py-9 md:flex-row md:items-center md:px-10 md:py-11"
-          >
-            <div className="relative max-w-2xl">
-              <p className="section-label text-terracotta-light">Celebration menus · 25+ guests</p>
-              <h2 className="mt-3 font-serif text-2xl font-semibold leading-snug text-primary-foreground text-balance md:text-4xl">
-                Want to pick every dish?
-              </h2>
-              <p className="mt-2 text-sm text-primary-foreground/70">Instant estimate — from {site.partyMenusFrom} a guest.</p>
-            </div>
-            <span className="relative inline-flex shrink-0 items-center gap-2.5 rounded-full bg-terracotta px-7 py-4 text-base font-semibold text-primary-foreground transition-colors group-hover:bg-terracotta-deep">
-              Build my menu <span aria-hidden="true">→</span>
-            </span>
-          </a>
-        </Reveal>
-      </section>
 
       <div id="celebrations">
         <EventStories />

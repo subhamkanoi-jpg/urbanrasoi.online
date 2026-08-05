@@ -79,29 +79,12 @@ video:focus-visible {
   to   { opacity: 1; }
 }
 
-@keyframes ticker-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
 .reveal {
   opacity: 1;
 }
 
 .reveal.is-visible {
   animation: reveal-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* ─── Ticker tape ────────────────────────────────────── */
-.ticker-wrap {
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.ticker-inner {
-  display: inline-flex;
-  animation: ticker-scroll 24s linear infinite;
-  will-change: transform;
 }
 
 /* ─── Image hover zoom ───────────────────────────────── */
@@ -128,9 +111,6 @@ video:focus-visible {
     opacity: 1;
   }
   .reveal.is-visible {
-    animation: none;
-  }
-  .ticker-inner {
     animation: none;
   }
   html {
