@@ -25,7 +25,6 @@ export const occasions = [
   { id: 'anniversary', label: 'Anniversary', emoji: '💍' },
   { id: 'festive', label: 'Festive / Puja', emoji: '🪔' },
   { id: 'office', label: 'Office party', emoji: '💼' },
-  { id: 'grazing', label: 'Grazing table', emoji: '🧀' },
   { id: 'other', label: 'Something else', emoji: '✨' },
 ] as const
 
@@ -42,7 +41,7 @@ export const cuisineOptions = [
   'South Indian',
   'Indo-Chinese',
   'Continental',
-  'Finger food & grazing',
+  'Finger food',
   'Desserts',
 ]
 
@@ -56,7 +55,6 @@ const plateBands: Record<ServiceId, [number, number]> = {
 }
 
 export const CELEBRATION_MIN_GUESTS = 25
-export const GRAZING_MIN_GUESTS = 15
 
 export function getOccasion(idOrLabel: string | undefined) {
   if (!idOrLabel) return undefined
@@ -80,10 +78,9 @@ export function estimatePlan(plan: Plan): Estimate | null {
 }
 
 export function guestNote(guests: number): string {
-  if (guests < GRAZING_MIN_GUESTS) return 'An intimate one — we will tailor a custom menu.'
-  if (guests < CELEBRATION_MIN_GUESTS) return 'Perfect size for a grazing table.'
-  if (guests >= 100) return 'A big one! We have fed 200+ without breaking a sweat.'
-  return `Celebration menus unlock — from ${formatINR(plateBands.delivery[0])} a guest.`
+  if (guests < CELEBRATION_MIN_GUESTS) return 'For smaller gatherings, try our à la carte menu.'
+  if (guests >= 100) return 'We regularly cater for groups of 100 and more.'
+  return `Celebration menus start from ${formatINR(plateBands.delivery[0])} a guest.`
 }
 
 export function daysUntil(iso: string): number {

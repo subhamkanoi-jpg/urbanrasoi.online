@@ -16,16 +16,16 @@ const steps = [
 
 export const faqItems = [
   {
-    question: 'How is Urban Rasoi different from calling a maharaj?',
-    answer: 'Everything is cooked in our FSSAI-licensed kitchen and delivered or served at your venue. No mess, no repeats — chef-crafted menus across six cuisines, never oily-same-old.',
+    question: 'Where is the food prepared?',
+    answer: 'Everything is cooked fresh in our FSSAI-licensed Salt Lake kitchen, then delivered or served at your venue.',
   },
   {
     question: 'What kinds of events do you cater?',
-    answer: 'House parties, birthdays, anniversaries, festive gatherings, corporate meals, grazing tables and large celebrations — across Kolkata.',
+    answer: 'House parties, birthdays, anniversaries, festive gatherings, office meals and larger celebrations across Kolkata.',
   },
   {
     question: 'What is the minimum guest count?',
-    answer: 'Grazing tables from 15 guests, corporate from 10, celebration menus from 25.',
+    answer: 'Corporate orders can start from 10 guests. Celebration menus start from 25 guests, and smaller groups can order from our à la carte menu.',
   },
   {
     question: 'Can menus be customised for taste and diet?',

@@ -43,15 +43,6 @@ export const customerStories: CustomerStory[] = [
     categories: ['Birthdays', 'House parties'],
   },
   {
-    type: 'video',
-    id: 'gallery-grazing-table',
-    src: '/media/customer-stories/story-2.mp4',
-    poster: '/media/customer-stories/story-2-poster.png',
-    title: 'A table made for lingering',
-    caption: 'A grazing spread set among art for an intimate gathering.',
-    categories: ['Private dinners'],
-  },
-  {
     type: 'quote',
     id: 'prirti',
     name: 'Prirti',

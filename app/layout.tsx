@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: '%s',
   },
   description:
-    'Gourmet catering for get-togethers, house parties and celebrations in Kolkata — chef-crafted menus, spotless execution and zero kitchen chaos. Grazing tables, corporate catering and packed meals since 2015.',
+    'Fresh catering for house parties, get-togethers, offices and celebrations in Kolkata. Custom menus, dependable delivery and simple planning since 2015.',
   alternates: {
     canonical: '/',
   },

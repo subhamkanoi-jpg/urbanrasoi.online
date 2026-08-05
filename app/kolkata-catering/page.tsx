@@ -2,19 +2,18 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Check, MessageCircle, ShieldCheck, Sparkles, UtensilsCrossed } from 'lucide-react'
-import { MaharajComparison } from '@/components/maharaj-comparison'
 import { WhatsAppLink } from '@/components/tracked-links'
 import { site } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Get-Together & Party Catering in Kolkata | Urban Rasoi',
   description:
-    'Skip the maharaj. Gourmet, chef-crafted party food for get-togethers, birthdays and house parties across Kolkata — delivered or fully served, your kitchen stays spotless. Enquire on WhatsApp.',
+    'Fresh, chef-crafted party food for get-togethers, birthdays and house parties across Kolkata — delivered or fully served. Enquire on WhatsApp.',
   alternates: { canonical: '/kolkata-catering' },
   openGraph: {
     title: 'Get-Together & Party Catering in Kolkata | Urban Rasoi',
     description:
-      'Gourmet party food without the maharaj headache — chef-crafted menus, spotless execution and dependable service across Kolkata. Tell us your date, guests and area on WhatsApp.',
+      'Fresh party menus, dependable service and zero kitchen chaos across Kolkata. Tell us your date, guests and area on WhatsApp.',
     url: '/kolkata-catering',
     images: ['/images/og-image.jpg'],
   },
@@ -26,7 +25,6 @@ const occasions = [
   { title: 'Anniversaries', image: '/images/gallery-spread.jpg', planner: 'anniversary' },
   { title: 'Festive gatherings', image: '/images/gallery-diwali.jpg', planner: 'festive' },
   { title: 'Corporate events', image: '/images/gallery-corporate.jpg', planner: 'office' },
-  { title: 'Grazing tables', image: '/images/gallery-grazing.jpg', planner: 'grazing' },
   { title: 'Packed meals', image: '/images/gallery-packedmeal.jpg', planner: null },
 ]
 
@@ -75,8 +73,8 @@ export default function KolkataCateringPage() {
       <main id="top">
         <section className="relative min-h-[690px] overflow-hidden md:min-h-[760px]">
           <Image
-            src="/images/gallery-event.jpg"
-            alt="Urban Rasoi gourmet party catering setup in Kolkata"
+            src="/images/gallery-diwali.jpg"
+            alt="Urban Rasoi serving fresh food at a Kolkata celebration"
             fill
             priority
             sizes="100vw"
@@ -87,10 +85,10 @@ export default function KolkataCateringPage() {
             <div className="max-w-3xl">
               <p className="section-label text-terracotta-light">Party catering in Kolkata · Since 2015</p>
               <h1 className="mt-4 font-serif text-5xl font-semibold leading-[1.02] text-primary-foreground text-balance md:text-7xl">
-                Skip the maharaj. Host in style.
+                Good food. No kitchen chaos.
               </h1>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-primary-foreground/85 md:text-lg">
-                Gourmet party menus from {site.partyMenusFrom} a guest — delivered or served, zero kitchen chaos.
+                Fresh party menus from {site.partyMenusFrom} a guest — delivered or served, with every detail handled.
               </p>
               <Link
                 href="/plan?src=campaign-hero"
@@ -100,9 +98,9 @@ export default function KolkataCateringPage() {
                 <ArrowRight aria-hidden="true" />
               </Link>
               <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium text-primary-foreground/85">
-                <li className="flex items-center gap-2"><Check aria-hidden="true" /> Never the same 10 dishes</li>
+                <li className="flex items-center gap-2"><Check aria-hidden="true" /> Menus tailored to your guests</li>
                 <li className="flex items-center gap-2"><Check aria-hidden="true" /> Kitchen stays spotless</li>
-                <li className="flex items-center gap-2"><Check aria-hidden="true" /> FSSAI · Since 2015</li>
+                <li className="flex items-center gap-2"><Check aria-hidden="true" /> FSSAI licensed · Since 2015</li>
               </ul>
             </div>
           </div>
@@ -145,7 +143,6 @@ export default function KolkataCateringPage() {
           </div>
         </section>
 
-        <MaharajComparison placement="campaign-comparison" />
 
         <section className="bg-cream py-14 md:py-20" aria-labelledby="proof-title">
           <div className="mx-auto max-w-6xl px-5 md:px-8">

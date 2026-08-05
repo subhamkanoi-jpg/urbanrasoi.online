@@ -1,7 +1,6 @@
 import Image from 'next/image'
 
 const shots = [
-  '/images/gallery-grazing.jpg',
   '/images/gallery-event.jpg',
   '/images/gallery-houseparty.jpg',
   '/images/gallery-spread.jpg',

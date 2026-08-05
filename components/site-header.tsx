@@ -13,9 +13,8 @@ type NavItem = { label: string; href: string; highlight?: boolean }
 
 const navItems: NavItem[] = [
   ...products.map((p) => ({ label: p.shortName, href: `/${p.slug}` })),
-  { label: 'Puja Catering', href: '/rudrabhishek-catering' },
-  { label: 'Order Online', href: '/order' },
-  { label: 'Rakhi Order', href: '/rakhi', highlight: true },
+  { label: 'Order à la carte', href: '/order' },
+  { label: 'Rakhi 2026', href: '/rakhi', highlight: true },
 ]
 
 export function SiteHeader() {
