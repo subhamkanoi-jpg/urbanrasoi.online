@@ -7,6 +7,7 @@ import { Reveal } from '@/components/reveal'
 import { TelLink } from '@/components/tracked-links'
 import { WhatsAppButton } from '@/components/whatsapp-button'
 import { products } from '@/lib/products'
+import { isLive } from '@/lib/seasonal'
 import { site, structuredWhatsappMessage } from '@/lib/site'
 
 const serviceFacts: Record<string, string[]> = {
@@ -65,14 +66,16 @@ export default function HomePage() {
 
       <TrustStrip />
 
-      <Link
-        href="/rudrabhishek-catering"
-        className="group flex items-center justify-center gap-2.5 bg-ink px-5 py-3.5 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep"
-      >
-        <span aria-hidden="true">🪔</span>
-        <span>Sawan special — satvik Rudra Abhishek catering, ₹30,000 for 40 guests</span>
-        <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>
-      </Link>
+      {isLive('rudrabhishek') && (
+        <Link
+          href="/rudrabhishek-catering"
+          className="group flex items-center justify-center gap-2.5 bg-ink px-5 py-3.5 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep"
+        >
+          <span aria-hidden="true">🪔</span>
+          <span>Sawan special — satvik Rudra Abhishek catering, ₹30,000 for 40 guests</span>
+          <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>
+        </Link>
+      )}
 
       <section className="mx-auto max-w-7xl px-5 pb-12 pt-10 md:px-10 md:pb-20 md:pt-16">
         <Reveal>

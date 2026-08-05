@@ -1,13 +1,18 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import { CampaignClosed } from '@/components/campaign-closed'
 import { PujaBooking } from '@/components/puja-booking'
 import { ReelPlayer } from '@/components/reel-player'
 import { Reveal } from '@/components/reveal'
 import { TelLink, WhatsAppLink } from '@/components/tracked-links'
 import { BASE_PAX, BASE_PRICE, STEP_PRICE, STEP_PAX, formatINR, inclusions, pujaMenu } from '@/lib/puja-menu'
+import { getCampaign, isCampaignLive } from '@/lib/seasonal'
 import { site } from '@/lib/site'
 
-export const metadata: Metadata = {
+/** Re-render hourly so the page closes itself when Sawan ends. */
+export const revalidate = 3600
+
+const liveMetadata: Metadata = {
   title: 'Rudra Abhishek Puja Catering in Kolkata | Satvik Menu from ₹30,000 — Urban Rasoi',
   description:
     'Satvik family get-together catering for Rudra Abhishek and Sawan pujas in Kolkata. No onion, no garlic. ₹30,000 for 40 guests including 2 kitchen staff, 2 stewards and disposables. Check your date on WhatsApp.',
@@ -35,6 +40,18 @@ export const metadata: Metadata = {
       'Satvik family get-together catering from ₹30,000 for 40 guests — staff and disposables included.',
     images: ['/images/og-rudrabhishek.jpg'],
   },
+}
+
+/** Stop promoting the Sawan menu in search once the season has ended. */
+export function generateMetadata(): Metadata {
+  const campaign = getCampaign('rudrabhishek')
+  if (isCampaignLive(campaign)) return liveMetadata
+  return {
+    title: 'Puja Catering in Kolkata | Urban Rasoi',
+    description: campaign.closedBody,
+    alternates: { canonical: '/rudrabhishek-catering' },
+    robots: { index: false, follow: true },
+  }
 }
 
 const whatsappMessage = `Hi Urban Rasoi! 🙏 I am planning a Rudra Abhishek puja at home and would like the Sawan family get-together menu.
@@ -115,6 +132,9 @@ const faqSchema = {
 }
 
 export default function RudrabhishekCateringPage() {
+  const campaign = getCampaign('rudrabhishek')
+  if (!isCampaignLive(campaign)) return <CampaignClosed campaign={campaign} />
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />

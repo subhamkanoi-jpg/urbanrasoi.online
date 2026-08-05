@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
+import { CampaignClosed } from '@/components/campaign-closed'
 import { RakhiOrder } from '@/components/rakhi-order'
+import { getCampaign, isCampaignLive } from '@/lib/seasonal'
 import { site } from '@/lib/site'
 import { rakhiSections } from '@/lib/rakhi-menu'
 
-export const metadata: Metadata = {
+/** Re-render hourly so the menu closes itself the day after pickup. */
+export const revalidate = 3600
+
+const liveMetadata: Metadata = {
   title: 'Raksha Bandhan Festive Menu 2026 | Urban Rasoi Kolkata',
   description:
     'Order your Raksha Bandhan festive spread from Urban Rasoi — gourmet vegetarian bites curated for home celebrations. Pickup from AE-287, Saltlake Sector-1 on 28 August 2026. Minimum order ₹3,000.',
@@ -32,6 +37,22 @@ export const metadata: Metadata = {
       'Gourmet vegetarian Rakhi spread · pickup from Salt Lake Sector-1 · 28 August 2026.',
     images: [`${site.url}/images/og-rakhi.png`],
   },
+}
+
+/**
+ * Once the occasion has passed the page must stop advertising a menu it can no
+ * longer sell — otherwise search results and link previews keep promising a
+ * pickup date that is gone.
+ */
+export function generateMetadata(): Metadata {
+  const campaign = getCampaign('rakhi')
+  if (isCampaignLive(campaign)) return liveMetadata
+  return {
+    title: 'Raksha Bandhan Menu | Urban Rasoi Kolkata',
+    description: campaign.closedBody,
+    alternates: { canonical: '/rakhi' },
+    robots: { index: false, follow: true },
+  }
 }
 
 const menuSchema = {
@@ -90,6 +111,9 @@ const menuSchema = {
 }
 
 export default function RakhiPage() {
+  const campaign = getCampaign('rakhi')
+  if (!isCampaignLive(campaign)) return <CampaignClosed campaign={campaign} />
+
   return (
     <>
       <script

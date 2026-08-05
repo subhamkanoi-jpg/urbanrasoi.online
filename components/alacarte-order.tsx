@@ -1,7 +1,10 @@
 'use client'
 
+import Image from 'next/image'
+import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { openWhatsapp } from '@/lib/meta-tracking'
+import { shareOrderSlip, type SlipGroup, type SlipRow } from '@/lib/order-slip'
+import { clearOrderState, loadOrderState, saveOrderState } from '@/lib/order-storage'
 import {
   MIN_PORTIONS,
   type MenuItem,
@@ -34,31 +37,42 @@ export function AlacarteOrder() {
   const [activeSection, setActiveSection] = useState(menuSections[0].id)
   const [cartOpen, setCartOpen] = useState(false)
   const [hydrated, setHydrated] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
   const menuTopRef = useRef<HTMLDivElement>(null)
   const suppressSpy = useRef(false)
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const saved = JSON.parse(raw)
-        if (saved.cart) setCart(saved.cart)
-        if (Array.isArray(saved.customItems)) setCustomItems(saved.customItems)
-        if (saved.services) setServices(saved.services)
-        if (saved.details) setDetails({ ...emptyDetails, ...saved.details })
-      }
-    } catch {}
+    const saved = loadOrderState<{
+      cart?: Cart
+      customItems?: CustomItem[]
+      services?: Services
+      details?: Partial<Details>
+    }>(STORAGE_KEY)
+    if (saved) {
+      if (saved.cart) setCart(saved.cart)
+      if (Array.isArray(saved.customItems)) setCustomItems(saved.customItems)
+      if (saved.services) setServices(saved.services)
+      if (saved.details) setDetails({ ...emptyDetails, ...saved.details })
+    }
     setHydrated(true)
     window.fbq?.('trackCustom', 'AlacarteOpen')
   }, [])
 
   useEffect(() => {
     if (!hydrated) return
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ cart, customItems, services, details }))
-    } catch {}
+    saveOrderState(STORAGE_KEY, { cart, customItems, services, details })
   }, [cart, customItems, services, details, hydrated])
+
+  /** Wipe the basket so a sent order never greets the customer on their next visit. */
+  const resetOrder = useCallback(() => {
+    setCart({})
+    setCustomItems([])
+    setServices({ backend: false, frontend: false })
+    setDetails(emptyDetails)
+    clearOrderState(STORAGE_KEY)
+  }, [])
 
   // Highlight the section currently in view.
   useEffect(() => {
@@ -154,7 +168,10 @@ export function AlacarteOrder() {
     }
   }
 
-  function sendOrder() {
+  async function sendOrder() {
+    if (sending) return
+    setSending(true)
+
     const parts = ['Hi Urban Rasoi! 🧡 I would like to place an à la carte order.', '']
     if (lines.length) {
       parts.push('🍽️ *MY ORDER*')
@@ -189,19 +206,109 @@ export function AlacarteOrder() {
       value: grandTotal,
       currency: 'INR',
     })
-    openWhatsapp(parts.join('\n'), {
-      placement: 'alacarte',
-      contentName: 'À la carte order',
-      value: grandTotal,
-      currency: 'INR',
+
+    // Build the printable slip that accompanies the message.
+    const groups: SlipGroup[] = []
+    if (lines.length) {
+      groups.push({
+        heading: 'Your order',
+        rows: lines.map<SlipRow>((line) => ({
+          name: line.name,
+          qty: `×${line.qty}`,
+          price: formatINR(line.price),
+          total: formatINR(line.lineTotal),
+        })),
+      })
+    }
+    if (customItems.length) {
+      groups.push({
+        heading: 'Special requests · to be quoted',
+        rows: customItems.map<SlipRow>((custom) => ({ name: custom.name, qty: `×${custom.qty}` })),
+      })
+    }
+    const addOnRows: SlipRow[] = []
+    if (services.backend) addOnRows.push({ name: serviceAddOns[0].name, total: formatINR(serviceAddOns[0].price) })
+    if (services.frontend) addOnRows.push({ name: serviceAddOns[1].name, total: formatINR(serviceAddOns[1].price) })
+    if (addOnRows.length) groups.push({ heading: 'Service add-ons', rows: addOnRows })
+
+    const facts: string[] = []
+    if (details.name) facts.push(`Name: ${details.name}`)
+    facts.push(`Date: ${details.date || '—'}   ·   Time: ${details.time || '—'}`)
+    facts.push(`Area: ${details.area || '—'}`)
+
+    const outcome = await shareOrderSlip({
+      slip: {
+        eyebrow: 'À la carte order',
+        facts,
+        groups,
+        totalLabel: customItems.length ? 'Estimated total' : 'Order total',
+        totalValue: formatINR(grandTotal),
+        note: details.note || undefined,
+      },
+      text: parts.join('\n'),
+      fileName: 'urban-rasoi-order.png',
+      title: 'My Urban Rasoi order',
+      tracking: {
+        placement: 'alacarte',
+        contentName: 'À la carte order',
+        value: grandTotal,
+        currency: 'INR',
+      },
     })
+
+    setSending(false)
+    // A dismissed share sheet means "not yet" — keep the basket intact.
+    if (outcome === 'cancelled') return
+    setSent(true)
+    setCartOpen(false)
+    resetOrder()
   }
 
   return (
     <div className="pb-32 md:pb-24">
+      {/* Confirmation — the basket is cleared on send, so say so explicitly. */}
+      {sent && (
+        <div
+          role="status"
+          className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-ink px-5 py-4 text-primary-foreground"
+        >
+          <div className="mx-auto flex max-w-5xl flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm font-medium">
+              Order sent to WhatsApp. We will confirm availability shortly.
+            </p>
+            <button
+              type="button"
+              onClick={() => setSent(false)}
+              className="shrink-0 rounded-full bg-terracotta px-5 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep"
+            >
+              Start a new order
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="border-b border-border bg-cream">
-        <div className="mx-auto max-w-5xl px-5 pb-6 pt-24 md:px-8 md:pt-28">
+        <div className="mx-auto max-w-5xl px-5 pb-6 pt-6 md:px-8 md:pt-8">
+          <div className="mb-8 flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2.5">
+              <Image
+                src="/images/logo.jpg"
+                alt="Urban Rasoi"
+                width={36}
+                height={36}
+                className="size-9 rounded-full object-cover ring-2 ring-cream-dark"
+              />
+              <span className="font-serif text-base font-semibold text-ink">Urban Rasoi</span>
+            </Link>
+            <Link
+              href="/"
+              aria-label="Back to home"
+              className="flex size-9 items-center justify-center rounded-full bg-background text-lg text-ink transition-colors hover:bg-cream-dark"
+            >
+              ✕
+            </Link>
+          </div>
           <p className="section-label">À la carte · House party menu</p>
           <h1 className="mt-2 font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">
             Build your own order.
@@ -450,11 +557,19 @@ export function AlacarteOrder() {
               <button
                 type="button"
                 onClick={sendOrder}
-                className="mt-3 w-full rounded-full bg-terracotta px-8 py-4 text-lg font-semibold text-primary-foreground transition-colors hover:bg-terracotta-deep"
+                disabled={sending}
+                className={cn(
+                  'mt-3 w-full rounded-full px-8 py-4 text-lg font-semibold transition-colors',
+                  sending
+                    ? 'cursor-not-allowed bg-cream text-ink-lighter'
+                    : 'bg-terracotta text-primary-foreground hover:bg-terracotta-deep',
+                )}
               >
-                Send order on WhatsApp →
+                {sending ? 'Preparing your order slip…' : 'Send order on WhatsApp →'}
               </button>
-              <p className="mt-2 text-center text-xs text-ink-soft">No payment now — we confirm availability first.</p>
+              <p className="mt-2 text-center text-xs text-ink-soft">
+                Your order goes across as an image plus the details. No payment now — we confirm availability first.
+              </p>
             </div>
           </div>
         </div>

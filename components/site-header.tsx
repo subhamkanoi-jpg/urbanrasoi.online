@@ -6,30 +6,38 @@ import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { products } from '@/lib/products'
 import { trackContact } from '@/lib/meta-tracking'
+import { getCampaign, type CampaignId } from '@/lib/seasonal'
 import { site } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
 type NavItem = { label: string; href: string; highlight?: boolean }
 
 // The two ways to actually order come first; browsing pages sit underneath.
-const primaryNav: NavItem[] = [
-  { label: 'Plan my party', href: '/plan?src=nav' },
-  { label: 'Order à la carte', href: '/order' },
-  { label: 'Rakhi Order', href: '/rakhi', highlight: true },
-]
+// Seasonal entries only appear while their campaign is still running.
+function buildNav(live: CampaignId[]) {
+  const rakhi = getCampaign('rakhi')
+  const puja = getCampaign('rudrabhishek')
 
-const browseNav: NavItem[] = [
-  ...products.map((p) => ({ label: p.shortName, href: `/${p.slug}` })),
-  { label: 'Puja Catering', href: '/rudrabhishek-catering' },
-]
+  const primary: NavItem[] = [
+    { label: 'Plan my party', href: '/plan?src=nav' },
+    { label: 'Order à la carte', href: '/order' },
+    ...(live.includes('rakhi') ? [{ label: rakhi.label, href: rakhi.href, highlight: true }] : []),
+  ]
 
-const navItems: NavItem[] = [...primaryNav, ...browseNav]
+  const browse: NavItem[] = [
+    ...products.map((p) => ({ label: p.shortName, href: `/${p.slug}` })),
+    ...(live.includes('rudrabhishek') ? [{ label: puja.label, href: puja.href }] : []),
+  ]
 
-export function SiteHeader() {
+  return { primary, browse, all: [...primary, ...browse] }
+}
+
+export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[] }) {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const { primary: primaryNav, browse: browseNav, all: navItems } = buildNav(liveCampaigns)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 48)

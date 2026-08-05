@@ -3,7 +3,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { openWhatsapp } from '@/lib/meta-tracking'
+import { shareOrderSlip, type SlipRow } from '@/lib/order-slip'
+import { clearOrderState, loadOrderState, saveOrderState } from '@/lib/order-storage'
 import {
   CELEBRATION_MIN_GUESTS,
   type Plan,
@@ -41,15 +42,9 @@ const stepTitles: Record<Step, string> = {
 const guestPresets = [10, 15, 25, 40, 60, 100]
 
 function loadSaved(): { plan: Plan; step: number } | null {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw)
-    if (!parsed || typeof parsed.plan !== 'object') return null
-    return { plan: { ...emptyPlan, ...parsed.plan }, step: Math.min(parsed.step ?? 0, STEPS.length - 1) }
-  } catch {
-    return null
-  }
+  const parsed = loadOrderState<{ plan?: Plan; step?: number }>(STORAGE_KEY)
+  if (!parsed || typeof parsed.plan !== 'object' || parsed.plan === null) return null
+  return { plan: { ...emptyPlan, ...parsed.plan }, step: Math.min(parsed.step ?? 0, STEPS.length - 1) }
 }
 
 export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: string; source?: string }) {
@@ -58,6 +53,8 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
   const [step, setStep] = useState(() => (preset ? 1 : 0))
   const [resumed, setResumed] = useState(false)
   const [hydrated, setHydrated] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sentPlan, setSentPlan] = useState(false)
   const topRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -73,11 +70,9 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
   }, [])
 
   useEffect(() => {
-    if (!hydrated) return
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ plan, step }))
-    } catch {}
-  }, [plan, step, hydrated])
+    if (!hydrated || sentPlan) return
+    saveOrderState(STORAGE_KEY, { plan, step })
+  }, [plan, step, hydrated, sentPlan])
 
   const goTo = useCallback((next: number) => {
     setResumed(false)
@@ -92,16 +87,55 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
   const current = STEPS[step]
   const estimate = useMemo(() => estimatePlan(plan), [plan])
 
-  function send() {
-    const message = composeWhatsappMessage(plan)
+  async function send() {
+    if (sending) return
+    setSending(true)
+
     const value = estimate ? Math.round((estimate.total[0] + estimate.total[1]) / 2) : undefined
-    openWhatsapp(message, {
-      placement: 'planner',
-      occasion: getOccasion(plan.occasion)?.label,
-      contentName: 'Party Planner',
-      value,
-      currency: value != null ? 'INR' : undefined,
+    const service = services.find((s) => s.id === plan.service)
+
+    const details: SlipRow[] = [
+      { name: 'Occasion', qty: getOccasion(plan.occasion)?.label ?? '—' },
+      { name: 'Guests', qty: `${plan.guests}` },
+      { name: 'Date', qty: plan.date ? prettyDate(plan.date) : plan.dateFlexible ? 'Flexible' : '—' },
+      { name: 'Service', qty: service?.label ?? 'Help me choose' },
+    ]
+    if (plan.area) details.push({ name: 'Area', qty: plan.area })
+    if (plan.pureVeg) details.push({ name: 'Preference', qty: 'Pure vegetarian' })
+
+    const groups = [{ heading: 'Your party', rows: details }]
+    if (plan.cuisines.length) {
+      groups.push({ heading: 'Food mood', rows: plan.cuisines.map((c) => ({ name: c })) })
+    }
+
+    const outcome = await shareOrderSlip({
+      slip: {
+        eyebrow: 'Party plan',
+        facts: plan.name ? [`Name: ${plan.name}`] : undefined,
+        groups,
+        totalLabel: estimate ? 'Estimate' : undefined,
+        totalValue: estimate
+          ? `${formatINR(estimate.total[0])}–${formatINR(estimate.total[1])}`
+          : undefined,
+        note: plan.note || undefined,
+      },
+      text: composeWhatsappMessage(plan),
+      fileName: 'urban-rasoi-party-plan.png',
+      title: 'My Urban Rasoi party plan',
+      tracking: {
+        placement: 'planner',
+        occasion: getOccasion(plan.occasion)?.label,
+        contentName: 'Party Planner',
+        value,
+        currency: value != null ? 'INR' : undefined,
+      },
     })
+
+    setSending(false)
+    if (outcome === 'cancelled') return
+    setSentPlan(true)
+    // Start fresh next time rather than resuming a plan already sent.
+    clearOrderState(STORAGE_KEY)
   }
 
   return (
@@ -373,11 +407,25 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
             <button
               type="button"
               onClick={send}
-              className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-full bg-terracotta px-8 py-4.5 text-lg font-semibold text-primary-foreground transition-all hover:bg-terracotta-deep active:scale-[0.99]"
+              disabled={sending}
+              className={cn(
+                'mt-6 flex w-full items-center justify-center gap-2.5 rounded-full px-8 py-4.5 text-lg font-semibold transition-all',
+                sending
+                  ? 'cursor-not-allowed bg-cream text-ink-lighter'
+                  : 'bg-terracotta text-primary-foreground hover:bg-terracotta-deep active:scale-[0.99]',
+              )}
             >
-              Send my plan on WhatsApp →
+              {sending ? 'Preparing your plan…' : 'Send my plan on WhatsApp →'}
             </button>
-            <p className="mt-3 text-center text-sm text-ink-soft">No payment now. Menus & quote usually within hours.</p>
+            {sentPlan ? (
+              <p className="mt-3 text-center text-sm font-medium text-terracotta">
+                Plan sent. We will come back with menus and a quote shortly.
+              </p>
+            ) : (
+              <p className="mt-3 text-center text-sm text-ink-soft">
+                Sent as an image plus the details. No payment now — menus &amp; quote usually within hours.
+              </p>
+            )}
 
             <div className="mt-5 flex flex-col items-center gap-2 text-sm">
               <Link href="/order" className="font-semibold text-terracotta hover:text-terracotta-deep">

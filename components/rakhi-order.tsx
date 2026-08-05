@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image'
-import { openWhatsapp } from '@/lib/meta-tracking'
+import Link from 'next/link'
+import { shareOrderSlip, type SlipRow } from '@/lib/order-slip'
+import { clearOrderState, loadOrderState, saveOrderState } from '@/lib/order-storage'
 import {
   RAKHI_MIN_ORDER,
   RAKHI_PICKUP_DATE,
@@ -267,10 +269,14 @@ function FestiveMusic() {
 function CateringTab() {
   const [selectedPkg, setSelectedPkg] = useState<string>('15pax')
   const [contactSent, setContactSent] = useState(false)
+  const [sending, setSending] = useState(false)
 
   const pkg = CATERING_PACKAGES.find((p) => p.id === selectedPkg) ?? CATERING_PACKAGES[0]
 
-  function sendCateringEnquiry() {
+  async function sendCateringEnquiry() {
+    if (sending) return
+    setSending(true)
+
     const lines = [
       'Raksha Bandhan Catering Enquiry — Urban Rasoi',
       '',
@@ -294,13 +300,38 @@ function CateringTab() {
     lines.push('')
     lines.push('Please confirm availability for 28 August 2026.')
 
-    openWhatsapp(lines.join('\n'), {
-      placement: 'rakhi-catering',
-      contentName: 'Rakhi Catering Package',
-      value: pkg.price,
-      currency: 'INR',
+    const outcome = await shareOrderSlip({
+      slip: {
+        theme: 'rakhi',
+        eyebrow: 'Raksha Bandhan 2026 · catering package',
+        facts: [
+          `Package: ${pkg.guests} guests  ·  ₹1,300 per head`,
+          'Date: 28 August 2026',
+          'Includes 1 backend + 2 service staff for 3 hours',
+        ],
+        groups: CATERING_MENU.map((section) => ({
+          heading: section.category,
+          rows: section.items.map<SlipRow>((item) => ({
+            name: item.name,
+            qty: pkg.guests === 15 ? item.qty15 : item.qty25,
+          })),
+        })),
+        totalLabel: `Package · ${pkg.guests} guests`,
+        totalValue: formatINR(pkg.price),
+      },
+      text: lines.join('\n'),
+      fileName: 'urban-rasoi-rakhi-catering.png',
+      title: 'Raksha Bandhan Catering — Urban Rasoi',
+      tracking: {
+        placement: 'rakhi-catering',
+        contentName: 'Rakhi Catering Package',
+        value: pkg.price,
+        currency: 'INR',
+      },
     })
-    setContactSent(true)
+
+    setSending(false)
+    if (outcome !== 'cancelled') setContactSent(true)
   }
 
   return (
@@ -372,7 +403,13 @@ function CateringTab() {
         <button
           type="button"
           onClick={sendCateringEnquiry}
-          className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-rakhi-saffron py-4 font-semibold text-base text-white transition-colors hover:bg-rakhi-saffron-deep active:scale-[0.98]"
+          disabled={sending}
+          className={cn(
+            'flex w-full items-center justify-center gap-2.5 rounded-2xl py-4 font-semibold text-base transition-colors',
+            sending
+              ? 'cursor-not-allowed bg-rakhi-cream text-rakhi-muted'
+              : 'bg-rakhi-saffron text-white hover:bg-rakhi-saffron-deep active:scale-[0.98]',
+          )}
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
@@ -405,21 +442,18 @@ function AlaCarteTab() {
   const suppressSpy = useRef(false)
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const saved = JSON.parse(raw)
-        if (saved.cart) setCart(saved.cart)
-        if (saved.details) setDetails({ ...emptyDetails, ...saved.details })
-      }
-    } catch {}
+    const saved = loadOrderState<{ cart?: Cart; details?: Partial<Details> }>(STORAGE_KEY)
+    if (saved) {
+      if (saved.cart) setCart(saved.cart)
+      if (saved.details) setDetails({ ...emptyDetails, ...saved.details })
+    }
     setHydrated(true)
     window.fbq?.('trackCustom', 'RakhiOrderOpen')
   }, [])
 
   useEffect(() => {
     if (!hydrated) return
-    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ cart, details })) } catch {}
+    saveOrderState(STORAGE_KEY, { cart, details })
   }, [cart, details, hydrated])
 
   useEffect(() => {
@@ -496,201 +530,58 @@ function AlaCarteTab() {
     return parts.join('\n')
   }
 
-  /** Draw the order slip onto a canvas and return a PNG blob */
-  function renderOrderSlip(): Promise<Blob> {
-    return new Promise((resolve) => {
-      const W = 800
-      const lineH = 36
-      const headerH = 180
-      const billRows = lines.length
-      const footerH = 180
-      const H = headerH + billRows * lineH + footerH
-      const canvas = document.createElement('canvas')
-      canvas.width = W
-      canvas.height = H
-      const ctx = canvas.getContext('2d')!
-
-      // ── Background ──
-      ctx.fillStyle = '#fdf5e6'
-      ctx.fillRect(0, 0, W, H)
-
-      // ── Top saffron band ──
-      ctx.fillStyle = '#c8621a'
-      ctx.fillRect(0, 0, W, 8)
-
-      // ── Brand header ──
-      ctx.fillStyle = '#2d1a0a'
-      ctx.font = 'bold 13px system-ui, sans-serif'
-      ctx.letterSpacing = '3px'
-      ctx.textAlign = 'center'
-      ctx.fillText('URBAN RASOI', W / 2, 44)
-
-      ctx.fillStyle = '#c8621a'
-      ctx.font = '600 11px system-ui, sans-serif'
-      ctx.letterSpacing = '2px'
-      ctx.fillText('RAKSHA BANDHAN 2026  ·  FESTIVE ORDER', W / 2, 66)
-
-      // ── Divider ──
-      ctx.strokeStyle = '#c9973a'
-      ctx.lineWidth = 0.8
-      ctx.setLineDash([4, 4])
-      ctx.beginPath()
-      ctx.moveTo(48, 80)
-      ctx.lineTo(W - 48, 80)
-      ctx.stroke()
-      ctx.setLineDash([])
-
-      // ── Customer info ──
-      ctx.fillStyle = '#2d1a0a'
-      ctx.textAlign = 'left'
-      ctx.font = '600 13px system-ui, sans-serif'
-      ctx.letterSpacing = '0px'
-      ctx.fillText(`Name: ${details.name}`, 48, 106)
-      if (details.phone) ctx.fillText(`Phone: ${details.phone}`, 48, 126)
-      ctx.fillStyle = '#7a5535'
-      ctx.font = '12px system-ui, sans-serif'
-      ctx.fillText(`Pickup: ${RAKHI_PICKUP_ADDRESS}`, 48, 146)
-      ctx.fillText(`Date: ${RAKHI_PICKUP_DATE}  ·  Time: ${details.time}`, 48, 164)
-
-      // ── Items header row ──
-      let y = headerH
-      ctx.fillStyle = '#c9973a'
-      ctx.globalAlpha = 0.15
-      ctx.fillRect(0, y, W, lineH)
-      ctx.globalAlpha = 1
-      ctx.fillStyle = '#c8621a'
-      ctx.font = '700 10px system-ui, sans-serif'
-      ctx.letterSpacing = '1.5px'
-      ctx.fillText('ITEM', 48, y + 22)
-      ctx.textAlign = 'right'
-      ctx.fillText('QTY', W - 200, y + 22)
-      ctx.fillText('PRICE', W - 100, y + 22)
-      ctx.fillText('TOTAL', W - 48, y + 22)
-      y += lineH
-
-      // ── Item rows ──
-      lines.forEach((line, i) => {
-        ctx.fillStyle = i % 2 === 0 ? '#faebd0' : '#fdf5e6'
-        ctx.fillRect(0, y, W, lineH)
-        ctx.fillStyle = '#2d1a0a'
-        ctx.textAlign = 'left'
-        ctx.font = '500 13px system-ui, sans-serif'
-        ctx.letterSpacing = '0px'
-        // Truncate long names
-        const maxW = W - 300
-        let name = line.name
-        ctx.font = '500 13px system-ui, sans-serif'
-        while (ctx.measureText(name).width > maxW && name.length > 10) {
-          name = name.slice(0, -1)
-        }
-        if (name !== line.name) name += '…'
-        ctx.fillText(name, 48, y + 23)
-        ctx.textAlign = 'right'
-        ctx.font = '500 13px system-ui, sans-serif'
-        ctx.fillText(`×${line.qty}`, W - 200, y + 23)
-        ctx.fillText(formatINR(line.price), W - 100, y + 23)
-        ctx.font = '600 13px system-ui, sans-serif'
-        ctx.fillStyle = '#c8621a'
-        ctx.fillText(formatINR(line.lineTotal), W - 48, y + 23)
-        y += lineH
-      })
-
-      // ── Total band ──
-      ctx.fillStyle = '#c8621a'
-      ctx.fillRect(0, y, W, 52)
-      ctx.fillStyle = '#ffffff'
-      ctx.textAlign = 'left'
-      ctx.font = '600 13px system-ui, sans-serif'
-      ctx.letterSpacing = '2px'
-      ctx.fillText('ORDER TOTAL', 48, y + 32)
-      ctx.textAlign = 'right'
-      ctx.font = 'bold 22px system-ui, sans-serif'
-      ctx.letterSpacing = '0px'
-      ctx.fillText(formatINR(grandTotal), W - 48, y + 34)
-      y += 52
-
-      // ── Bottom divider ──
-      ctx.strokeStyle = '#c9973a'
-      ctx.lineWidth = 0.8
-      ctx.setLineDash([4, 4])
-      ctx.beginPath()
-      ctx.moveTo(48, y + 20)
-      ctx.lineTo(W - 48, y + 20)
-      ctx.stroke()
-      ctx.setLineDash([])
-
-      // ── Footer ──
-      ctx.fillStyle = '#7a5535'
-      ctx.textAlign = 'center'
-      ctx.font = '12px system-ui, sans-serif'
-      ctx.fillText('Pure Vegetarian  ·  FSSAI 12823013000353', W / 2, y + 46)
-      ctx.fillStyle = '#2d1a0a'
-      ctx.font = '600 13px system-ui, sans-serif'
-      ctx.fillText('urbanrasoi.online  |  9830725556', W / 2, y + 70)
-
-      // ── Bottom saffron band ──
-      ctx.fillStyle = '#c8621a'
-      ctx.fillRect(0, H - 8, W, 8)
-
-      canvas.toBlob((blob) => resolve(blob!), 'image/png')
-    })
-  }
 
   const [sharing, setSharing] = useState(false)
 
   async function sendOrder() {
-    if (!canOrder) return
+    if (!canOrder || sharing) return
     setSharing(true)
     window.fbq?.('track', 'InitiateCheckout', { num_items: itemCount, value: grandTotal, currency: 'INR' })
 
-    const text = buildWhatsappText()
+    const facts = [`Name: ${details.name}`]
+    if (details.phone) facts.push(`Phone: ${details.phone}`)
+    facts.push(`Pickup: ${RAKHI_PICKUP_DATE}  ·  ${details.time}`)
+    facts.push(RAKHI_PICKUP_ADDRESS)
 
-    try {
-      const blob = await renderOrderSlip()
-      const file = new File([blob], 'urban-rasoi-rakhi-order.png', { type: 'image/png' })
-
-      const canShareFiles =
-        typeof navigator.share === 'function' &&
-        typeof navigator.canShare === 'function' &&
-        navigator.canShare({ files: [file] })
-
-      if (canShareFiles) {
-        // Mobile: native share sheet — user picks WhatsApp, image attaches directly
-        await navigator.share({
-          files: [file],
-          text,
-          title: 'Raksha Bandhan Order — Urban Rasoi',
-        })
-      } else {
-        // Desktop fallback: download the image, then open WhatsApp web with text
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = 'urban-rasoi-rakhi-order.png'
-        a.click()
-        URL.revokeObjectURL(url)
-        // Small delay so download dialog opens before WhatsApp redirect
-        await new Promise((r) => window.setTimeout(r, 600))
-        openWhatsapp(text, {
-          placement: 'rakhi-order',
-          contentName: 'Rakhi Festive Order',
-          value: grandTotal,
-          currency: 'INR',
-        })
-      }
-    } catch {
-      // User dismissed share sheet or canvas failed — fall back to text-only
-      openWhatsapp(text, {
+    const outcome = await shareOrderSlip({
+      slip: {
+        theme: 'rakhi',
+        eyebrow: 'Raksha Bandhan 2026 · festive order',
+        facts,
+        groups: [
+          {
+            heading: 'Your order',
+            rows: lines.map<SlipRow>((line) => ({
+              name: line.name,
+              qty: `×${line.qty}`,
+              price: formatINR(line.price),
+              total: formatINR(line.lineTotal),
+            })),
+          },
+        ],
+        totalLabel: 'Order total',
+        totalValue: formatINR(grandTotal),
+        note: details.note || undefined,
+      },
+      text: buildWhatsappText(),
+      fileName: 'urban-rasoi-rakhi-order.png',
+      title: 'Raksha Bandhan Order — Urban Rasoi',
+      tracking: {
         placement: 'rakhi-order',
         contentName: 'Rakhi Festive Order',
         value: grandTotal,
         currency: 'INR',
-      })
-    }
+      },
+    })
 
     setSharing(false)
+    if (outcome === 'cancelled') return
     setOrderSent(true)
     setCartOpen(false)
+    // Clear the basket so a sent order does not reappear on the next visit.
+    setCart({})
+    setDetails(emptyDetails)
+    clearOrderState(STORAGE_KEY)
   }
 
   return (
@@ -995,13 +886,15 @@ export function RakhiOrder() {
 
         <div className="relative mx-auto max-w-3xl px-5 pb-16 pt-28 text-center md:pb-20 md:pt-36">
           <div className="mb-5 flex justify-center">
-            <Image
-              src="/images/logo.jpg"
-              alt="Urban Rasoi"
-              width={60}
-              height={60}
-              className="size-15 rounded-full ring-4 ring-rakhi-gold/50 object-cover shadow-xl"
-            />
+            <Link href="/" aria-label="Urban Rasoi home">
+              <Image
+                src="/images/logo.jpg"
+                alt="Urban Rasoi"
+                width={60}
+                height={60}
+                className="size-15 rounded-full ring-4 ring-rakhi-gold/50 object-cover shadow-xl transition-transform hover:scale-105"
+              />
+            </Link>
           </div>
           <p className="text-xs font-semibold tracking-[0.3em] text-rakhi-gold uppercase">Raksha Bandhan 2026</p>
           <h1 className="mt-3 font-serif text-4xl font-semibold leading-tight text-white text-balance md:text-6xl">

@@ -61,7 +61,16 @@ export default function KolkataCateringPage() {
 
       <header className="absolute inset-x-0 top-0 z-10">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 md:px-8">
-          <a href="#top" className="font-serif text-xl font-semibold text-primary-foreground md:text-2xl">Urban Rasoi</a>
+          <Link href="/" className="flex items-center gap-2.5">
+            <Image
+              src="/images/logo.jpg"
+              alt="Urban Rasoi"
+              width={36}
+              height={36}
+              className="size-9 rounded-full object-cover ring-2 ring-primary-foreground/25"
+            />
+            <span className="font-serif text-xl font-semibold text-primary-foreground md:text-2xl">Urban Rasoi</span>
+          </Link>
           <WhatsAppLink
             placement="campaign-header"
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-primary-foreground/35 bg-ink/25 px-4 text-sm font-semibold text-primary-foreground backdrop-blur-sm transition-colors hover:bg-ink/45"

@@ -2,6 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { products } from '@/lib/products'
 import { TelLink, WhatsAppLink } from '@/components/tracked-links'
+import { getCampaign, type CampaignId } from '@/lib/seasonal'
 import { site } from '@/lib/site'
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -22,7 +23,8 @@ function InstagramIcon({ className }: { className?: string }) {
   )
 }
 
-export function SiteFooter() {
+export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[] }) {
+  const puja = getCampaign('rudrabhishek')
   return (
     <footer className="bg-ink text-background/85">
       {/* Top portion */}
@@ -87,14 +89,16 @@ export function SiteFooter() {
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link
-                  href="/rudrabhishek-catering"
-                  className="text-sm text-background/70 transition-colors hover:text-terracotta"
-                >
-                  Rudra Abhishek Puja Catering
-                </Link>
-              </li>
+              {liveCampaigns.includes('rudrabhishek') && (
+                <li>
+                  <Link
+                    href={puja.href}
+                    className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
+                  >
+                    Rudra Abhishek Puja Catering
+                  </Link>
+                </li>
+              )}
             </ul>
           </nav>
 

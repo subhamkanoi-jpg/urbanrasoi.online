@@ -1,7 +1,8 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { openWhatsapp } from '@/lib/meta-tracking'
+import { shareOrderSlip, type SlipRow } from '@/lib/order-slip'
+import { clearOrderState, loadOrderState, saveOrderState } from '@/lib/order-storage'
 import { downloadBlob, renderPujaMenuJpg } from '@/lib/puja-menu-card'
 import {
   BASE_PAX,
@@ -55,14 +56,14 @@ export function PujaBooking() {
   const [hydrated, setHydrated] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [downloaded, setDownloaded] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [booked, setBooked] = useState(false)
   const [panelVisible, setPanelVisible] = useState(true)
   const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(STORAGE_KEY)
-      if (raw) setBooking({ ...emptyBooking, ...JSON.parse(raw) })
-    } catch {}
+    const saved = loadOrderState<Partial<Booking>>(STORAGE_KEY)
+    if (saved) setBooking({ ...emptyBooking, ...saved })
     setHydrated(true)
   }, [])
 
@@ -78,11 +79,9 @@ export function PujaBooking() {
   }, [hydrated])
 
   useEffect(() => {
-    if (!hydrated) return
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(booking))
-    } catch {}
-  }, [booking, hydrated])
+    if (!hydrated || booked) return
+    saveOrderState(STORAGE_KEY, booking)
+  }, [booking, hydrated, booked])
 
   const price = useMemo(() => priceForPax(booking.pax), [booking.pax])
   const rate = useMemo(() => perGuest(booking.pax), [booking.pax])
@@ -95,7 +94,10 @@ export function PujaBooking() {
     update({ pax: Math.max(BASE_PAX, Math.min(MAX_PAX, next)) })
   }
 
-  function sendBooking() {
+  async function sendBooking() {
+    if (sending) return
+    setSending(true)
+
     const lines = [
       'Hi Urban Rasoi! 🙏 I would like to book the *Sawan · Rudra Abhishek* family get-together menu.',
       '',
@@ -112,13 +114,50 @@ export function PujaBooking() {
     lines.push('', 'Please confirm availability for my date.')
 
     window.fbq?.('track', 'InitiateCheckout', { value: price, currency: 'INR', num_items: booking.pax })
-    openWhatsapp(lines.join('\n'), {
-      placement: 'puja-booking',
-      occasion: 'Rudra Abhishek Puja',
-      contentName: 'Sawan Puja Menu',
-      value: price,
-      currency: 'INR',
+
+    const rows: SlipRow[] = [
+      { name: 'Guests', qty: `${booking.pax}` },
+      { name: 'Puja date', qty: booking.date ? prettyDate(booking.date) : 'To confirm' },
+      { name: 'Serving time', qty: booking.time || 'To confirm' },
+      { name: 'Area', qty: booking.area || '—' },
+      { name: 'Rate', qty: `${formatINR(rate)} per guest` },
+    ]
+    const extraRows: SlipRow[] = []
+    if (booking.chai) extraRows.push({ name: 'Kulhad Chai' })
+    if (booking.ekadashi) extraRows.push({ name: 'Ekadashi cuisine' })
+
+    const groups = [{ heading: 'Your booking', rows }]
+    if (extraRows.length) groups.push({ heading: 'Add-ons', rows: extraRows })
+    groups.push({
+      heading: 'Included',
+      rows: inclusions.map<SlipRow>((item) => ({ name: item.title, qty: item.detail })),
     })
+
+    const outcome = await shareOrderSlip({
+      slip: {
+        eyebrow: 'Sawan · Rudra Abhishek booking',
+        facts: booking.name ? [`Name: ${booking.name}`] : undefined,
+        groups,
+        totalLabel: 'Package',
+        totalValue: formatINR(price),
+        note: booking.note || undefined,
+      },
+      text: lines.join('\n'),
+      fileName: 'urban-rasoi-puja-booking.png',
+      title: 'Sawan Puja Booking — Urban Rasoi',
+      tracking: {
+        placement: 'puja-booking',
+        occasion: 'Rudra Abhishek Puja',
+        contentName: 'Sawan Puja Menu',
+        value: price,
+        currency: 'INR',
+      },
+    })
+
+    setSending(false)
+    if (outcome === 'cancelled') return
+    setBooked(true)
+    clearOrderState(STORAGE_KEY)
   }
 
   async function downloadMenu() {

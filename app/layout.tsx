@@ -3,8 +3,15 @@ import { Playfair_Display, Jost } from 'next/font/google'
 import { StructuredData } from '@/components/structured-data'
 import { SiteShell } from '@/components/site-shell'
 import { MetaPixel } from '@/components/meta-pixel'
+import { liveCampaignIds } from '@/lib/seasonal'
 import { site } from '@/lib/site'
 import './globals.css'
+
+/**
+ * Seasonal pages drop out of the nav on their own once they expire, so the
+ * shell has to be re-rendered periodically rather than frozen at build time.
+ */
+export const revalidate = 3600
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -59,7 +66,7 @@ export default function RootLayout({
     <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${jost.variable} bg-background`}>
       <body className="font-sans">
         <StructuredData />
-        <SiteShell>{children}</SiteShell>
+        <SiteShell liveCampaigns={liveCampaignIds()}>{children}</SiteShell>
         <MetaPixel />
       </body>
     </html>
