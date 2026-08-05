@@ -1,34 +1,29 @@
 @import 'tailwindcss';
 
 @theme inline {
-  /* ── Typography — Archivo only (brand book p.17) ─────────────────── */
-  --font-serif: var(--font-archivo), system-ui, sans-serif;
-  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-serif: var(--font-playfair), Georgia, serif;
+  --font-sans: var(--font-jost), system-ui, sans-serif;
 
-  /* ── Colour system — exact brand-book values (p.16) ─────────────── */
-  /* Primary action, poster fields */
-  --color-terracotta: #EC3013;
-  --color-terracotta-deep: #AE1800;
-  --color-terracotta-light: #FF563C;
-  /* Ink — all body and display type */
-  --color-ink: #201E1D;
-  --color-ink-soft: #5a5250;
-  --color-ink-lighter: #9c9290;
-  /* Ground — default page */
-  --color-background: #F3F2F2;
-  --color-foreground: #201E1D;
-  /* Surface — cards, table rows */
-  --color-cream: #EAE9E9;
-  --color-cream-dark: #d8d6d6;
+  /* Core palette — warm terracotta + cream + deep ink */
+  --color-background: #fdf8f1;
+  --color-foreground: #1e140b;
+  --color-cream: #f4ead8;
+  --color-cream-dark: #e8d8be;
+  --color-ink: #1e140b;
+  --color-ink-soft: #6b5343;
+  --color-ink-lighter: #9c8070;
+  --color-terracotta: #d4521a;
+  --color-terracotta-deep: #a83d0f;
+  --color-terracotta-light: #f0784a;
   --color-card: #ffffff;
-  --color-border: #d8d5d2;
+  --color-border: #e2d4c0;
 
-  --color-primary: #EC3013;
-  --color-primary-foreground: #F3F2F2;
-  --color-muted: #EAE9E9;
-  --color-muted-foreground: #5a5250;
+  --color-primary: #d4521a;
+  --color-primary-foreground: #fdf8f1;
+  --color-muted: #f4ead8;
+  --color-muted-foreground: #6b5343;
 
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 
   /* ── Rakhi festive palette ──────────────────────────────────────────── */
   --color-rakhi-bg: #fdf5e6;
@@ -121,16 +116,10 @@ video:focus-visible {
 .section-label {
   font-size: 0.65rem;
   font-family: var(--font-sans);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-terracotta);
-  font-weight: 800;
-}
-
-/* ─── Brand-book display rule: tight tracking on 800-weight headings ─ */
-/* "Display 800 -0.025em" — applied to any font-serif element */
-.font-serif {
-  letter-spacing: -0.025em;
+  font-weight: 600;
 }
 
 /* ─── Reduced motion ─────────────────────────────────── */

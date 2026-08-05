@@ -1,8 +1,6 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
 import { openWhatsapp } from '@/lib/meta-tracking'
 import {
   MIN_PORTIONS,
@@ -203,18 +201,7 @@ export function AlacarteOrder() {
     <div className="pb-32 md:pb-24">
       {/* Header */}
       <div className="border-b border-border bg-cream">
-        <div className="mx-auto max-w-5xl px-5 pb-6 pt-20 md:px-8 md:pt-24">
-          {/* Logo — links back to homepage per brand-book lock-up rules */}
-          <Link href="/" className="mb-6 inline-flex items-center gap-2.5" aria-label="Urban Rasoi — go to homepage">
-            <Image
-              src="/images/logo.jpg"
-              alt="Urban Rasoi"
-              width={36}
-              height={36}
-              className="size-9 rounded-full object-cover"
-            />
-            <span className="font-serif text-base font-semibold tracking-tight text-ink">Urban Rasoi</span>
-          </Link>
+        <div className="mx-auto max-w-5xl px-5 pb-6 pt-24 md:px-8 md:pt-28">
           <p className="section-label">À la carte · House party menu</p>
           <h1 className="mt-2 font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">
             Build your own order.

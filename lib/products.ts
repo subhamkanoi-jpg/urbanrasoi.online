@@ -27,6 +27,48 @@ export type Product = {
 
 export const products: Product[] = [
   {
+    slug: 'grazing-tables',
+    name: 'Gourmet Grazing Tables',
+    shortName: 'Grazing Tables',
+    eyebrow: 'Our Signature',
+    headline: 'The table everyone gathers around.',
+    promise: 'Styled gourmet spreads — delivered, set up, ready to wow.',
+    description:
+      'Composed like a still life, grazed like a feast. We design, deliver and style it. You host.',
+    heroImage: '/images/gallery-event.jpg',
+    heroImagePosition: 'object-[80%_center]',
+    heroVideo: '/media/grazing-table-hero.mp4',
+    cardImage: '/images/gallery-event.jpg',
+    gallery: [
+      { src: '/images/gallery-event.jpg', alt: 'Dabeli sliders and mezze styled on a grazing board' },
+      { src: '/images/gallery-spread.jpg', alt: 'Three cheese quesadilla with salsa from our grazing menu' },
+      { src: '/images/gallery-baguette.jpg', alt: 'Freshly baked cheesy baguettes from our kitchen' },
+      { src: '/images/gallery-houseparty.jpg', alt: 'A full spread styled and ready for guests' },
+    ],
+    included: [
+      { title: 'Mediterranean Mezze', detail: 'Hummus, dips, olives, artisan breads' },
+      { title: 'Live Nacho Station', detail: 'Loaded nachos, salsas, fresh toppings' },
+      { title: 'Dabeli Sliders', detail: 'A gourmet spin on the street classic' },
+      { title: 'Quesadillas', detail: 'Golden and cheese-pulled' },
+      { title: 'Signature Desserts', detail: 'Mango sandesh, Monte Carlo cups' },
+      { title: 'Styling & Setup', detail: 'Boards, props, tea and coffee' },
+    ],
+    steps: [
+      { title: 'Say hello', detail: 'WhatsApp us your date, guests and mood.' },
+      { title: 'We design it', detail: 'A table styled to your gathering — from 15 guests.' },
+      { title: 'You host', detail: 'We arrive, set up and leave them talking.' },
+    ],
+    whatsappMessage:
+      "Hi Urban Rasoi! I'd love a Grazing Table. Occasion: ___ | Date: ___ | Guests: ___",
+    ctaLabel: 'Plan my grazing table',
+    plannerOccasion: 'grazing',
+    closingHeadline: 'Give them a table to talk about.',
+    closingCopy: 'Send your date and guest count — we design the rest.',
+    metaTitle: 'Gourmet Grazing Tables in Kolkata | Urban Rasoi',
+    metaDescription:
+      'Artfully styled gourmet grazing tables for house parties and celebrations in Kolkata. Designed, delivered and set up by Urban Rasoi — crafting food experiences since 2015.',
+  },
+  {
     slug: 'house-parties',
     name: 'House Party Catering',
     shortName: 'House Parties',

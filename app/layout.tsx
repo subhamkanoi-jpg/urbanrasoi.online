@@ -1,17 +1,20 @@
 import type { Metadata } from 'next'
-import { Archivo } from 'next/font/google'
+import { Playfair_Display, Jost } from 'next/font/google'
 import { StructuredData } from '@/components/structured-data'
 import { SiteShell } from '@/components/site-shell'
 import { MetaPixel } from '@/components/meta-pixel'
 import { site } from '@/lib/site'
 import './globals.css'
 
-// Brand book: Archivo, and nothing else.
-// 400 body · 600 emphasis · 800 display & labels
-const archivo = Archivo({
+const playfair = Playfair_Display({
   subsets: ['latin'],
-  axes: ['wdth'],
-  variable: '--font-archivo',
+  style: ['normal', 'italic'],
+  variable: '--font-playfair',
+})
+
+const jost = Jost({
+  subsets: ['latin'],
+  variable: '--font-jost',
 })
 
 export const metadata: Metadata = {
@@ -53,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${archivo.variable} bg-background`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${jost.variable} bg-background`}>
       <body className="font-sans">
         <StructuredData />
         <SiteShell>{children}</SiteShell>
