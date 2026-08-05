@@ -1,13 +1,17 @@
 import Image from 'next/image'
 
 const shots = [
-  '/images/gallery-grazing.jpg',
-  '/images/gallery-event.jpg',
+  '/images/ig-1.png',
   '/images/gallery-houseparty.jpg',
+  '/images/ig-2.png',
   '/images/gallery-spread.jpg',
+  '/images/ig-3.png',
   '/images/gallery-diwali.jpg',
+  '/images/ig-4.png',
   '/images/gallery-baguette.jpg',
+  '/images/ig-5.png',
   '/images/gallery-bengali.jpg',
+  '/images/ig-6.png',
   '/images/gallery-minipartay.jpg',
 ]
 
