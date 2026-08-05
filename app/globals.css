@@ -24,6 +24,15 @@
   --color-muted-foreground: #6b5343;
 
   --radius: 0.75rem;
+
+  /* ── Rakhi festive palette ──────────────────────────────────────────── */
+  --color-rakhi-bg: #fdf5e6;
+  --color-rakhi-cream: #faebd0;
+  --color-rakhi-saffron: #c8621a;
+  --color-rakhi-saffron-deep: #9e4a10;
+  --color-rakhi-gold: #c9973a;
+  --color-rakhi-deep: #2d1a0a;
+  --color-rakhi-muted: #7a5535;
 }
 
 html {
