@@ -398,6 +398,8 @@ function CateringTab() {
         </ul>
       </div>
 
+      <VoiceNoteNudge />
+
       {/* CTA */}
       <div className="mt-5">
         <button
@@ -795,6 +797,8 @@ function AlaCarteTab() {
                 </div>
               </div>
 
+              <VoiceNoteNudge />
+
               {/* Send button */}
               <div className="mt-5 mb-2">
                 {!canOrder && grandTotal > 0 && (
@@ -853,8 +857,59 @@ function AlaCarteTab() {
   )
 }
 
+/* ── Order deadline band ────────────────────────────────────────────────── */
+function ClosingBand({ daysLeft, closingDate }: { daysLeft: number; closingDate: string }) {
+  if (daysLeft < 0) return null
+
+  const message =
+    daysLeft === 0
+      ? 'Last day to order'
+      : daysLeft === 1
+        ? `1 day left to order · closes ${closingDate}`
+        : daysLeft <= 7
+          ? `${daysLeft} days left to order · closes ${closingDate}`
+          : `Orders close ${closingDate}`
+  const urgent = daysLeft <= 7
+
+  return (
+    <div
+      className={cn(
+        'flex items-center justify-center gap-2.5 px-5 py-2.5 text-center text-sm font-semibold',
+        urgent ? 'bg-rakhi-saffron text-white' : 'bg-rakhi-gold/15 text-rakhi-deep',
+      )}
+    >
+      <span aria-hidden="true">🪢</span>
+      <span>{message}</span>
+      <span className={cn('hidden font-normal sm:inline', urgent ? 'text-white/70' : 'text-rakhi-muted')}>
+        · limited pickup slots
+      </span>
+    </div>
+  )
+}
+
+/* ── Voice note nudge ───────────────────────────────────────────────────── */
+function VoiceNoteNudge() {
+  return (
+    <div className="mt-5 flex items-start gap-3 rounded-xl border border-rakhi-gold/30 bg-rakhi-cream px-4 py-3.5">
+      <span className="mt-0.5 shrink-0 text-lg" aria-hidden="true">🎙️</span>
+      <p className="text-xs leading-relaxed text-rakhi-muted">
+        <strong className="font-semibold text-rakhi-deep">Easier said than typed?</strong>{' '}
+        Once WhatsApp opens, hold the mic button and send us a voice note — allergies, spice
+        levels, packing or timing. We listen to every one before we cook.
+      </p>
+    </div>
+  )
+}
+
 /* ── Main page component ────────────────────────────────────────────────── */
-export function RakhiOrder() {
+export function RakhiOrder({
+  daysLeftToOrder,
+  closingDate,
+}: {
+  /** Computed on the server so the countdown cannot drift from the HTML. */
+  daysLeftToOrder: number
+  closingDate: string
+}) {
   const [activeTab, setActiveTab] = useState<ServiceTab>('alacarte')
 
   const tabs: { id: ServiceTab; label: string; sublabel: string }[] = [
@@ -917,6 +972,8 @@ export function RakhiOrder() {
           </div>
         </div>
       </div>
+
+      <ClosingBand daysLeft={daysLeftToOrder} closingDate={closingDate} />
 
       {/* Service tabs */}
       <div className="sticky top-16 z-30 border-b border-rakhi-gold/20 bg-rakhi-bg/95 backdrop-blur-sm">

@@ -17,7 +17,11 @@ export type Campaign = {
   /** Nav label while the campaign is live. */
   label: string
   href: string
-  /** Final day the campaign is live, inclusive, in Asia/Kolkata. */
+  /**
+   * Last day the page takes orders, inclusive, in Asia/Kolkata. For dated
+   * festive menus this is the order cut-off, not the event — the kitchen needs
+   * lead time, so Rakhi closes before its 28 August pickup.
+   */
   endsOn: `${number}-${number}-${number}`
   /** Shown on the expired page. */
   closedTitle: string
@@ -29,8 +33,9 @@ export const campaigns: Campaign[] = [
     id: 'rakhi',
     label: 'Rakhi Order',
     href: '/rakhi',
-    // Pickup day for the festive menu.
-    endsOn: '2026-08-28',
+    // Orders close three days before the 28 August pickup, to give the kitchen
+    // prep time. Pickup date itself lives in lib/rakhi-menu.ts.
+    endsOn: '2026-08-25',
     closedTitle: 'Raksha Bandhan orders have closed',
     closedBody:
       'Our Rakhi 2026 festive menu was a pickup-only special and is no longer taking orders. Our full house-party menu is available all year.',
@@ -55,6 +60,28 @@ function kolkataToday(now: Date): string {
 
 export function isCampaignLive(campaign: Campaign, now: Date = new Date()): boolean {
   return kolkataToday(now) <= campaign.endsOn
+}
+
+/**
+ * Whole days left to order, in Asia/Kolkata. 0 means today is the last day;
+ * negative means ordering has closed.
+ *
+ * Compute this on the server and pass it down — a client component doing its
+ * own `new Date()` would disagree with the server-rendered HTML.
+ */
+export function daysUntilClose(campaign: Campaign, now: Date = new Date()): number {
+  const today = Date.parse(`${kolkataToday(now)}T00:00:00Z`)
+  const closes = Date.parse(`${campaign.endsOn}T00:00:00Z`)
+  return Math.round((closes - today) / (24 * 60 * 60 * 1000))
+}
+
+/** Human deadline for the closing date, e.g. "25 August". */
+export function closingDateLabel(campaign: Campaign): string {
+  return new Date(`${campaign.endsOn}T00:00:00Z`).toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  })
 }
 
 export function getCampaign(id: CampaignId): Campaign {

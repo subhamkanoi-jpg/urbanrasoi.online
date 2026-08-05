@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { CampaignClosed } from '@/components/campaign-closed'
 import { RakhiOrder } from '@/components/rakhi-order'
-import { getCampaign, isCampaignLive } from '@/lib/seasonal'
+import { closingDateLabel, daysUntilClose, getCampaign, isCampaignLive } from '@/lib/seasonal'
 import { site } from '@/lib/site'
 import { rakhiSections } from '@/lib/rakhi-menu'
 
@@ -121,7 +121,10 @@ export default function RakhiPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(menuSchema) }}
       />
-      <RakhiOrder />
+      <RakhiOrder
+        daysLeftToOrder={daysUntilClose(campaign)}
+        closingDate={closingDateLabel(campaign)}
+      />
     </>
   )
 }
