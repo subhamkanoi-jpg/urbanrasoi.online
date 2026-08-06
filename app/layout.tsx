@@ -3,6 +3,7 @@ import { Playfair_Display, Jost } from 'next/font/google'
 import { StructuredData } from '@/components/structured-data'
 import { SiteShell } from '@/components/site-shell'
 import { MetaPixel } from '@/components/meta-pixel'
+import { CookieNotice } from '@/components/cookie-notice'
 import { liveCampaignIds } from '@/lib/seasonal'
 import { site } from '@/lib/site'
 import './globals.css'
@@ -67,6 +68,7 @@ export default function RootLayout({
       <body className="font-sans">
         <StructuredData />
         <SiteShell liveCampaigns={liveCampaignIds()}>{children}</SiteShell>
+        <CookieNotice />
         <MetaPixel />
       </body>
     </html>
