@@ -313,60 +313,6 @@ function BillRow({ label, value, bold }: { label: string; value: string; bold?: 
   )
 }
 
-/* ── Audio player ───────────────────────────────────────────────────────── */
-const FESTIVE_MUSIC_URL =
-  'https://upload.wikimedia.org/wikipedia/commons/7/7e/Bhoopali.ogg'
-
-function FestiveMusic() {
-  const [playing, setPlaying] = useState(false)
-  const audioRef = useRef<HTMLAudioElement>(null)
-
-  function toggle() {
-    const audio = audioRef.current
-    if (!audio) return
-    if (playing) { audio.pause(); setPlaying(false) }
-    else { audio.play().then(() => setPlaying(true)).catch(() => {}) }
-  }
-
-  return (
-    // Sits bottom-left; the menu browser owns the bottom-right corner.
-    <div className="fixed bottom-6 left-4 z-40 md:left-6">
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-      <audio ref={audioRef} src={FESTIVE_MUSIC_URL} loop preload="none" />
-      <button
-        type="button"
-        onClick={toggle}
-        aria-label={playing ? 'Pause festive music' : 'Play Indian festive music'}
-        className={cn(
-          'relative flex size-12 items-center justify-center rounded-full shadow-lg transition-all',
-          playing
-            ? 'bg-rakhi-saffron text-white ring-2 ring-rakhi-gold/50 ring-offset-2'
-            : 'bg-white text-rakhi-saffron border border-rakhi-gold/40 hover:bg-rakhi-cream',
-        )}
-      >
-        {playing ? (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <rect x="6" y="4" width="4" height="16" rx="1" />
-            <rect x="14" y="4" width="4" height="16" rx="1" />
-          </svg>
-        ) : (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M9 18V5l12-2v13" />
-            <circle cx="6" cy="18" r="3" />
-            <circle cx="18" cy="16" r="3" />
-          </svg>
-        )}
-        {playing && (
-          <span className="absolute -top-1 -right-1 flex size-2.5" aria-hidden="true">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-rakhi-gold opacity-75" />
-            <span className="relative inline-flex size-2.5 rounded-full bg-rakhi-gold" />
-          </span>
-        )}
-      </button>
-    </div>
-  )
-}
-
 /* ── Catering tab ────────────────────────────────────────────────────────── */
 function CateringTab() {
   const [selectedPkg, setSelectedPkg] = useState<string>('15pax')
@@ -1212,8 +1158,6 @@ export function RakhiOrder({
 
   return (
     <div className="min-h-screen bg-rakhi-bg">
-      <FestiveMusic />
-
       {/* Hero — using real food gallery images in a collage */}
       <div className="relative overflow-hidden">
         {/* Background: collage of real food photos */}
@@ -1263,17 +1207,49 @@ export function RakhiOrder({
             ))}
           </div>
 
-          {/* Talk to someone before ordering */}
-          <a
-            href={`tel:${site.phone.replace(/\s/g, '')}`}
-            onClick={() => trackContact('rakhi-hero')}
-            className="mt-6 inline-flex items-center gap-2.5 rounded-full border border-white/40 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-rakhi-deep"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
-            Questions? Call {site.phone}
-          </a>
+          {/* Keep the menu, see the work, or just talk to someone */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="/images/rakhi-festive-menu.jpg"
+              download="urban-rasoi-raksha-bandhan-menu.jpg"
+              onClick={() => window.fbq?.('trackCustom', 'MenuDownloaded', { menu: 'Raksha Bandhan' })}
+              className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-rakhi-deep shadow-lg transition-transform hover:-translate-y-0.5"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Download menu
+            </a>
+            <a
+              href={`tel:${site.phone.replace(/\s/g, '')}`}
+              onClick={() => trackContact('rakhi-hero')}
+              className="inline-flex items-center gap-2 rounded-full border border-white/45 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-rakhi-deep"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              Call us
+            </a>
+            <a
+              href={site.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => window.fbq?.('trackCustom', 'InstagramClick', { from: 'rakhi-hero' })}
+              className="inline-flex items-center gap-2 rounded-full border border-white/45 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-rakhi-deep"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" strokeWidth="0" />
+              </svg>
+              See our work
+            </a>
+          </div>
+          <p className="mt-3 text-xs font-medium text-white/80">
+            Questions before you order? Call {site.phone} — or save the menu and WhatsApp us your picks.
+          </p>
         </div>
       </div>
 
