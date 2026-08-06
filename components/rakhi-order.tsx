@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image'
@@ -12,14 +12,15 @@ import {
   RAKHI_PICKUP_ADDRESS,
   RAKHI_DISCOUNT_CAP,
   RAKHI_DISCOUNT_PERCENT,
+  RAKHI_MIN_PORTIONS,
   PICKUP_TIME_SLOTS,
   type RakhiItem,
   type RakhiSection,
   findRakhiItem,
   formatINR,
+  orderedRakhiSections,
   popularRakhiItems,
   rakhiDiscount,
-  rakhiSections,
 } from '@/lib/rakhi-menu'
 import { cn } from '@/lib/utils'
 import { site } from '@/lib/site'
@@ -155,29 +156,10 @@ function PopularBadge() {
   )
 }
 
-/* ── Dish photo, with a branded tile until a real one is dropped in ─────── */
+/* ── Dish photo ─────────────────────────────────────────────────────────── */
 function DishPhoto({ item }: { item: RakhiItem }) {
-  if (item.image) {
-    return <Image src={item.image} alt={item.name} fill sizes="128px" className="object-cover" />
-  }
-  return (
-    <div className="flex size-full items-center justify-center bg-gradient-to-br from-rakhi-cream via-rakhi-cream to-rakhi-gold/30">
-      <svg
-        width="28"
-        height="28"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        strokeLinecap="round"
-        className="text-rakhi-gold/70"
-        aria-hidden="true"
-      >
-        <path d="M7 2v9M4.5 2v5a2.5 2.5 0 0 0 5 0V2M7 11v11" />
-        <path d="M17.5 2c-1.6 1.7-2.3 3.8-2.3 6s.7 3.4 2.3 4.4V22" />
-      </svg>
-    </div>
-  )
+  if (!item.image) return null
+  return <Image src={item.image} alt={item.name} fill sizes="128px" className="object-cover" />
 }
 
 /* ── Add button / quantity stepper, overlapping the photo ───────────────── */
@@ -240,8 +222,15 @@ function DishCard({
   onAdd: (item: RakhiItem) => void
   onQty: (item: RakhiItem, next: number) => void
 }) {
+  const hasPhoto = Boolean(item.image)
   return (
-    <article className="flex gap-4 border-b border-rakhi-gold/15 py-5 pb-9 last:border-b-0">
+    <article
+      className={cn(
+        'flex gap-4 border-b border-rakhi-gold/15 py-5 last:border-b-0',
+        // Photographed cards need room for the control hanging off the image.
+        hasPhoto ? 'pb-9' : 'items-center',
+      )}
+    >
       <div className="min-w-0 flex-1">
         <VegMark />
         <h3 className="mt-2 font-serif text-[17px] font-semibold leading-snug text-rakhi-deep">
@@ -254,14 +243,20 @@ function DishCard({
         </p>
       </div>
 
-      <div className="relative w-32 shrink-0">
-        <div className="relative h-32 w-32 overflow-hidden rounded-2xl bg-rakhi-cream ring-1 ring-inset ring-rakhi-gold/20">
-          <DishPhoto item={item} />
+      {hasPhoto ? (
+        <div className="relative w-32 shrink-0">
+          <div className="relative h-32 w-32 overflow-hidden rounded-2xl bg-rakhi-cream ring-1 ring-inset ring-rakhi-gold/20">
+            <DishPhoto item={item} />
+          </div>
+          <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2">
+            <AddControl item={item} qty={qty} onAdd={onAdd} onQty={onQty} />
+          </div>
         </div>
-        <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2">
+      ) : (
+        <div className="shrink-0 self-center">
           <AddControl item={item} qty={qty} onAdd={onAdd} onQty={onQty} />
         </div>
-      </div>
+      )}
     </article>
   )
 }
@@ -488,7 +483,7 @@ function AlaCarteTab() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [popularOnly, setPopularOnly] = useState(false)
-  const [activeSection, setActiveSection] = useState(rakhiSections[0].id)
+  const [activeSection, setActiveSection] = useState(orderedRakhiSections[0].id)
   const [hydrated, setHydrated] = useState(false)
   const [orderSent, setOrderSent] = useState(false)
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
@@ -497,7 +492,15 @@ function AlaCarteTab() {
   useEffect(() => {
     const saved = loadOrderState<{ cart?: Cart; details?: Partial<Details> }>(STORAGE_KEY)
     if (saved) {
-      if (saved.cart) setCart(saved.cart)
+      if (saved.cart) {
+        // A basket saved before the two-portion rule could hold a single
+        // portion; lift it rather than send the kitchen an order it cannot fill.
+        setCart(
+          Object.fromEntries(
+            Object.entries(saved.cart).map(([id, qty]) => [id, Math.max(qty, RAKHI_MIN_PORTIONS)]),
+          ),
+        )
+      }
       if (saved.details) setDetails({ ...emptyDetails, ...saved.details })
     }
     setHydrated(true)
@@ -525,14 +528,20 @@ function AlaCarteTab() {
   }, [])
 
   const addItem = useCallback((item: RakhiItem) => {
-    setCart((c) => ({ ...c, [item.id]: (c[item.id] ?? 0) + 1 }))
-    window.fbq?.('track', 'AddToCart', { content_name: item.name, value: item.price, currency: 'INR' })
+    setCart((c) => ({ ...c, [item.id]: RAKHI_MIN_PORTIONS }))
+    window.fbq?.('track', 'AddToCart', {
+      content_name: item.name,
+      value: item.price * RAKHI_MIN_PORTIONS,
+      currency: 'INR',
+    })
   }, [])
 
   const setQty = useCallback((item: RakhiItem, next: number) => {
     setCart((c) => {
       const updated = { ...c }
-      if (next <= 0) delete updated[item.id]
+      // Stepping below the two-portion minimum takes the dish out altogether,
+      // rather than leaving a quantity the kitchen will not cook.
+      if (next < RAKHI_MIN_PORTIONS) delete updated[item.id]
       else updated[item.id] = next
       return updated
     })
@@ -558,7 +567,7 @@ function AlaCarteTab() {
 
   const visibleSections = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return rakhiSections
+    return orderedRakhiSections
       .map((section) => ({
         ...section,
         items: section.items.filter(
@@ -702,7 +711,7 @@ function AlaCarteTab() {
             >
               <span aria-hidden="true">★</span> Most ordered
             </button>
-            {rakhiSections.map((section) => (
+            {orderedRakhiSections.map((section) => (
               <button
                 key={section.id}
                 type="button"
@@ -740,6 +749,7 @@ function AlaCarteTab() {
           <p className="mb-1 font-medium text-rakhi-deep">How it works</p>
           <ul className="space-y-0.5 text-xs">
             <li>· Add dishes, review your basket, then send it on WhatsApp</li>
+            <li>· Minimum <strong className="text-rakhi-deep">{RAKHI_MIN_PORTIONS} portions</strong> per dish</li>
             <li>· Minimum order: <strong className="text-rakhi-deep">{formatINR(RAKHI_MIN_ORDER)}</strong> before discount</li>
             <li>· Self pickup · <strong className="text-rakhi-deep">AE-287, Saltlake Sector-1</strong> · <strong className="text-rakhi-deep">{RAKHI_PICKUP_DATE}</strong></li>
           </ul>
@@ -824,7 +834,7 @@ function AlaCarteTab() {
             onClick={(event) => event.stopPropagation()}
           >
             <ul className="max-h-[60svh] overflow-y-auto py-2">
-              {rakhiSections.map((section) => (
+              {orderedRakhiSections.map((section) => (
                 <li key={section.id}>
                   <button
                     type="button"
@@ -1158,105 +1168,90 @@ export function RakhiOrder({
 
   return (
     <div className="min-h-screen bg-rakhi-bg">
-      {/* Hero — using real food gallery images in a collage */}
-      <div className="relative overflow-hidden">
-        {/* Background: collage of real food photos */}
-        <div className="absolute inset-0 grid grid-cols-3 grid-rows-1">
-          <div className="relative overflow-hidden">
-            <Image src="/images/gallery-event.jpg" alt="" fill className="object-cover object-center scale-105" />
-          </div>
-          <div className="relative overflow-hidden">
-            <Image src="/images/gallery-spread.jpg" alt="" fill className="object-cover object-center scale-105" />
-          </div>
-          <div className="relative overflow-hidden">
-            <Image src="/images/gallery-diwali.jpg" alt="" fill className="object-cover object-center scale-105" />
-          </div>
-        </div>
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-rakhi-deep/75 via-rakhi-deep/55 to-rakhi-bg" />
+      {/* Hero — one reel, and only what a guest needs to read */}
+      <div className="relative flex min-h-[84svh] items-center overflow-hidden">
+        <video
+          className="absolute inset-0 size-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster="/media/rakhi-hero-poster.jpg"
+          aria-hidden="true"
+        >
+          <source src="/media/rakhi-hero.mp4" type="video/mp4" />
+        </video>
+        {/* Two layers: an even wash for legibility, plus a fade into the page */}
+        <div className="absolute inset-0 bg-rakhi-deep/55" />
+        <div className="absolute inset-0 bg-gradient-to-b from-rakhi-deep/70 via-rakhi-deep/45 to-rakhi-bg" />
 
-        <div className="relative mx-auto max-w-3xl px-5 pb-16 pt-28 text-center md:pb-20 md:pt-36">
-          <div className="mb-5 flex justify-center">
+        <div className="relative mx-auto w-full max-w-3xl px-5 py-24 text-center">
+          <div className="mb-7 flex justify-center">
             <Link href="/" aria-label="Urban Rasoi home">
               <Image
                 src="/images/logo.jpg"
                 alt="Urban Rasoi"
-                width={60}
-                height={60}
-                className="size-15 rounded-full ring-4 ring-rakhi-gold/50 object-cover shadow-xl transition-transform hover:scale-105"
+                width={52}
+                height={52}
+                className="size-13 rounded-full object-cover ring-2 ring-white/35 transition-transform hover:scale-105"
               />
             </Link>
           </div>
-          <p className="text-xs font-semibold tracking-[0.3em] text-rakhi-gold uppercase">Raksha Bandhan 2026</p>
-          <h1 className="mt-3 font-serif text-4xl font-semibold leading-tight text-white text-balance md:text-6xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-rakhi-gold">
+            Raksha Bandhan 2026
+          </p>
+          <h1 className="mt-4 font-serif text-5xl font-semibold leading-[1.05] text-white text-balance md:text-7xl">
             Festive Menu
           </h1>
-          <p className="mt-3 text-white/75 max-w-lg mx-auto text-sm md:text-base leading-relaxed">
-            Curated gourmet bites for your Rakhi celebration at home.
-            Pure vegetarian · Crafted with love.
+          <p className="mx-auto mt-5 max-w-sm text-sm leading-relaxed text-white/70">
+            Pure vegetarian, made to order · Pickup {RAKHI_PICKUP_DATE} from Salt Lake
           </p>
-          <div className="mt-5 flex flex-wrap justify-center gap-2.5 text-xs">
-            {[
-              { text: 'Pickup: Salt Lake Sector-1' },
-              { text: RAKHI_PICKUP_DATE },
-              { text: `${RAKHI_DISCOUNT_PERCENT}% off up to ${formatINR(RAKHI_DISCOUNT_CAP)}` },
-            ].map(({ text }) => (
-              <span key={text} className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-white backdrop-blur-sm">
-                {text}
-              </span>
-            ))}
-          </div>
 
-          {/* Keep the menu, see the work, or just talk to someone */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="#menu"
+            className="mt-9 inline-flex items-center gap-2.5 rounded-full bg-white px-8 py-4 text-base font-semibold text-rakhi-deep shadow-xl transition-transform hover:-translate-y-0.5"
+          >
+            Explore the menu
+            <span aria-hidden="true">↓</span>
+          </a>
+
+          {/* Quiet secondary actions — present, but not competing with the menu */}
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/75">
+            <a
+              href={`tel:${site.phone.replace(/\s/g, '')}`}
+              onClick={() => trackContact('rakhi-hero')}
+              className="underline-offset-4 transition-colors hover:text-white hover:underline"
+            >
+              Call us
+            </a>
+            <span aria-hidden="true" className="text-white/30">·</span>
             <a
               href="/images/rakhi-festive-menu.jpg"
               download="urban-rasoi-raksha-bandhan-menu.jpg"
               onClick={() => window.fbq?.('trackCustom', 'MenuDownloaded', { menu: 'Raksha Bandhan' })}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-rakhi-deep shadow-lg transition-transform hover:-translate-y-0.5"
+              className="underline-offset-4 transition-colors hover:text-white hover:underline"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
               Download menu
             </a>
-            <a
-              href={`tel:${site.phone.replace(/\s/g, '')}`}
-              onClick={() => trackContact('rakhi-hero')}
-              className="inline-flex items-center gap-2 rounded-full border border-white/45 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-rakhi-deep"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-              Call us
-            </a>
+            <span aria-hidden="true" className="text-white/30">·</span>
             <a
               href={site.instagram}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => window.fbq?.('trackCustom', 'InstagramClick', { from: 'rakhi-hero' })}
-              className="inline-flex items-center gap-2 rounded-full border border-white/45 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-rakhi-deep"
+              className="underline-offset-4 transition-colors hover:text-white hover:underline"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" strokeWidth="0" />
-              </svg>
               See our work
             </a>
           </div>
-          <p className="mt-3 text-xs font-medium text-white/80">
-            Questions before you order? Call {site.phone} — or save the menu and WhatsApp us your picks.
-          </p>
         </div>
       </div>
 
       <ClosingBand daysLeft={daysLeftToOrder} closingDate={closingDate} />
 
       {/* Service tabs */}
-      <div className="sticky top-16 z-30 border-b border-rakhi-gold/20 bg-rakhi-bg/95 backdrop-blur-sm">
+      <div id="menu" className="sticky top-16 z-30 scroll-mt-16 border-b border-rakhi-gold/20 bg-rakhi-bg/95 backdrop-blur-sm">
         <div className="mx-auto max-w-3xl px-4">
           <div className="flex gap-0 overflow-x-auto scrollbar-hide">
             {tabs.map((tab) => (

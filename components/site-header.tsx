@@ -48,10 +48,18 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
   // Close on route change
   useEffect(() => { setOpen(false) }, [pathname])
 
-  // Close on outside click
+  // Dismiss the desktop dropdown by clicking away from it.
+  //
+  // Deliberately desktop-only: `dropdownRef` points at the desktop dropdown,
+  // which stays in the DOM at mobile widths even though it is hidden. Without
+  // the width check, tapping a link in the mobile overlay counted as an
+  // "outside" click, closed the overlay on mousedown, and left the anchor
+  // pointer-events:none before the click landed — so mobile nav links silently
+  // did nothing. The overlay already closes itself on link tap and via ✕.
   useEffect(() => {
     if (!open) return
     function handleClick(e: MouseEvent) {
+      if (!window.matchMedia('(min-width: 768px)').matches) return
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setOpen(false)
       }

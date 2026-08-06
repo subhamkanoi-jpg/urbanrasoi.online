@@ -20,6 +20,9 @@ export const RAKHI_WHATSAPP = '919830725556'
 export const RAKHI_DISCOUNT_PERCENT = 10
 export const RAKHI_DISCOUNT_CAP = 300
 
+/** The kitchen does not prepare a single portion of anything. */
+export const RAKHI_MIN_PORTIONS = 2
+
 export function rakhiDiscount(subtotal: number): number {
   if (subtotal <= 0) return 0
   return Math.min(Math.floor((subtotal * RAKHI_DISCOUNT_PERCENT) / 100), RAKHI_DISCOUNT_CAP)
@@ -154,8 +157,24 @@ export const rakhiSections: RakhiSection[] = [
     id: 'desserts',
     name: 'Desserts',
     items: [
-      { id: 'sitaphal-rasmalai', name: 'Sitaphal Rasmalai', unit: '6 pcs', price: 420, popular: true },
-      { id: 'chocolate-monte-carlo', name: 'Chocolate Monte Carlo', unit: '500 ml', price: 450, popular: true },
+      {
+        id: 'sitaphal-rasmalai',
+        name: 'Sitaphal Rasmalai',
+        unit: '6 pcs',
+        price: 420,
+        popular: true,
+        image: '/images/menu/rakhi/sitaphal-rasmalai.jpg',
+        description: 'Soft rasmalai in saffron milk, scattered with pistachio.',
+      },
+      {
+        id: 'chocolate-monte-carlo',
+        name: 'Chocolate Monte Carlo',
+        unit: '500 ml',
+        price: 450,
+        popular: true,
+        image: '/images/menu/rakhi/chocolate-monte-carlo.jpg',
+        description: 'Layers of cream and chocolate under dark chocolate shavings.',
+      },
       { id: 'mango-sandesh', name: 'Mango Sandesh', unit: '6 pcs', price: 280 },
     ],
   },
@@ -176,10 +195,25 @@ export function findRakhiItem(id: string) {
   return itemIndex.get(id)
 }
 
-/** Dishes badged "Most ordered", in menu order. */
-export const popularRakhiItems: RakhiItem[] = rakhiSections.flatMap((section) =>
-  section.items.filter((item) => item.popular),
-)
+/**
+ * Sections with photographed dishes first, both within each section and across
+ * the menu — a card carrying a photo sells far harder than a text-only one, so
+ * it should not sit below dishes we have no picture of.
+ */
+export const orderedRakhiSections: RakhiSection[] = rakhiSections
+  .map((section) => ({
+    ...section,
+    items: [...section.items].sort((a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image))),
+  }))
+  .sort((a, b) => {
+    const photos = (s: RakhiSection) => s.items.filter((i) => i.image).length
+    return photos(b) - photos(a)
+  })
+
+/** Dishes badged "Most ordered", photographed ones first. */
+export const popularRakhiItems: RakhiItem[] = orderedRakhiSections
+  .flatMap((section) => section.items.filter((item) => item.popular))
+  .sort((a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)))
 
 export const rakhiItemCount = rakhiSections.reduce((sum, section) => sum + section.items.length, 0)
 
