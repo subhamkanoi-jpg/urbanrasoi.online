@@ -139,9 +139,12 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
       {/* Bottom bar */}
       <div className="border-t border-white/8 mx-auto max-w-7xl px-5 py-5 md:px-10">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <p className="text-xs text-background/35">
-            &copy; {new Date().getFullYear()} Urban Rasoi. All rights reserved.
-          </p>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-background/35">
+            <span>&copy; {new Date().getFullYear()} Urban Rasoi. All rights reserved.</span>
+            <Link href="/privacy" className="py-1 underline-offset-2 transition-colors hover:text-terracotta hover:underline">
+              Privacy Policy
+            </Link>
+          </div>
           <p className="text-xs text-background/35">
             Crafted food experiences — Kolkata
           </p>
