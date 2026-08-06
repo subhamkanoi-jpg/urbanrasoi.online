@@ -63,7 +63,15 @@ export const rakhiSections: RakhiSection[] = [
         description: 'Smoky mushroom and caramelised onion in a charcoal sesame bun.',
       },
       { id: 'ulta-paratha-kebab', name: 'Ulta Paratha with Kebab Croquettes', unit: '6 pcs', price: 440 },
-      { id: 'mini-dabeli-sliders', name: 'Mini Dabeli Sliders', unit: '6 pcs', price: 450, popular: true },
+      {
+        id: 'mini-dabeli-sliders',
+        name: 'Mini Dabeli Sliders',
+        unit: '6 pcs',
+        price: 450,
+        popular: true,
+        image: '/images/menu/rakhi/mini-dabeli-sliders.jpg',
+        description: 'Spiced potato and crunchy sev in soft buns, finished with pomegranate.',
+      },
       {
         id: 'cheesy-veg-cigar-rolls',
         name: 'Cheesy Veg Cigar Rolls',
