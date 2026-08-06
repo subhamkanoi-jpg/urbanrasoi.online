@@ -65,7 +65,14 @@ export const rakhiSections: RakhiSection[] = [
         image: '/images/menu/rakhi/mushroom-galouti-sliders.jpg',
         description: 'Smoky mushroom and caramelised onion in a charcoal sesame bun.',
       },
-      { id: 'ulta-paratha-kebab', name: 'Ulta Paratha with Kebab Croquettes', unit: '6 pcs', price: 440 },
+      {
+        id: 'ulta-paratha-kebab',
+        name: 'Ulta Paratha with Kebab Croquettes',
+        unit: '6 pcs',
+        price: 440,
+        image: '/images/menu/rakhi/ulta-paratha-kebab.jpg',
+        description: 'Kebab croquettes on soft ulta paratha, topped with sliced onion.',
+      },
       {
         id: 'mini-dabeli-sliders',
         name: 'Mini Dabeli Sliders',
@@ -108,15 +115,36 @@ export const rakhiSections: RakhiSection[] = [
     id: 'baked-dish',
     name: 'Baked Dish',
     items: [
-      { id: 'spinach-ricotta-ravioli', name: 'Spinach & Ricotta Ravioli', unit: '750 ml', price: 450 },
-      { id: 'spaghetti-au-gratin', name: 'Spaghetti Au Gratin', unit: '750 ml', price: 370 },
+      {
+        id: 'spinach-ricotta-ravioli',
+        name: 'Spinach & Ricotta Ravioli',
+        unit: '750 ml',
+        price: 450,
+        image: '/images/menu/rakhi/spinach-ricotta-ravioli.jpg',
+        description: 'Baked ravioli under a blistered cheese crust.',
+      },
+      {
+        id: 'spaghetti-au-gratin',
+        name: 'Spaghetti Au Gratin',
+        unit: '750 ml',
+        price: 370,
+        image: '/images/menu/rakhi/spaghetti-au-gratin.jpg',
+        description: 'Baked spaghetti with a golden gratin top.',
+      },
     ],
   },
   {
     id: 'healthy-bites',
     name: 'Healthy Bites',
     items: [
-      { id: 'crunchy-thai-cabbage-salad', name: 'Crunchy Thai Cabbage Salad', unit: '1 portion', price: 350 },
+      {
+        id: 'crunchy-thai-cabbage-salad',
+        name: 'Crunchy Thai Cabbage Salad',
+        unit: '1 portion',
+        price: 350,
+        image: '/images/menu/rakhi/crunchy-thai-cabbage-salad.jpg',
+        description: 'Crisp shredded cabbage and carrot, tossed Thai-style.',
+      },
       {
         id: 'achari-paneer-tikka-skewers',
         name: 'Achari Paneer Tikka Skewers',
@@ -140,7 +168,15 @@ export const rakhiSections: RakhiSection[] = [
     name: 'Rice Mains',
     items: [
       { id: 'paneer-chole-dum-biryani', name: 'Paneer & Chole Dum Biryani with Raita', unit: '500 ml', price: 400 },
-      { id: 'exotic-veg-stroganoff-rice', name: 'Exotic Vegetable Stroganoff with Herbed Rice', unit: '500 ml', price: 520, popular: true },
+      {
+        id: 'exotic-veg-stroganoff-rice',
+        name: 'Exotic Vegetable Stroganoff with Herbed Rice',
+        unit: '500 ml',
+        price: 520,
+        popular: true,
+        image: '/images/menu/rakhi/exotic-veg-stroganoff-rice.jpg',
+        description: 'Creamy mushroom stroganoff alongside herbed rice.',
+      },
     ],
   },
   {

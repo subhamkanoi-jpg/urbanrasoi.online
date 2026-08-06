@@ -1,31 +1,39 @@
 # Rakhi menu photos
 
-Drop a square JPG here using the exact filename below, then set image on that
-item in lib/rakhi-menu.ts, e.g. image: '/images/menu/rakhi/mini-dabeli-sliders.jpg'.
+Square JPGs, 800x800, roughly 50KB each — cropped from the wide originals
+so the dish, not the allergen card, fills the frame.
 
-600x600 or larger is plenty. Cards show a branded tile until a photo exists.
+Cards without a photo render text-only rather than showing an empty tile,
+and photographed dishes sort above the rest (both within a section and
+across sections). So adding a photo also promotes that dish up the menu.
 
-| Dish | Filename |
-| --- | --- |
-| Mushroom Galouti Charcoal Sliders | mushroom-galouti-sliders.jpg |
-| Ulta Paratha with Kebab Croquettes | ulta-paratha-kebab.jpg |
-| Mini Dabeli Sliders | mini-dabeli-sliders.jpg |
-| Cheesy Veg Cigar Rolls | cheesy-veg-cigar-rolls.jpg |
-| Bite Sized Quesadilla | bite-sized-quesadilla.jpg |
-| Bite Sized Farmhouse Pizza | bite-sized-farmhouse-pizza.jpg |
-| Tandoori Paneer Naanza | tandoori-paneer-naanza.jpg |
-| Spinach & Ricotta Ravioli | spinach-ricotta-ravioli.jpg |
-| Spaghetti Au Gratin | spaghetti-au-gratin.jpg |
-| Crunchy Thai Cabbage Salad | crunchy-thai-cabbage-salad.jpg |
-| Achari Paneer Tikka Skewers | achari-paneer-tikka-skewers.jpg |
-| Mediterranean Falafel Wrap | mediterranean-falafel-wrap.jpg |
-| Cheesy Paneer Vegetable Kathi Roll | cheesy-paneer-kathi-roll.jpg |
-| Paneer & Chole Dum Biryani with Raita | paneer-chole-dum-biryani.jpg |
-| Exotic Vegetable Stroganoff with Herbed Rice | exotic-veg-stroganoff-rice.jpg |
-| Vegetable Jhalfrezi with Mini Pudina Paratha | veg-jhalfrezi-pudina-paratha.jpg |
-| Mini Pudina Paratha | mini-pudina-paratha.jpg |
-| Shaam Savera with Mini Veg Paratha | shaam-savera-veg-paratha.jpg |
-| Mini Veg Paratha | mini-veg-paratha.jpg |
-| Sitaphal Rasmalai | sitaphal-rasmalai.jpg |
-| Chocolate Monte Carlo | chocolate-monte-carlo.jpg |
-| Mango Sandesh | mango-sandesh.jpg |
+To add one: drop a square image here named `<item-id>.jpg`, then set
+`image` on that item in `lib/rakhi-menu.ts`.
+
+## Have photos (13)
+
+- `mushroom-galouti-sliders.jpg` — Mushroom Galouti Charcoal Sliders
+- `mini-dabeli-sliders.jpg` — Mini Dabeli Sliders
+- `cheesy-veg-cigar-rolls.jpg` — Cheesy Veg Cigar Rolls
+- `bite-sized-quesadilla.jpg` — Bite Sized Quesadilla
+- `bite-sized-farmhouse-pizza.jpg` — Bite Sized Farmhouse Pizza
+- `ulta-paratha-kebab.jpg` — Ulta Paratha with Kebab Croquettes
+- `spinach-ricotta-ravioli.jpg` — Spinach & Ricotta Ravioli
+- `spaghetti-au-gratin.jpg` — Spaghetti Au Gratin
+- `crunchy-thai-cabbage-salad.jpg` — Crunchy Thai Cabbage Salad
+- `achari-paneer-tikka-skewers.jpg` — Achari Paneer Tikka Skewers
+- `exotic-veg-stroganoff-rice.jpg` — Exotic Vegetable Stroganoff with Herbed Rice
+- `sitaphal-rasmalai.jpg` — Sitaphal Rasmalai
+- `chocolate-monte-carlo.jpg` — Chocolate Monte Carlo
+
+## No photo (9)
+
+- `tandoori-paneer-naanza.jpg` — Tandoori Paneer Naanza
+- `mediterranean-falafel-wrap.jpg` — Mediterranean Falafel Wrap
+- `cheesy-paneer-kathi-roll.jpg` — Cheesy Paneer Vegetable Kathi Roll
+- `paneer-chole-dum-biryani.jpg` — Paneer & Chole Dum Biryani with Raita
+- `veg-jhalfrezi-pudina-paratha.jpg` — Vegetable Jhalfrezi with Mini Pudina Paratha
+- `mini-pudina-paratha.jpg` — Mini Pudina Paratha
+- `shaam-savera-veg-paratha.jpg` — Shaam Savera with Mini Veg Paratha
+- `mini-veg-paratha.jpg` — Mini Veg Paratha
+- `mango-sandesh.jpg` — Mango Sandesh
