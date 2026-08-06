@@ -231,20 +231,32 @@ export function findRakhiItem(id: string) {
   return itemIndex.get(id)
 }
 
+/** Courses that always sit at the foot of the menu, whatever else sorts above. */
+const TRAILING_SECTION_IDS = ['desserts']
+
 /**
  * Sections with photographed dishes first, both within each section and across
  * the menu — a card carrying a photo sells far harder than a text-only one, so
  * it should not sit below dishes we have no picture of.
+ *
+ * Desserts are exempt: they read as the end of a menu no matter how well
+ * photographed they are, so they are pinned last.
  */
-export const orderedRakhiSections: RakhiSection[] = rakhiSections
-  .map((section) => ({
+export const orderedRakhiSections: RakhiSection[] = (() => {
+  const photoCount = (section: RakhiSection) => section.items.filter((item) => item.image).length
+
+  const sections = rakhiSections.map((section) => ({
     ...section,
     items: [...section.items].sort((a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image))),
   }))
-  .sort((a, b) => {
-    const photos = (s: RakhiSection) => s.items.filter((i) => i.image).length
-    return photos(b) - photos(a)
-  })
+
+  const trailing = TRAILING_SECTION_IDS.flatMap((id) => sections.filter((s) => s.id === id))
+  const leading = sections
+    .filter((s) => !TRAILING_SECTION_IDS.includes(s.id))
+    .sort((a, b) => photoCount(b) - photoCount(a))
+
+  return [...leading, ...trailing]
+})()
 
 /** Dishes badged "Most ordered", photographed ones first. */
 export const popularRakhiItems: RakhiItem[] = orderedRakhiSections
