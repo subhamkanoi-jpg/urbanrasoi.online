@@ -3,17 +3,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { trackContact } from '@/lib/meta-tracking'
 import { shareOrderSlip, type SlipRow } from '@/lib/order-slip'
 import { clearOrderState, loadOrderState, saveOrderState } from '@/lib/order-storage'
 import {
   RAKHI_MIN_ORDER,
   RAKHI_PICKUP_DATE,
   RAKHI_PICKUP_ADDRESS,
+  RAKHI_DISCOUNT_CAP,
+  RAKHI_DISCOUNT_PERCENT,
   PICKUP_TIME_SLOTS,
   type RakhiItem,
   type RakhiSection,
   findRakhiItem,
   formatINR,
+  popularRakhiItems,
+  rakhiDiscount,
   rakhiSections,
 } from '@/lib/rakhi-menu'
 import { cn } from '@/lib/utils'
@@ -125,8 +130,58 @@ function Stepper({ qty, onChange }: { qty: number; onChange: (next: number) => v
   )
 }
 
-/* ── Menu item row ──────────────────────────────────────────────────────── */
-function ItemRow({
+/* ── Vegetarian mark ────────────────────────────────────────────────────── */
+function VegMark() {
+  return (
+    <span
+      className="flex size-[15px] shrink-0 items-center justify-center rounded-[3px] border-[1.5px] border-green-700"
+      role="img"
+      aria-label="Pure vegetarian"
+    >
+      <span className="size-[7px] rounded-full bg-green-700" aria-hidden="true" />
+    </span>
+  )
+}
+
+/* ── "Most ordered" badge ───────────────────────────────────────────────── */
+function PopularBadge() {
+  return (
+    <span className="mt-1.5 flex items-center gap-1.5">
+      <span className="flex h-[3px] w-7 overflow-hidden rounded-full bg-rakhi-gold/25" aria-hidden="true">
+        <span className="h-full w-4/5 rounded-full bg-rakhi-saffron" />
+      </span>
+      <span className="text-[11px] font-semibold tracking-wide text-rakhi-saffron">Most ordered</span>
+    </span>
+  )
+}
+
+/* ── Dish photo, with a branded tile until a real one is dropped in ─────── */
+function DishPhoto({ item }: { item: RakhiItem }) {
+  if (item.image) {
+    return <Image src={item.image} alt={item.name} fill sizes="128px" className="object-cover" />
+  }
+  return (
+    <div className="flex size-full items-center justify-center bg-gradient-to-br from-rakhi-cream via-rakhi-cream to-rakhi-gold/30">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        className="text-rakhi-gold/70"
+        aria-hidden="true"
+      >
+        <path d="M7 2v9M4.5 2v5a2.5 2.5 0 0 0 5 0V2M7 11v11" />
+        <path d="M17.5 2c-1.6 1.7-2.3 3.8-2.3 6s.7 3.4 2.3 4.4V22" />
+      </svg>
+    </div>
+  )
+}
+
+/* ── Add button / quantity stepper, overlapping the photo ───────────────── */
+function AddControl({
   item,
   qty,
   onAdd,
@@ -137,33 +192,77 @@ function ItemRow({
   onAdd: (item: RakhiItem) => void
   onQty: (item: RakhiItem, next: number) => void
 }) {
-  const inCart = qty > 0
+  if (qty > 0) {
+    return (
+      <div className="flex w-[106px] items-center justify-between rounded-xl border border-rakhi-saffron bg-white px-2 py-2 shadow-[0_4px_14px_rgba(45,26,10,.18)]">
+        <button
+          type="button"
+          onClick={() => onQty(item, qty - 1)}
+          aria-label={`Remove one ${item.name}`}
+          className="flex size-6 items-center justify-center text-lg font-bold leading-none text-rakhi-saffron"
+        >
+          −
+        </button>
+        <span className="text-sm font-bold tabular-nums text-rakhi-saffron">{qty}</span>
+        <button
+          type="button"
+          onClick={() => onQty(item, qty + 1)}
+          aria-label={`Add one more ${item.name}`}
+          className="flex size-6 items-center justify-center text-lg font-bold leading-none text-rakhi-saffron"
+        >
+          +
+        </button>
+      </div>
+    )
+  }
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between gap-3 py-3.5 px-4 rounded-xl transition-all',
-        inCart ? 'bg-rakhi-cream/80 ring-1 ring-rakhi-gold/40' : 'hover:bg-rakhi-cream/40',
-      )}
+    <button
+      type="button"
+      onClick={() => onAdd(item)}
+      aria-label={`Add ${item.name}`}
+      className="relative w-[106px] rounded-xl border border-rakhi-saffron bg-white py-2.5 text-sm font-bold tracking-[0.08em] text-rakhi-saffron shadow-[0_4px_14px_rgba(45,26,10,.18)] transition-colors hover:bg-rakhi-saffron hover:text-white"
     >
+      ADD
+      <span className="absolute right-2 top-1 text-[11px] leading-none" aria-hidden="true">+</span>
+    </button>
+  )
+}
+
+/* ── Menu dish card ─────────────────────────────────────────────────────── */
+function DishCard({
+  item,
+  qty,
+  onAdd,
+  onQty,
+}: {
+  item: RakhiItem
+  qty: number
+  onAdd: (item: RakhiItem) => void
+  onQty: (item: RakhiItem, next: number) => void
+}) {
+  return (
+    <article className="flex gap-4 border-b border-rakhi-gold/15 py-5 pb-9 last:border-b-0">
       <div className="min-w-0 flex-1">
-        <p className="font-medium text-rakhi-deep leading-snug">{item.name}</p>
-        <p className="text-xs text-rakhi-muted mt-0.5">{item.unit}</p>
+        <VegMark />
+        <h3 className="mt-2 font-serif text-[17px] font-semibold leading-snug text-rakhi-deep">
+          {item.name}
+        </h3>
+        {item.popular && <PopularBadge />}
+        <p className="mt-1.5 text-[15px] font-semibold text-rakhi-deep">{formatINR(item.price)}</p>
+        <p className="mt-1 text-xs leading-relaxed text-rakhi-muted">
+          ({item.unit}){item.description ? ` ${item.description}` : ''}
+        </p>
       </div>
-      <div className="flex shrink-0 items-center gap-3">
-        <span className="font-serif text-base font-semibold text-rakhi-saffron">{formatINR(item.price)}</span>
-        {inCart ? (
-          <Stepper qty={qty} onChange={(next) => onQty(item, next)} />
-        ) : (
-          <button
-            type="button"
-            onClick={() => onAdd(item)}
-            className="rounded-full border border-rakhi-gold/60 px-3 py-1.5 text-xs font-semibold text-rakhi-saffron transition-colors hover:bg-rakhi-saffron hover:text-white"
-          >
-            Add
-          </button>
-        )}
+
+      <div className="relative w-32 shrink-0">
+        <div className="relative h-32 w-32 overflow-hidden rounded-2xl bg-rakhi-cream ring-1 ring-inset ring-rakhi-gold/20">
+          <DishPhoto item={item} />
+        </div>
+        <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2">
+          <AddControl item={item} qty={qty} onAdd={onAdd} onQty={onQty} />
+        </div>
       </div>
-    </div>
+    </article>
   )
 }
 
@@ -183,13 +282,15 @@ function SectionBlock({
 }) {
   return (
     <section id={section.id} ref={registerRef} className="scroll-mt-36">
-      <div className="mt-10 mb-3">
-        <p className="text-center text-xs font-semibold tracking-widest uppercase text-rakhi-saffron">{section.name}</p>
-        <Divider />
+      <div className="flex items-baseline justify-between gap-3 border-t-8 border-rakhi-gold/15 pt-6">
+        <h2 className="font-serif text-xl font-semibold text-rakhi-deep">{section.name}</h2>
+        <span className="text-xs font-medium text-rakhi-muted">
+          {section.items.length} {section.items.length === 1 ? 'dish' : 'dishes'}
+        </span>
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="mt-1">
         {section.items.map((item) => (
-          <ItemRow
+          <DishCard
             key={item.id}
             item={item}
             qty={cart[item.id] ?? 0}
@@ -228,7 +329,8 @@ function FestiveMusic() {
   }
 
   return (
-    <div className="fixed bottom-6 right-4 z-50 md:right-6">
+    // Sits bottom-left; the menu browser owns the bottom-right corner.
+    <div className="fixed bottom-6 left-4 z-40 md:left-6">
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef} src={FESTIVE_MUSIC_URL} loop preload="none" />
       <button
@@ -437,6 +539,9 @@ function AlaCarteTab() {
   const [cart, setCart] = useState<Cart>({})
   const [details, setDetails] = useState<Details>(emptyDetails)
   const [cartOpen, setCartOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const [popularOnly, setPopularOnly] = useState(false)
   const [activeSection, setActiveSection] = useState(rakhiSections[0].id)
   const [hydrated, setHydrated] = useState(false)
   const [orderSent, setOrderSent] = useState(false)
@@ -496,10 +601,26 @@ function AlaCarteTab() {
     [cart],
   )
 
-  const grandTotal = lines.reduce((sum, l) => sum + l.lineTotal, 0)
+  const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0)
+  const discount = rakhiDiscount(subtotal)
+  const grandTotal = subtotal - discount
   const itemCount = lines.length
-  const belowMinimum = grandTotal < RAKHI_MIN_ORDER && grandTotal > 0
-  const canOrder = grandTotal >= RAKHI_MIN_ORDER && details.name.trim() && details.time
+  // The minimum is judged on the subtotal, so the website saving is allowed to
+  // take the payable amount below it.
+  const belowMinimum = subtotal < RAKHI_MIN_ORDER && subtotal > 0
+  const canOrder = subtotal >= RAKHI_MIN_ORDER && details.name.trim() && details.time
+
+  const visibleSections = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return rakhiSections
+      .map((section) => ({
+        ...section,
+        items: section.items.filter(
+          (item) => (!q || item.name.toLowerCase().includes(q)) && (!popularOnly || item.popular),
+        ),
+      }))
+      .filter((section) => section.items.length > 0)
+  }, [query, popularOnly])
 
   function jumpTo(sectionId: string) {
     suppressSpy.current = true
@@ -518,7 +639,11 @@ function AlaCarteTab() {
       parts.push(`• ${line.name} (${line.unit}) x${line.qty} — ${formatINR(line.lineTotal)}`)
     }
     parts.push('')
-    parts.push(`*Order Total: ${formatINR(grandTotal)}*`)
+    parts.push(`Item total: ${formatINR(subtotal)}`)
+    if (discount > 0) {
+      parts.push(`Website saving (${RAKHI_DISCOUNT_PERCENT}%): -${formatINR(discount)}`)
+    }
+    parts.push(`*To pay: ${formatINR(grandTotal)}*`)
     parts.push('')
     parts.push('*PICKUP DETAILS*')
     parts.push(`Date: ${RAKHI_PICKUP_DATE}`)
@@ -560,8 +685,17 @@ function AlaCarteTab() {
               total: formatINR(line.lineTotal),
             })),
           },
+          ...(discount > 0
+            ? [{
+                heading: 'Savings',
+                rows: [
+                  { name: 'Item total', total: formatINR(subtotal) },
+                  { name: `Website saving (${RAKHI_DISCOUNT_PERCENT}%)`, total: `− ${formatINR(discount)}` },
+                ] as SlipRow[],
+              }]
+            : []),
         ],
-        totalLabel: 'Order total',
+        totalLabel: 'To pay',
         totalValue: formatINR(grandTotal),
         note: details.note || undefined,
       },
@@ -588,10 +722,40 @@ function AlaCarteTab() {
 
   return (
     <>
-      {/* Category rail */}
+      {/* Search + category rail */}
       <div className="sticky top-16 z-30 border-b border-rakhi-gold/20 bg-rakhi-bg/95 backdrop-blur-sm">
-        <div className="mx-auto max-w-3xl px-4 py-2.5">
-          <div className="flex gap-2 overflow-x-auto pb-0.5 scrollbar-hide" aria-label="Menu sections">
+        <div className="mx-auto max-w-3xl px-4 pb-2.5 pt-3">
+          <label className="relative block">
+            <span className="sr-only">Search the Rakhi menu</span>
+            <svg
+              className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-rakhi-muted"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+            </svg>
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search for sliders, paneer, dessert…"
+              className="w-full rounded-full border border-rakhi-gold/35 bg-white py-2.5 pl-11 pr-4 text-sm text-rakhi-deep placeholder:text-rakhi-muted/70 focus:border-rakhi-saffron focus:outline-none"
+            />
+          </label>
+
+          <div className="mt-2.5 flex gap-2 overflow-x-auto pb-0.5 scrollbar-hide" aria-label="Menu filters">
+            <button
+              type="button"
+              onClick={() => setPopularOnly((v) => !v)}
+              aria-pressed={popularOnly}
+              className={cn(
+                'flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-semibold transition-colors',
+                popularOnly
+                  ? 'border-rakhi-saffron bg-rakhi-saffron text-white'
+                  : 'border-rakhi-gold/40 bg-white text-rakhi-deep hover:bg-rakhi-cream',
+              )}
+            >
+              <span aria-hidden="true">★</span> Most ordered
+            </button>
             {rakhiSections.map((section) => (
               <button
                 key={section.id}
@@ -599,7 +763,7 @@ function AlaCarteTab() {
                 onClick={() => jumpTo(section.id)}
                 className={cn(
                   'shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition-colors whitespace-nowrap',
-                  activeSection === section.id
+                  activeSection === section.id && !popularOnly && !query
                     ? 'bg-rakhi-saffron text-white'
                     : 'bg-rakhi-cream text-rakhi-deep hover:bg-rakhi-gold/20',
                 )}
@@ -613,42 +777,149 @@ function AlaCarteTab() {
 
       {/* Menu list */}
       <div className="mx-auto max-w-3xl px-4 pb-36 md:px-8">
-        <div className="mt-5 rounded-xl border border-rakhi-gold/25 bg-rakhi-cream px-4 py-3 text-sm text-rakhi-muted">
-          <p className="font-medium text-rakhi-deep mb-1">How it works</p>
+        {/* Website-only saving */}
+        <div className="mt-4 flex items-center gap-3 rounded-2xl border border-dashed border-rakhi-saffron/45 bg-rakhi-saffron/8 px-4 py-3">
+          <span className="text-xl" aria-hidden="true">🎟️</span>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-rakhi-deep">
+              {RAKHI_DISCOUNT_PERCENT}% off, up to {formatINR(RAKHI_DISCOUNT_CAP)}
+            </p>
+            <p className="text-xs text-rakhi-muted">
+              Applied automatically because you are ordering on our website.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-3 rounded-xl border border-rakhi-gold/25 bg-rakhi-cream px-4 py-3 text-sm text-rakhi-muted">
+          <p className="mb-1 font-medium text-rakhi-deep">How it works</p>
           <ul className="space-y-0.5 text-xs">
-            <li>· Add dishes to cart, then review and send via WhatsApp</li>
-            <li>· Minimum order: <strong className="text-rakhi-deep">{formatINR(RAKHI_MIN_ORDER)}</strong></li>
-            <li>· Self pickup · <strong className="text-rakhi-deep">AE-287, Saltlake Sector-1</strong> · <strong className="text-rakhi-deep">28 August 2026</strong></li>
+            <li>· Add dishes, review your basket, then send it on WhatsApp</li>
+            <li>· Minimum order: <strong className="text-rakhi-deep">{formatINR(RAKHI_MIN_ORDER)}</strong> before discount</li>
+            <li>· Self pickup · <strong className="text-rakhi-deep">AE-287, Saltlake Sector-1</strong> · <strong className="text-rakhi-deep">{RAKHI_PICKUP_DATE}</strong></li>
           </ul>
         </div>
 
-        {rakhiSections.map((section) => (
-          <SectionBlock
-            key={section.id}
-            section={section}
-            cart={cart}
-            onAdd={addItem}
-            onQty={setQty}
-            registerRef={(el) => { sectionRefs.current[section.id] = el }}
-          />
-        ))}
+        {/* Most ordered — hidden while searching or filtering */}
+        {!query && !popularOnly && popularRakhiItems.length > 0 && (
+          <section className="mt-7" aria-labelledby="most-ordered-heading">
+            <h2 id="most-ordered-heading" className="font-serif text-xl font-semibold text-rakhi-deep">
+              Most ordered
+            </h2>
+            <p className="mt-0.5 text-xs text-rakhi-muted">What Kolkata reaches for first</p>
+            <div className="-mx-4 mt-3 flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide">
+              {popularRakhiItems.map((item) => (
+                <article key={item.id} className="w-[152px] shrink-0">
+                  <div className="relative h-[152px] w-[152px] overflow-hidden rounded-2xl bg-rakhi-cream ring-1 ring-inset ring-rakhi-gold/20">
+                    <DishPhoto item={item} />
+                    <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 pb-2">
+                      <AddControl item={item} qty={cart[item.id] ?? 0} onAdd={addItem} onQty={setQty} />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-start gap-1.5">
+                    <VegMark />
+                    <p className="line-clamp-2 text-[13px] font-semibold leading-snug text-rakhi-deep">{item.name}</p>
+                  </div>
+                  <p className="mt-0.5 text-[13px] font-semibold text-rakhi-saffron">{formatINR(item.price)}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {visibleSections.length === 0 ? (
+          <p className="py-16 text-center text-sm text-rakhi-muted">
+            Nothing matched “{query}”. Try “sliders”, “paneer” or “dessert”.
+          </p>
+        ) : (
+          visibleSections.map((section) => (
+            <SectionBlock
+              key={section.id}
+              section={section}
+              cart={cart}
+              onAdd={addItem}
+              onQty={setQty}
+              registerRef={(el) => { sectionRefs.current[section.id] = el }}
+            />
+          ))
+        )}
 
         <div className="mt-10 text-center text-xs text-rakhi-muted">
           <p>Pure Vegetarian · FSSAI Lic. No. 12823013000353</p>
         </div>
       </div>
 
+      {/* Floating menu browser */}
+      {!cartOpen && (
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          className={cn(
+            'fixed right-4 z-40 flex items-center gap-2 rounded-xl bg-rakhi-deep px-4 py-3 text-sm font-semibold text-white shadow-xl transition-all md:right-6',
+            itemCount > 0 ? 'bottom-24' : 'bottom-6',
+          )}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+            <path d="M7 2v9M4.5 2v5a2.5 2.5 0 0 0 5 0V2M7 11v11M17.5 2c-1.6 1.7-2.3 3.8-2.3 6s.7 3.4 2.3 4.4V22" />
+          </svg>
+          Menu
+        </button>
+      )}
+
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-rakhi-deep/55 px-4 pb-24 md:items-center md:pb-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Browse the menu"
+          onClick={() => setMenuOpen(false)}
+        >
+          <div
+            className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <ul className="max-h-[60svh] overflow-y-auto py-2">
+              {rakhiSections.map((section) => (
+                <li key={section.id}>
+                  <button
+                    type="button"
+                    onClick={() => { setMenuOpen(false); setQuery(''); setPopularOnly(false); jumpTo(section.id) }}
+                    className="flex w-full items-center justify-between px-6 py-3.5 text-left transition-colors hover:bg-rakhi-cream"
+                  >
+                    <span className="text-[15px] font-medium text-rakhi-deep">{section.name}</span>
+                    <span className="text-sm font-semibold text-rakhi-muted">{section.items.length}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              className="flex w-full items-center justify-center gap-2 bg-rakhi-deep py-3.5 text-sm font-semibold text-white"
+            >
+              ✕ Close
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Sticky cart bar */}
       {itemCount > 0 && !cartOpen && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rakhi-gold/20 bg-rakhi-bg/97 p-3 backdrop-blur-sm md:p-4">
           <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
             <div>
-              <p className="font-serif text-xl font-semibold text-rakhi-deep">{formatINR(grandTotal)}</p>
+              <p className="flex items-baseline gap-2">
+                <span className="font-serif text-xl font-semibold text-rakhi-deep">{formatINR(grandTotal)}</span>
+                {discount > 0 && (
+                  <span className="text-sm text-rakhi-muted line-through">{formatINR(subtotal)}</span>
+                )}
+              </p>
               <p className="text-xs text-rakhi-muted">
                 {itemCount} {itemCount === 1 ? 'item' : 'items'}
-                {belowMinimum && (
-                  <span className="ml-1.5 text-amber-600">· Add {formatINR(RAKHI_MIN_ORDER - grandTotal)} more</span>
-                )}
+                {belowMinimum ? (
+                  <span className="ml-1.5 text-amber-600">· Add {formatINR(RAKHI_MIN_ORDER - subtotal)} more</span>
+                ) : discount > 0 ? (
+                  <span className="ml-1.5 font-semibold text-green-700">· saved {formatINR(discount)}</span>
+                ) : null}
               </p>
             </div>
             <button
@@ -729,11 +1000,25 @@ function AlaCarteTab() {
                   <BillRow key={line.id} label={line.name} value={formatINR(line.lineTotal)} />
                 ))}
                 <div className="mt-2 border-t border-rakhi-gold/20 pt-2">
-                  <BillRow label="Order Total" value={formatINR(grandTotal)} bold />
+                  <BillRow label="Item total" value={formatINR(subtotal)} />
+                  {discount > 0 && (
+                    <div className="flex justify-between gap-2 py-1 text-green-700">
+                      <span>Website saving ({RAKHI_DISCOUNT_PERCENT}%)</span>
+                      <span className="font-semibold">− {formatINR(discount)}</span>
+                    </div>
+                  )}
                 </div>
+                <div className="mt-2 border-t border-rakhi-gold/20 pt-2">
+                  <BillRow label="To pay" value={formatINR(grandTotal)} bold />
+                </div>
+                {discount > 0 && (
+                  <p className="mt-2 rounded-lg bg-green-50 px-3 py-2 text-center text-xs font-semibold text-green-700">
+                    You saved {formatINR(discount)} by ordering on the website 🎉
+                  </p>
+                )}
                 {belowMinimum && (
                   <p className="mt-2 text-xs text-amber-700 font-medium">
-                    Minimum order is {formatINR(RAKHI_MIN_ORDER)}. Please add {formatINR(RAKHI_MIN_ORDER - grandTotal)} more.
+                    Minimum order is {formatINR(RAKHI_MIN_ORDER)} before the discount. Please add {formatINR(RAKHI_MIN_ORDER - subtotal)} more.
                   </p>
                 )}
                 <Divider />
@@ -804,7 +1089,7 @@ function AlaCarteTab() {
                 {!canOrder && grandTotal > 0 && (
                   <p className="mb-2 text-center text-xs text-amber-700">
                     {belowMinimum
-                      ? `Add ${formatINR(RAKHI_MIN_ORDER - grandTotal)} more to reach the minimum.`
+                      ? `Add ${formatINR(RAKHI_MIN_ORDER - subtotal)} more to reach the minimum.`
                       : 'Please enter your name and select a pickup time.'}
                   </p>
                 )}
@@ -845,9 +1130,16 @@ function AlaCarteTab() {
                   On mobile, your order graphic opens the share sheet — pick WhatsApp to send it directly.
                   On desktop, the graphic is saved to your downloads; then WhatsApp opens with the order text.
                 </p>
-                <p className="mt-1.5 text-center text-xs font-medium text-rakhi-deep">
-                  {site.phone}
-                </p>
+                <a
+                  href={`tel:${site.phone.replace(/\s/g, '')}`}
+                  onClick={() => trackContact('rakhi-cart')}
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl border border-rakhi-gold/40 py-3 text-sm font-semibold text-rakhi-deep transition-colors hover:bg-rakhi-cream"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  Rather talk it through? Call {site.phone}
+                </a>
               </div>
             </div>
           </div>
@@ -962,14 +1254,26 @@ export function RakhiOrder({
           <div className="mt-5 flex flex-wrap justify-center gap-2.5 text-xs">
             {[
               { text: 'Pickup: Salt Lake Sector-1' },
-              { text: '28 August 2026' },
-              { text: 'Min. order ₹3,000 (a la carte)' },
+              { text: RAKHI_PICKUP_DATE },
+              { text: `${RAKHI_DISCOUNT_PERCENT}% off up to ${formatINR(RAKHI_DISCOUNT_CAP)}` },
             ].map(({ text }) => (
               <span key={text} className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-white backdrop-blur-sm">
                 {text}
               </span>
             ))}
           </div>
+
+          {/* Talk to someone before ordering */}
+          <a
+            href={`tel:${site.phone.replace(/\s/g, '')}`}
+            onClick={() => trackContact('rakhi-hero')}
+            className="mt-6 inline-flex items-center gap-2.5 rounded-full border border-white/40 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-rakhi-deep"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            Questions? Call {site.phone}
+          </a>
         </div>
       </div>
 
