@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Jost } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import { StructuredData } from '@/components/structured-data'
 import { SiteShell } from '@/components/site-shell'
 import { MetaPixel } from '@/components/meta-pixel'
@@ -70,6 +71,7 @@ export default function RootLayout({
         <SiteShell liveCampaigns={liveCampaignIds()}>{children}</SiteShell>
         <CookieNotice />
         <MetaPixel />
+        <Analytics />
       </body>
     </html>
   )
