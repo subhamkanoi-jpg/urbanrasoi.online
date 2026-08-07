@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Jost } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { StructuredData } from '@/components/structured-data'
 import { SiteShell } from '@/components/site-shell'
 import { MetaPixel } from '@/components/meta-pixel'
@@ -72,6 +73,7 @@ export default function RootLayout({
         <CookieNotice />
         <MetaPixel />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
