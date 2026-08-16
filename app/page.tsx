@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { EventStories } from '@/components/event-stories'
-import { FAQSection, HowItWorks, TrustStrip } from '@/components/conversion-sections'
+import { FAQSection, HowItWorks, TrustStrip, faqItems } from '@/components/conversion-sections'
 import { MaharajComparison } from '@/components/maharaj-comparison'
 import { Reveal } from '@/components/reveal'
 import { TelLink } from '@/components/tracked-links'
@@ -17,9 +17,20 @@ const serviceFacts: Record<string, string[]> = {
   'packed-meals': ['20–500+ boxes', 'Cooked same day'],
 }
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+}
+
 export default function HomePage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <section className="relative h-[78svh] min-h-[560px] overflow-hidden md:h-[92svh]">
         <video
           className="absolute inset-0 size-full object-cover object-center"

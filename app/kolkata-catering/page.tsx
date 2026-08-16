@@ -33,7 +33,7 @@ const occasions = [
 const testimonials = [
   { quote: 'The quantity was sufficient, the flavours were perfect, and everyone enjoyed the meal.', name: 'Abhinav' },
   { quote: 'Everything was delicious and well packed. Delivery was smooth and on time.', name: 'Asha' },
-  { quote: 'The food was very nice, and the service staff was very helpful.', name: 'Prirti' },
+  { quote: 'The food was very nice, and the service staff was very helpful.', name: 'Preeti' },
 ]
 
 const businessSchema = {

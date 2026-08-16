@@ -113,8 +113,6 @@ export function PujaBooking() {
     if (booking.note) lines.push(`📝 Note: ${booking.note}`)
     lines.push('', 'Please confirm availability for my date.')
 
-    window.fbq?.('track', 'InitiateCheckout', { value: price, currency: 'INR', num_items: booking.pax })
-
     const rows: SlipRow[] = [
       { name: 'Guests', qty: `${booking.pax}` },
       { name: 'Puja date', qty: booking.date ? prettyDate(booking.date) : 'To confirm' },
@@ -156,6 +154,7 @@ export function PujaBooking() {
 
     setSending(false)
     if (outcome === 'cancelled') return
+    window.fbq?.('track', 'InitiateCheckout', { value: price, currency: 'INR', num_items: booking.pax })
     setBooked(true)
     clearOrderState(STORAGE_KEY)
   }

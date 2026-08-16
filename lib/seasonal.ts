@@ -10,6 +10,8 @@
  * keep pointing at them) but render a closed notice instead of an order form.
  */
 
+import { kolkataToday } from './dates'
+
 export type CampaignId = 'rakhi' | 'rudrabhishek'
 
 export type Campaign = {
@@ -51,12 +53,6 @@ export const campaigns: Campaign[] = [
       'Our satvik Rudra Abhishek menu runs through Sawan. We still cater pujas and family get-togethers year-round — tell us your date and we will plan around your muhurat.',
   },
 ]
-
-/** Today's date in Asia/Kolkata as YYYY-MM-DD, independent of server timezone. */
-function kolkataToday(now: Date): string {
-  const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000
-  return new Date(now.getTime() + IST_OFFSET_MS).toISOString().slice(0, 10)
-}
 
 export function isCampaignLive(campaign: Campaign, now: Date = new Date()): boolean {
   return kolkataToday(now) <= campaign.endsOn

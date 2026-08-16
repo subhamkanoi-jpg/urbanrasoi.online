@@ -1,6 +1,6 @@
 'use client'
 
-import { openWhatsapp } from '@/lib/meta-tracking'
+import { openWhatsapp, trackLead } from '@/lib/meta-tracking'
 import { site } from '@/lib/site'
 
 /**
@@ -311,6 +311,8 @@ export async function shareOrderSlip({ slip, text, fileName, title, tracking }: 
     if (canShareFiles) {
       try {
         await navigator.share({ files: [file], text, title })
+        // Share sheet success does not open wa.me, so fire the Lead here.
+        trackLead(tracking)
         return 'shared'
       } catch (error) {
         // Dismissing the sheet is a deliberate "not yet" — don't fall through

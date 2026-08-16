@@ -54,7 +54,7 @@ export const customerStories: CustomerStory[] = [
   {
     type: 'quote',
     id: 'prirti',
-    name: 'Prirti',
+    name: 'Preeti',
     quote: 'The food was very nice, and the service staff was very helpful. Everyone seemed to be enjoying the food.',
     detail: 'On the food and service',
     categories: ['House parties', 'Large celebrations'],

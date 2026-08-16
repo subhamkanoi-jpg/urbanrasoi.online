@@ -15,6 +15,7 @@ import {
   orderTerms,
   serviceAddOns,
 } from '@/lib/alacarte-menu'
+import { kolkataToday } from '@/lib/dates'
 import { site } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
@@ -137,6 +138,7 @@ export function AlacarteOrder() {
     (services.backend ? serviceAddOns[0].price : 0) + (services.frontend ? serviceAddOns[1].price : 0)
   const grandTotal = foodTotal + servicesTotal
   const itemCount = lines.length + customItems.length
+  const canSend = itemCount > 0 && Boolean(details.date) && details.area.trim().length > 1 && details.name.trim().length > 1
 
   const filteredSections = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -169,7 +171,7 @@ export function AlacarteOrder() {
   }
 
   async function sendOrder() {
-    if (sending) return
+    if (sending || !canSend) return
     setSending(true)
 
     const parts = ['Hi Urban Rasoi! 🧡 I would like to place an à la carte order.', '']
@@ -200,12 +202,6 @@ export function AlacarteOrder() {
     parts.push(`📍 Area: ${details.area || '—'}`)
     if (details.note) parts.push(`📝 Note: ${details.note}`)
     parts.push('', 'Please confirm availability and the final quote (delivery charge as per actuals).')
-
-    window.fbq?.('track', 'InitiateCheckout', {
-      num_items: itemCount,
-      value: grandTotal,
-      currency: 'INR',
-    })
 
     // Build the printable slip that accompanies the message.
     const groups: SlipGroup[] = []
@@ -259,6 +255,11 @@ export function AlacarteOrder() {
     setSending(false)
     // A dismissed share sheet means "not yet" — keep the basket intact.
     if (outcome === 'cancelled') return
+    window.fbq?.('track', 'InitiateCheckout', {
+      num_items: itemCount,
+      value: grandTotal,
+      currency: 'INR',
+    })
     setSent(true)
     setCartOpen(false)
     resetOrder()
@@ -517,17 +518,17 @@ export function AlacarteOrder() {
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <Field label="Delivery date">
-                <input type="date" value={details.date} min={new Date().toISOString().slice(0, 10)} onChange={(e) => setDetails({ ...details, date: e.target.value })} className="w-full rounded-xl border border-border bg-card p-3 text-ink" />
+              <Field label="Delivery date *">
+                <input type="date" value={details.date} min={kolkataToday()} required onChange={(e) => setDetails({ ...details, date: e.target.value })} className="w-full rounded-xl border border-border bg-card p-3 text-ink" />
               </Field>
               <Field label="Delivery time">
                 <input type="time" value={details.time} onChange={(e) => setDetails({ ...details, time: e.target.value })} className="w-full rounded-xl border border-border bg-card p-3 text-ink" />
               </Field>
-              <Field label="Area in Kolkata">
-                <input type="text" value={details.area} placeholder="e.g. Salt Lake" onChange={(e) => setDetails({ ...details, area: e.target.value })} className="w-full rounded-xl border border-border bg-card p-3 text-ink placeholder:text-ink-lighter" />
+              <Field label="Area in Kolkata *">
+                <input type="text" value={details.area} required placeholder="e.g. Salt Lake" onChange={(e) => setDetails({ ...details, area: e.target.value })} className="w-full rounded-xl border border-border bg-card p-3 text-ink placeholder:text-ink-lighter" />
               </Field>
-              <Field label="Your name">
-                <input type="text" value={details.name} onChange={(e) => setDetails({ ...details, name: e.target.value })} className="w-full rounded-xl border border-border bg-card p-3 text-ink" />
+              <Field label="Your name *">
+                <input type="text" value={details.name} required onChange={(e) => setDetails({ ...details, name: e.target.value })} className="w-full rounded-xl border border-border bg-card p-3 text-ink" />
               </Field>
               <div className="sm:col-span-2">
                 <Field label="Anything else? (optional)">
@@ -554,13 +555,18 @@ export function AlacarteOrder() {
                   )}
                 </p>
               </div>
+              {!canSend && itemCount > 0 && (
+                <p className="mt-3 text-center text-xs font-medium text-amber-700">
+                  Add your name, delivery date and area so the kitchen can confirm.
+                </p>
+              )}
               <button
                 type="button"
                 onClick={sendOrder}
-                disabled={sending}
+                disabled={sending || !canSend}
                 className={cn(
                   'mt-3 w-full rounded-full px-8 py-4 text-lg font-semibold transition-colors',
-                  sending
+                  sending || !canSend
                     ? 'cursor-not-allowed bg-cream text-ink-lighter'
                     : 'bg-terracotta text-primary-foreground hover:bg-terracotta-deep',
                 )}

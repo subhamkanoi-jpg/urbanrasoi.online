@@ -1,7 +1,7 @@
 export const site = {
   name: 'Urban Rasoi',
   tagline: 'Crafted food experiences from our Kolkata kitchen, since 2015.',
-  url: 'https://urbanrasoi.online',
+  url: 'https://www.urbanrasoi.online',
   phone: '+91 98307 25556',
   whatsappNumber: '919830725556',
   instagram: 'https://instagram.com/urbanrasoi_kolkata',

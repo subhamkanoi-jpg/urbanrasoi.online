@@ -24,6 +24,7 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[] }) {
+  const rakhi = getCampaign('rakhi')
   const puja = getCampaign('rudrabhishek')
   return (
     <footer className="bg-ink text-background/85">
@@ -89,6 +90,16 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
                   </Link>
                 </li>
               ))}
+              {liveCampaigns.includes('rakhi') && (
+                <li>
+                  <Link
+                    href={rakhi.href}
+                    className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
+                  >
+                    {rakhi.label}
+                  </Link>
+                </li>
+              )}
               {liveCampaigns.includes('rudrabhishek') && (
                 <li>
                   <Link
@@ -142,7 +153,13 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-background/35">
             <span>&copy; {new Date().getFullYear()} Urban Rasoi. All rights reserved.</span>
             <Link href="/privacy" className="py-1 underline-offset-2 transition-colors hover:text-terracotta hover:underline">
-              Privacy Policy
+              Privacy
+            </Link>
+            <Link href="/terms" className="py-1 underline-offset-2 transition-colors hover:text-terracotta hover:underline">
+              Terms
+            </Link>
+            <Link href="/refund" className="py-1 underline-offset-2 transition-colors hover:text-terracotta hover:underline">
+              Refunds
             </Link>
           </div>
           <p className="text-xs text-background/35">

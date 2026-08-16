@@ -102,7 +102,7 @@ export const products: Product[] = [
       "Hi Urban Rasoi! I'm planning a house party and would like a menu. Date: ___ | Guests: ___",
     ctaLabel: 'Plan my house party',
     plannerOccasion: 'house-party',
-    builderCta: { label: 'Build your own menu', href: '/menu.html' },
+    builderCta: { label: 'Build your own menu', href: '/order' },
     closingHeadline: 'Your home. Our kitchen. One great party.',
     closingCopy: 'Send your date and guest count — hosting just got effortless.',
     metaTitle: 'House Party Catering in Kolkata | Urban Rasoi',

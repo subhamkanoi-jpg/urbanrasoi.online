@@ -27,7 +27,7 @@ import { site } from '@/lib/site'
 
 type Cart = Record<string, number>
 type Details = { time: string; name: string; phone: string; note: string }
-type ServiceTab = 'alacarte' | 'catering' | 'platter'
+type ServiceTab = 'alacarte' | 'catering'
 
 const emptyDetails: Details = { time: '', name: '', phone: '', note: '' }
 const STORAGE_KEY = 'ur-rakhi-v2'
@@ -618,7 +618,6 @@ function AlaCarteTab() {
   async function sendOrder() {
     if (!canOrder || sharing) return
     setSharing(true)
-    window.fbq?.('track', 'InitiateCheckout', { num_items: itemCount, value: grandTotal, currency: 'INR' })
 
     const facts = [`Name: ${details.name}`]
     if (details.phone) facts.push(`Phone: ${details.phone}`)
@@ -667,6 +666,7 @@ function AlaCarteTab() {
 
     setSharing(false)
     if (outcome === 'cancelled') return
+    window.fbq?.('track', 'InitiateCheckout', { num_items: itemCount, value: grandTotal, currency: 'INR' })
     setOrderSent(true)
     setCartOpen(false)
     // Clear the basket so a sent order does not reappear on the next visit.
@@ -1163,7 +1163,6 @@ export function RakhiOrder({
   const tabs: { id: ServiceTab; label: string; sublabel: string }[] = [
     { id: 'alacarte', label: 'A la Carte', sublabel: 'Build your own order' },
     { id: 'catering', label: 'Catering Package', sublabel: '15 or 25 guests' },
-    { id: 'platter', label: 'Platters', sublabel: 'Coming soon' },
   ]
 
   return (
@@ -1258,13 +1257,9 @@ export function RakhiOrder({
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => {
-                  if (tab.id !== 'platter') setActiveTab(tab.id)
-                }}
-                disabled={tab.id === 'platter'}
+                onClick={() => setActiveTab(tab.id)}
                 className={cn(
                   'group relative shrink-0 flex flex-col items-start px-4 py-3 text-left transition-colors',
-                  tab.id === 'platter' && 'cursor-not-allowed opacity-50',
                   activeTab === tab.id
                     ? 'text-rakhi-saffron'
                     : 'text-rakhi-muted hover:text-rakhi-deep',

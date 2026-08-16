@@ -46,7 +46,7 @@ export const cuisineOptions = [
   'Desserts',
 ]
 
-/* Per-guest price bands from the Celebration Menu builder (menu.html):
+/* Per-guest price bands from the Celebration Menu builder:
    Intimate 749/849/999, Signature 849/949/1199 for delivery/semi/full. */
 const plateBands: Record<ServiceId, [number, number]> = {
   delivery: [749, 849],

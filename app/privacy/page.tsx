@@ -61,12 +61,12 @@ export default function PrivacyPage() {
           <li>
             <strong className="text-ink">Analytics and advertising cookies</strong>, including the Meta (Facebook) Pixel,
             which help us measure how our Facebook and Instagram ads perform and show relevant ads to people who may be
-            interested in our catering.
+            interested in our catering. These load only if you tap Accept on the cookie notice.
           </li>
         </ul>
         <p>
-          You can control or delete cookies through your browser settings, and you can manage the ads you see from Meta
-          in your{' '}
+          You can choose Essential only to keep drafts without ad cookies. You can also control or delete cookies through
+          your browser settings, and manage the ads you see from Meta in your{' '}
           <a
             href="https://www.facebook.com/adpreferences"
             target="_blank"

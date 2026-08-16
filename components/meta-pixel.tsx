@@ -2,11 +2,10 @@
 
 import Script from 'next/script'
 import { usePathname } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { CONSENT_EVENT, hasAdConsent } from '@/lib/cookie-consent'
 import { captureAttribution } from '@/lib/meta-tracking'
 import { getProduct } from '@/lib/products'
-
-const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID
 
 declare global {
   interface Window {
@@ -15,49 +14,88 @@ declare global {
   }
 }
 
+function trackPath(pathname: string) {
+  if (!window.fbq) return
+  window.fbq('track', 'PageView')
+
+  const product = getProduct(pathname.replace(/^\//, ''))
+  if (product) {
+    window.fbq('track', 'ViewContent', {
+      content_name: product.name,
+      content_category: 'Catering',
+      content_type: 'product',
+    })
+  } else if (pathname === '/kolkata-catering') {
+    window.fbq('track', 'ViewContent', {
+      content_name: 'Kolkata Catering Landing',
+      content_category: 'Catering',
+    })
+  } else if (pathname === '/plan') {
+    window.fbq('track', 'ViewContent', {
+      content_name: 'Party Planner',
+      content_category: 'Catering',
+    })
+  } else if (pathname === '/order') {
+    window.fbq('track', 'ViewContent', {
+      content_name: 'À la carte menu',
+      content_category: 'Catering',
+      content_type: 'product_group',
+    })
+  } else if (pathname === '/rudrabhishek-catering') {
+    window.fbq('track', 'ViewContent', {
+      content_name: 'Rudrabhishek Puja Catering',
+      content_category: 'Catering',
+    })
+  } else if (pathname === '/rakhi') {
+    window.fbq('track', 'ViewContent', {
+      content_name: 'Raksha Bandhan Festive Menu',
+      content_category: 'Catering',
+      content_type: 'product_group',
+    })
+  }
+}
+
 export function MetaPixel() {
   const pathname = usePathname()
+  const [pixelId, setPixelId] = useState<string | null>(process.env.NEXT_PUBLIC_META_PIXEL_ID ?? null)
+  const [allowed, setAllowed] = useState(false)
+
+  useEffect(() => {
+    setAllowed(hasAdConsent())
+    function onConsent(event: Event) {
+      const detail = (event as CustomEvent<string>).detail
+      setAllowed(detail === 'accepted')
+    }
+    window.addEventListener(CONSENT_EVENT, onConsent)
+    return () => window.removeEventListener(CONSENT_EVENT, onConsent)
+  }, [])
+
+  useEffect(() => {
+    if (!allowed) return
+    let cancelled = false
+    fetch('/api/meta/config')
+      .then((res) => res.json())
+      .then((data: { pixelId?: string | null }) => {
+        if (!cancelled && data.pixelId && /^\d+$/.test(data.pixelId)) setPixelId(data.pixelId)
+      })
+      .catch(() => {
+        // Keep the build-time ID if the config route is down.
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [allowed])
 
   useEffect(() => {
     captureAttribution()
   }, [pathname])
 
   useEffect(() => {
-    if (!pixelId || !window.fbq) return
-    window.fbq('track', 'PageView')
+    if (!allowed || !pixelId) return
+    trackPath(pathname)
+  }, [pathname, allowed, pixelId])
 
-    const product = getProduct(pathname.replace(/^\//, ''))
-    if (product) {
-      window.fbq('track', 'ViewContent', {
-        content_name: product.name,
-        content_category: 'Catering',
-        content_type: 'product',
-      })
-    } else if (pathname === '/kolkata-catering') {
-      window.fbq('track', 'ViewContent', {
-        content_name: 'Kolkata Catering Landing',
-        content_category: 'Catering',
-      })
-    } else if (pathname === '/plan') {
-      window.fbq('track', 'ViewContent', {
-        content_name: 'Party Planner',
-        content_category: 'Catering',
-      })
-    } else if (pathname === '/order') {
-      window.fbq('track', 'ViewContent', {
-        content_name: 'À la carte menu',
-        content_category: 'Catering',
-        content_type: 'product_group',
-      })
-    } else if (pathname === '/rudrabhishek-catering') {
-      window.fbq('track', 'ViewContent', {
-        content_name: 'Rudrabhishek Puja Catering',
-        content_category: 'Catering',
-      })
-    }
-  }, [pathname])
-
-  if (!pixelId) return null
+  if (!allowed || !pixelId) return null
 
   return (
     <>

@@ -1,4 +1,3 @@
-import { faqItems } from '@/components/conversion-sections'
 import { site } from '@/lib/site'
 
 const localBusiness = {
@@ -20,21 +19,6 @@ const localBusiness = {
   servesCuisine: ['Indian', 'Bengali', 'South Indian', 'Indo-Chinese', 'Continental'],
 }
 
-const faqPage = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faqItems.map((item) => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: { '@type': 'Answer', text: item.answer },
-  })),
-}
-
 export function StructuredData() {
-  return (
-    <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPage) }} />
-    </>
-  )
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }} />
 }
