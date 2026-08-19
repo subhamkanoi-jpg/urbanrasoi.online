@@ -2,7 +2,12 @@
  * Raksha Bandhan 2026 festive menu for Urban Rasoi.
  * Pickup only — AE-287, Salt Lake Sector-1, Kolkata.
  * Fixed pickup date: 28 August 2026.
- * Minimum order value: ₹3,000.
+ *
+ * There is exactly one rule on this menu: the order must reach
+ * RAKHI_MIN_ORDER. Everything else — per-dish minimums, fixed portion counts —
+ * was removed because the arithmetic was costing us orders. Anything countable
+ * is priced by the piece so a guest can take one of something if they want to;
+ * the order minimum already stops baskets being uneconomically small.
  */
 
 export const RAKHI_MIN_ORDER = 3000
@@ -12,16 +17,12 @@ export const RAKHI_PICKUP_ADDRESS = 'Urban Rasoi, AE-287, Saltlake Sector-1, Kol
 export const RAKHI_WHATSAPP = '919830725556'
 
 /**
- * Website-only discount. Applied automatically — there is no code to type,
- * the incentive is simply for ordering here instead of over chat.
- * The minimum order is checked against the subtotal, so the payable amount
- * is allowed to fall below it once this comes off.
+ * Website-only discount. Applied automatically — nothing to type, nothing to
+ * qualify for, so it adds no steps to the order. Measured against the item
+ * total, which is also what the order minimum is judged on.
  */
 export const RAKHI_DISCOUNT_PERCENT = 10
 export const RAKHI_DISCOUNT_CAP = 300
-
-/** The kitchen does not prepare a single portion of anything. */
-export const RAKHI_MIN_PORTIONS = 2
 
 export function rakhiDiscount(subtotal: number): number {
   if (subtotal <= 0) return 0
@@ -59,8 +60,8 @@ export const rakhiSections: RakhiSection[] = [
       {
         id: 'mushroom-galouti-sliders',
         name: 'Mushroom Galouti Charcoal Sliders',
-        unit: '6 pcs',
-        price: 660,
+        unit: 'per piece',
+        price: 110,
         popular: true,
         image: '/images/menu/rakhi/mushroom-galouti-sliders.jpg',
         description: 'Smoky mushroom and caramelised onion in a charcoal sesame bun.',
@@ -68,16 +69,16 @@ export const rakhiSections: RakhiSection[] = [
       {
         id: 'ulta-paratha-kebab',
         name: 'Ulta Paratha with Kebab Croquettes',
-        unit: '6 pcs',
-        price: 440,
+        unit: 'per piece',
+        price: 75,
         image: '/images/menu/rakhi/ulta-paratha-kebab.jpg',
         description: 'Kebab croquettes on soft ulta paratha, topped with sliced onion.',
       },
       {
         id: 'mini-dabeli-sliders',
         name: 'Mini Dabeli Sliders',
-        unit: '6 pcs',
-        price: 450,
+        unit: 'per piece',
+        price: 75,
         popular: true,
         image: '/images/menu/rakhi/mini-dabeli-sliders.jpg',
         description: 'Spiced potato and crunchy sev in soft buns, finished with pomegranate.',
@@ -85,8 +86,8 @@ export const rakhiSections: RakhiSection[] = [
       {
         id: 'cheesy-veg-cigar-rolls',
         name: 'Cheesy Veg Cigar Rolls',
-        unit: '6 pcs',
-        price: 390,
+        unit: 'per piece',
+        price: 65,
         popular: true,
         image: '/images/menu/rakhi/cheesy-veg-cigar-rolls.jpg',
         description: 'Crisp rolls of spiced greens and cheese, with salsa on the side.',
@@ -94,8 +95,8 @@ export const rakhiSections: RakhiSection[] = [
       {
         id: 'bite-sized-quesadilla',
         name: 'Bite Sized Quesadilla',
-        unit: '4 pcs',
-        price: 330,
+        unit: 'per piece',
+        price: 85,
         popular: true,
         image: '/images/menu/rakhi/bite-sized-quesadilla.jpg',
         description: 'Three cheese, spinach and corn, with French salsa.',
@@ -103,12 +104,12 @@ export const rakhiSections: RakhiSection[] = [
       {
         id: 'bite-sized-farmhouse-pizza',
         name: 'Bite Sized Farmhouse Pizza',
-        unit: '4 pcs',
-        price: 280,
+        unit: 'per piece',
+        price: 70,
         image: '/images/menu/rakhi/bite-sized-farmhouse-pizza.jpg',
         description: 'Mini farmhouse pizza loaded with peppers, herbs and melted cheese.',
       },
-      { id: 'tandoori-paneer-naanza', name: 'Tandoori Paneer Naanza', unit: '5 pcs', price: 440 },
+      { id: 'tandoori-paneer-naanza', name: 'Tandoori Paneer Naanza', unit: 'per piece', price: 88 },
     ],
   },
   {
@@ -140,7 +141,7 @@ export const rakhiSections: RakhiSection[] = [
       {
         id: 'crunchy-thai-cabbage-salad',
         name: 'Crunchy Thai Cabbage Salad',
-        unit: '1 portion',
+        unit: 'per portion',
         price: 350,
         image: '/images/menu/rakhi/crunchy-thai-cabbage-salad.jpg',
         description: 'Crisp shredded cabbage and carrot, tossed Thai-style.',
@@ -148,8 +149,8 @@ export const rakhiSections: RakhiSection[] = [
       {
         id: 'achari-paneer-tikka-skewers',
         name: 'Achari Paneer Tikka Skewers',
-        unit: '6 pcs',
-        price: 410,
+        unit: 'per piece',
+        price: 70,
         image: '/images/menu/rakhi/achari-paneer-tikka-skewers.jpg',
         description: 'Achari paneer tikka finished with tandoori mayo.',
       },
@@ -159,8 +160,8 @@ export const rakhiSections: RakhiSection[] = [
     id: 'wraps',
     name: 'Wraps',
     items: [
-      { id: 'mediterranean-falafel-wrap', name: 'Mediterranean Falafel Wrap', unit: '4 pcs', price: 480 },
-      { id: 'cheesy-paneer-kathi-roll', name: 'Cheesy Paneer Vegetable Kathi Roll', unit: '4 pcs', price: 480 },
+      { id: 'mediterranean-falafel-wrap', name: 'Mediterranean Falafel Wrap', unit: 'per piece', price: 120 },
+      { id: 'cheesy-paneer-kathi-roll', name: 'Cheesy Paneer Vegetable Kathi Roll', unit: 'per piece', price: 120 },
     ],
   },
   {
@@ -184,9 +185,9 @@ export const rakhiSections: RakhiSection[] = [
     name: 'Paratha Mains',
     items: [
       { id: 'veg-jhalfrezi-pudina-paratha', name: 'Vegetable Jhalfrezi with Mini Pudina Paratha', unit: '500 ml', price: 320 },
-      { id: 'mini-pudina-paratha', name: 'Mini Pudina Paratha', unit: '1 pc', price: 40 },
+      { id: 'mini-pudina-paratha', name: 'Mini Pudina Paratha', unit: 'per piece', price: 40 },
       { id: 'shaam-savera-veg-paratha', name: 'Shaam Savera with Mini Veg Paratha', unit: '500 ml', price: 350 },
-      { id: 'mini-veg-paratha', name: 'Mini Veg Paratha', unit: '1 pc', price: 50 },
+      { id: 'mini-veg-paratha', name: 'Mini Veg Paratha', unit: 'per piece', price: 50 },
     ],
   },
   {
@@ -196,8 +197,8 @@ export const rakhiSections: RakhiSection[] = [
       {
         id: 'sitaphal-rasmalai',
         name: 'Sitaphal Rasmalai',
-        unit: '6 pcs',
-        price: 420,
+        unit: 'per piece',
+        price: 70,
         popular: true,
         image: '/images/menu/rakhi/sitaphal-rasmalai.jpg',
         description: 'Soft rasmalai in saffron milk, scattered with pistachio.',
@@ -211,7 +212,7 @@ export const rakhiSections: RakhiSection[] = [
         image: '/images/menu/rakhi/chocolate-monte-carlo.jpg',
         description: 'Layers of cream and chocolate under dark chocolate shavings.',
       },
-      { id: 'mango-sandesh', name: 'Mango Sandesh', unit: '6 pcs', price: 280 },
+      { id: 'mango-sandesh', name: 'Mango Sandesh', unit: 'per piece', price: 50 },
     ],
   },
 ]

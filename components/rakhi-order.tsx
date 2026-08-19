@@ -12,7 +12,6 @@ import {
   RAKHI_PICKUP_ADDRESS,
   RAKHI_DISCOUNT_CAP,
   RAKHI_DISCOUNT_PERCENT,
-  RAKHI_MIN_PORTIONS,
   PICKUP_TIME_SLOTS,
   type RakhiItem,
   type RakhiSection,
@@ -162,6 +161,40 @@ function DishPhoto({ item }: { item: RakhiItem }) {
   return <Image src={item.image} alt={item.name} fill sizes="128px" className="object-cover" />
 }
 
+/**
+ * Press-and-hold to keep stepping.
+ *
+ * Pricing by the piece means a basket that clears the order minimum can run to
+ * twenty-odd pieces, and tapping that out one at a time is its own kind of
+ * friction. Holding accelerates; a plain tap still steps once through onClick,
+ * so keyboards and screen readers are unaffected.
+ */
+function useHoldRepeat(step: () => void) {
+  const timers = useRef<{ start?: number; tick?: number }>({})
+
+  const stop = useCallback(() => {
+    window.clearTimeout(timers.current.start)
+    window.clearInterval(timers.current.tick)
+    timers.current = {}
+  }, [])
+
+  const start = useCallback(() => {
+    stop()
+    timers.current.start = window.setTimeout(() => {
+      timers.current.tick = window.setInterval(step, 110)
+    }, 450)
+  }, [step, stop])
+
+  useEffect(() => stop, [stop])
+
+  return {
+    onPointerDown: start,
+    onPointerUp: stop,
+    onPointerLeave: stop,
+    onPointerCancel: stop,
+  }
+}
+
 /* ── Add button / quantity stepper, overlapping the photo ───────────────── */
 function AddControl({
   item,
@@ -174,23 +207,34 @@ function AddControl({
   onAdd: (item: RakhiItem) => void
   onQty: (item: RakhiItem, next: number) => void
 }) {
+  // Read the live quantity from a ref so a held button keeps counting up
+  // instead of repeating against the value captured when the hold began.
+  const qtyRef = useRef(qty)
+  qtyRef.current = qty
+  const decrement = useCallback(() => onQty(item, qtyRef.current - 1), [item, onQty])
+  const increment = useCallback(() => onQty(item, qtyRef.current + 1), [item, onQty])
+  const holdDown = useHoldRepeat(decrement)
+  const holdUp = useHoldRepeat(increment)
+
   if (qty > 0) {
     return (
       <div className="flex w-[106px] items-center justify-between rounded-xl border border-rakhi-saffron bg-white px-2 py-2 shadow-[0_4px_14px_rgba(45,26,10,.18)]">
         <button
           type="button"
-          onClick={() => onQty(item, qty - 1)}
+          onClick={decrement}
+          {...holdDown}
           aria-label={`Remove one ${item.name}`}
-          className="flex size-6 items-center justify-center text-lg font-bold leading-none text-rakhi-saffron"
+          className="flex size-6 touch-none items-center justify-center text-lg font-bold leading-none text-rakhi-saffron"
         >
           −
         </button>
         <span className="text-sm font-bold tabular-nums text-rakhi-saffron">{qty}</span>
         <button
           type="button"
-          onClick={() => onQty(item, qty + 1)}
+          onClick={increment}
+          {...holdUp}
           aria-label={`Add one more ${item.name}`}
-          className="flex size-6 items-center justify-center text-lg font-bold leading-none text-rakhi-saffron"
+          className="flex size-6 touch-none items-center justify-center text-lg font-bold leading-none text-rakhi-saffron"
         >
           +
         </button>
@@ -237,10 +281,13 @@ function DishCard({
           {item.name}
         </h3>
         {item.popular && <PopularBadge />}
-        <p className="mt-1.5 text-[15px] font-semibold text-rakhi-deep">{formatINR(item.price)}</p>
-        <p className="mt-1 text-xs leading-relaxed text-rakhi-muted">
-          ({item.unit}){item.description ? ` ${item.description}` : ''}
+        <p className="mt-1.5 flex items-baseline gap-1.5 text-[15px] font-semibold text-rakhi-deep">
+          {formatINR(item.price)}
+          <span className="text-xs font-normal text-rakhi-muted">{item.unit}</span>
         </p>
+        {item.description && (
+          <p className="mt-1 text-xs leading-relaxed text-rakhi-muted">{item.description}</p>
+        )}
       </div>
 
       {hasPhoto ? (
@@ -490,17 +537,12 @@ function AlaCarteTab() {
   const suppressSpy = useRef(false)
 
   useEffect(() => {
-    const saved = loadOrderState<{ cart?: Cart; details?: Partial<Details> }>(STORAGE_KEY)
+    const saved = loadOrderState<{ cart?: Cart; details?: Partial<Details>; perPiece?: boolean }>(STORAGE_KEY)
     if (saved) {
-      if (saved.cart) {
-        // A basket saved before the two-portion rule could hold a single
-        // portion; lift it rather than send the kitchen an order it cannot fill.
-        setCart(
-          Object.fromEntries(
-            Object.entries(saved.cart).map(([id, qty]) => [id, Math.max(qty, RAKHI_MIN_PORTIONS)]),
-          ),
-        )
-      }
+      // Baskets saved under the old per-portion prices would total wrongly
+      // against the new per-piece ones, so start those visitors fresh.
+      if (saved.cart && !saved.perPiece) clearOrderState(STORAGE_KEY)
+      else if (saved.cart) setCart(saved.cart)
       if (saved.details) setDetails({ ...emptyDetails, ...saved.details })
     }
     setHydrated(true)
@@ -509,7 +551,7 @@ function AlaCarteTab() {
 
   useEffect(() => {
     if (!hydrated) return
-    saveOrderState(STORAGE_KEY, { cart, details })
+    saveOrderState(STORAGE_KEY, { cart, details, perPiece: true })
   }, [cart, details, hydrated])
 
   useEffect(() => {
@@ -528,10 +570,10 @@ function AlaCarteTab() {
   }, [])
 
   const addItem = useCallback((item: RakhiItem) => {
-    setCart((c) => ({ ...c, [item.id]: RAKHI_MIN_PORTIONS }))
+    setCart((c) => ({ ...c, [item.id]: 1 }))
     window.fbq?.('track', 'AddToCart', {
       content_name: item.name,
-      value: item.price * RAKHI_MIN_PORTIONS,
+      value: item.price,
       currency: 'INR',
     })
   }, [])
@@ -539,9 +581,7 @@ function AlaCarteTab() {
   const setQty = useCallback((item: RakhiItem, next: number) => {
     setCart((c) => {
       const updated = { ...c }
-      // Stepping below the two-portion minimum takes the dish out altogether,
-      // rather than leaving a quantity the kitchen will not cook.
-      if (next < RAKHI_MIN_PORTIONS) delete updated[item.id]
+      if (next < 1) delete updated[item.id]
       else updated[item.id] = next
       return updated
     })
@@ -748,9 +788,8 @@ function AlaCarteTab() {
         <div className="mt-3 rounded-xl border border-rakhi-gold/25 bg-rakhi-cream px-4 py-3 text-sm text-rakhi-muted">
           <p className="mb-1 font-medium text-rakhi-deep">How it works</p>
           <ul className="space-y-0.5 text-xs">
-            <li>· Add dishes, review your basket, then send it on WhatsApp</li>
-            <li>· Minimum <strong className="text-rakhi-deep">{RAKHI_MIN_PORTIONS} portions</strong> per dish</li>
-            <li>· Minimum order: <strong className="text-rakhi-deep">{formatINR(RAKHI_MIN_ORDER)}</strong> before discount</li>
+            <li>· Add what you like — order as few or as many pieces as you want</li>
+            <li>· One rule: orders start at <strong className="text-rakhi-deep">{formatINR(RAKHI_MIN_ORDER)}</strong></li>
             <li>· Self pickup · <strong className="text-rakhi-deep">AE-287, Saltlake Sector-1</strong> · <strong className="text-rakhi-deep">{RAKHI_PICKUP_DATE}</strong></li>
           </ul>
         </div>
@@ -974,7 +1013,7 @@ function AlaCarteTab() {
                 )}
                 {belowMinimum && (
                   <p className="mt-2 text-xs text-amber-700 font-medium">
-                    Minimum order is {formatINR(RAKHI_MIN_ORDER)} before the discount. Please add {formatINR(RAKHI_MIN_ORDER - subtotal)} more.
+                    Add {formatINR(RAKHI_MIN_ORDER - subtotal)} more to reach the {formatINR(RAKHI_MIN_ORDER)} minimum.
                   </p>
                 )}
                 <Divider />
