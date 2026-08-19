@@ -772,26 +772,15 @@ function AlaCarteTab() {
 
       {/* Menu list */}
       <div className="mx-auto max-w-3xl px-4 pb-36 md:px-8">
-        {/* Website-only saving */}
-        <div className="mt-4 flex items-center gap-3 rounded-2xl border border-dashed border-rakhi-saffron/45 bg-rakhi-saffron/8 px-4 py-3">
-          <span className="text-xl" aria-hidden="true">🎟️</span>
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-rakhi-deep">
+        {/* Website-only saving — a strip, not a card, so the menu stays close */}
+        <div className="mt-3 flex items-center gap-2.5 rounded-xl border border-dashed border-rakhi-saffron/45 bg-rakhi-saffron/8 px-3.5 py-2.5">
+          <span className="text-base" aria-hidden="true">🎟️</span>
+          <p className="text-xs text-rakhi-muted">
+            <strong className="font-semibold text-rakhi-deep">
               {RAKHI_DISCOUNT_PERCENT}% off, up to {formatINR(RAKHI_DISCOUNT_CAP)}
-            </p>
-            <p className="text-xs text-rakhi-muted">
-              Applied automatically because you are ordering on our website.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-3 rounded-xl border border-rakhi-gold/25 bg-rakhi-cream px-4 py-3 text-sm text-rakhi-muted">
-          <p className="mb-1 font-medium text-rakhi-deep">How it works</p>
-          <ul className="space-y-0.5 text-xs">
-            <li>· Add what you like — order as few or as many pieces as you want</li>
-            <li>· One rule: orders start at <strong className="text-rakhi-deep">{formatINR(RAKHI_MIN_ORDER)}</strong></li>
-            <li>· Self pickup · <strong className="text-rakhi-deep">AE-287, Saltlake Sector-1</strong> · <strong className="text-rakhi-deep">{RAKHI_PICKUP_DATE}</strong></li>
-          </ul>
+            </strong>{' '}
+            — applied automatically, nothing to enter.
+          </p>
         </div>
 
         {/* Most ordered — hidden while searching or filtering */}
@@ -1206,8 +1195,13 @@ export function RakhiOrder({
 
   return (
     <div className="min-h-screen bg-rakhi-bg">
-      {/* Hero — one reel, and only what a guest needs to read */}
-      <div className="relative flex min-h-[84svh] items-center overflow-hidden">
+      {/*
+        Banner, then a tight facts row, then straight into the menu — the
+        pattern every delivery app uses. Nearly all of this page's traffic
+        arrives on a phone from a WhatsApp link, so a full-height hero simply
+        buried the dishes below the fold.
+      */}
+      <div className="relative h-[210px] overflow-hidden md:h-[290px]">
         <video
           className="absolute inset-0 size-full object-cover"
           autoPlay
@@ -1220,69 +1214,70 @@ export function RakhiOrder({
         >
           <source src="/media/rakhi-hero.mp4" type="video/mp4" />
         </video>
-        {/* Two layers: an even wash for legibility, plus a fade into the page */}
-        <div className="absolute inset-0 bg-rakhi-deep/55" />
-        <div className="absolute inset-0 bg-gradient-to-b from-rakhi-deep/70 via-rakhi-deep/45 to-rakhi-bg" />
+        <div className="absolute inset-0 bg-gradient-to-t from-rakhi-deep/92 via-rakhi-deep/45 to-rakhi-deep/25" />
 
-        <div className="relative mx-auto w-full max-w-3xl px-5 py-24 text-center">
-          <div className="mb-7 flex justify-center">
-            <Link href="/" aria-label="Urban Rasoi home">
-              <Image
-                src="/images/logo.jpg"
-                alt="Urban Rasoi"
-                width={52}
-                height={52}
-                className="size-13 rounded-full object-cover ring-2 ring-white/35 transition-transform hover:scale-105"
-              />
-            </Link>
-          </div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-rakhi-gold">
+        {/* Actions sit level with the title — the top corner belongs to the
+            fixed site header's menu button. */}
+        <div className="absolute bottom-5 right-4 flex gap-2">
+          <a
+            href={`tel:${site.phone.replace(/\s/g, '')}`}
+            onClick={() => trackContact('rakhi-hero')}
+            aria-label={`Call ${site.phone}`}
+            className="flex size-9 items-center justify-center rounded-full bg-rakhi-deep/45 text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-rakhi-deep"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+          </a>
+          <a
+            href="/images/rakhi-festive-menu.jpg"
+            download="urban-rasoi-raksha-bandhan-menu.jpg"
+            onClick={() => window.fbq?.('trackCustom', 'MenuDownloaded', { menu: 'Raksha Bandhan' })}
+            aria-label="Download the menu"
+            className="flex size-9 items-center justify-center rounded-full bg-rakhi-deep/45 text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-rakhi-deep"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+          </a>
+          <a
+            href={site.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => window.fbq?.('trackCustom', 'InstagramClick', { from: 'rakhi-hero' })}
+            aria-label="Urban Rasoi on Instagram"
+            className="flex size-9 items-center justify-center rounded-full bg-rakhi-deep/45 text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-rakhi-deep"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" strokeWidth="0" />
+            </svg>
+          </a>
+        </div>
+
+        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-3xl px-5 pb-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-rakhi-gold">
             Raksha Bandhan 2026
           </p>
-          <h1 className="mt-4 font-serif text-5xl font-semibold leading-[1.05] text-white text-balance md:text-7xl">
+          <h1 className="mt-1.5 max-w-[62%] font-serif text-[32px] font-semibold leading-none text-white md:text-5xl">
             Festive Menu
           </h1>
-          <p className="mx-auto mt-5 max-w-sm text-sm leading-relaxed text-white/70">
-            Pure vegetarian, made to order · Pickup {RAKHI_PICKUP_DATE} from Salt Lake
-          </p>
+        </div>
+      </div>
 
-          <a
-            href="#menu"
-            className="mt-9 inline-flex items-center gap-2.5 rounded-full bg-white px-8 py-4 text-base font-semibold text-rakhi-deep shadow-xl transition-transform hover:-translate-y-0.5"
-          >
-            Explore the menu
-            <span aria-hidden="true">↓</span>
-          </a>
-
-          {/* Quiet secondary actions — present, but not competing with the menu */}
-          <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-white/75">
-            <a
-              href={`tel:${site.phone.replace(/\s/g, '')}`}
-              onClick={() => trackContact('rakhi-hero')}
-              className="underline-offset-4 transition-colors hover:text-white hover:underline"
-            >
-              Call us
-            </a>
-            <span aria-hidden="true" className="text-white/30">·</span>
-            <a
-              href="/images/rakhi-festive-menu.jpg"
-              download="urban-rasoi-raksha-bandhan-menu.jpg"
-              onClick={() => window.fbq?.('trackCustom', 'MenuDownloaded', { menu: 'Raksha Bandhan' })}
-              className="underline-offset-4 transition-colors hover:text-white hover:underline"
-            >
-              Download menu
-            </a>
-            <span aria-hidden="true" className="text-white/30">·</span>
-            <a
-              href={site.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => window.fbq?.('trackCustom', 'InstagramClick', { from: 'rakhi-hero' })}
-              className="underline-offset-4 transition-colors hover:text-white hover:underline"
-            >
-              See our work
-            </a>
-          </div>
+      {/* The whole rulebook, on one line */}
+      <div className="border-b border-rakhi-gold/20 bg-rakhi-bg">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2.5 gap-y-1 px-5 py-2.5 text-xs text-rakhi-muted">
+          <span className="flex items-center gap-1.5 font-medium text-rakhi-deep">
+            <VegMark /> Pure vegetarian
+          </span>
+          <span aria-hidden="true" className="text-rakhi-gold/60">·</span>
+          <span>Orders from <strong className="font-semibold text-rakhi-deep">{formatINR(RAKHI_MIN_ORDER)}</strong></span>
+          <span aria-hidden="true" className="text-rakhi-gold/60">·</span>
+          <span>Pickup {RAKHI_PICKUP_DATE}, Salt Lake</span>
         </div>
       </div>
 
