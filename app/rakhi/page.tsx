@@ -11,7 +11,7 @@ export const revalidate = 3600
 const liveMetadata: Metadata = {
   title: 'Raksha Bandhan Festive Menu 2026 | Urban Rasoi Kolkata',
   description:
-    'Order your Raksha Bandhan festive spread from Urban Rasoi — gourmet vegetarian bites curated for home celebrations. Pickup from AE-287, Saltlake Sector-1 on 28 August 2026. Minimum order ₹3,000.',
+    'Order your Raksha Bandhan festive spread from Urban Rasoi — gourmet vegetarian bites, priced by the piece with no minimum order. Pickup from AE-287, Saltlake Sector-1 on 28 August 2026.',
   alternates: { canonical: '/rakhi' },
   openGraph: {
     title: 'Raksha Bandhan Festive Menu 2026 — Urban Rasoi',
@@ -83,10 +83,12 @@ const menuSchema = {
     servesCuisine: ['Indian', 'Vegetarian'],
   },
   offers: {
-    '@type': 'Offer',
-    description: 'Festive menu with minimum order ₹3,000',
+    '@type': 'AggregateOffer',
+    description: 'Festive menu priced by the piece, no minimum order',
     priceCurrency: 'INR',
-    price: '3000',
+    lowPrice: String(Math.min(...rakhiSections.flatMap((s) => s.items.map((i) => i.price)))),
+    highPrice: String(Math.max(...rakhiSections.flatMap((s) => s.items.map((i) => i.price)))),
+    offerCount: rakhiSections.reduce((n, s) => n + s.items.length, 0),
     availability: 'https://schema.org/InStock',
     validFrom: '2026-08-01',
     validThrough: '2026-08-28',

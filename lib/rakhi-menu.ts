@@ -3,14 +3,12 @@
  * Pickup only — AE-287, Salt Lake Sector-1, Kolkata.
  * Fixed pickup date: 28 August 2026.
  *
- * There is exactly one rule on this menu: the order must reach
- * RAKHI_MIN_ORDER. Everything else — per-dish minimums, fixed portion counts —
- * was removed because the arithmetic was costing us orders. Anything countable
- * is priced by the piece so a guest can take one of something if they want to;
- * the order minimum already stops baskets being uneconomically small.
+ * There are no rules on this menu. Per-dish minimums, fixed portion counts and
+ * the order minimum were all removed because the arithmetic between picking a
+ * dish and checking out was costing us orders. Anything countable is priced by
+ * the piece, so a guest orders exactly what they want and nothing gates them.
  */
 
-export const RAKHI_MIN_ORDER = 3000
 export const RAKHI_PICKUP_DATE = '28 August 2026'
 export const RAKHI_PICKUP_DATE_VALUE = '2026-08-28'
 export const RAKHI_PICKUP_ADDRESS = 'Urban Rasoi, AE-287, Saltlake Sector-1, Kolkata'
@@ -19,7 +17,7 @@ export const RAKHI_WHATSAPP = '919830725556'
 /**
  * Website-only discount. Applied automatically — nothing to type, nothing to
  * qualify for, so it adds no steps to the order. Measured against the item
- * total, which is also what the order minimum is judged on.
+ * total, before it becomes the amount to pay.
  */
 export const RAKHI_DISCOUNT_PERCENT = 10
 export const RAKHI_DISCOUNT_CAP = 300

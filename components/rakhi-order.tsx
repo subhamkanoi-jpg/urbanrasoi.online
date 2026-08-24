@@ -7,7 +7,6 @@ import { trackContact } from '@/lib/meta-tracking'
 import { shareOrderSlip, type SlipRow } from '@/lib/order-slip'
 import { clearOrderState, loadOrderState, saveOrderState } from '@/lib/order-storage'
 import {
-  RAKHI_MIN_ORDER,
   RAKHI_PICKUP_DATE,
   RAKHI_PICKUP_ADDRESS,
   RAKHI_DISCOUNT_CAP,
@@ -165,10 +164,10 @@ function DishPhoto({ item }: { item: RakhiItem }) {
 /**
  * Press-and-hold to keep stepping.
  *
- * Pricing by the piece means a basket that clears the order minimum can run to
- * twenty-odd pieces, and tapping that out one at a time is its own kind of
- * friction. Holding accelerates; a plain tap still steps once through onClick,
- * so keyboards and screen readers are unaffected.
+ * Pricing by the piece means a party-sized basket runs to twenty-odd pieces,
+ * and tapping that out one at a time is its own kind of friction. Holding
+ * accelerates; a plain tap still steps once through onClick, so keyboards and
+ * screen readers are unaffected.
  */
 function useHoldRepeat(step: () => void) {
   const timers = useRef<{ start?: number; tick?: number }>({})
@@ -603,8 +602,9 @@ function AlaCarteTab() {
   const itemCount = lines.length
   // The minimum is judged on the subtotal, so the website saving is allowed to
   // take the payable amount below it.
-  const belowMinimum = subtotal < RAKHI_MIN_ORDER && subtotal > 0
-  const canOrder = subtotal >= RAKHI_MIN_ORDER && details.name.trim() && details.time
+  // Nothing gates the basket. Name and pickup time are still needed, but they
+  // are details we cannot cook without, not a rule about what may be ordered.
+  const canOrder = Boolean(details.name.trim() && details.time)
 
   const visibleSections = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -948,11 +948,9 @@ function AlaCarteTab() {
               </p>
               <p className="text-xs text-rakhi-muted">
                 {itemCount} {itemCount === 1 ? 'item' : 'items'}
-                {belowMinimum ? (
-                  <span className="ml-1.5 text-amber-600">· Add {formatINR(RAKHI_MIN_ORDER - subtotal)} more</span>
-                ) : discount > 0 ? (
+                {discount > 0 && (
                   <span className="ml-1.5 font-semibold text-green-700">· saved {formatINR(discount)}</span>
-                ) : null}
+                )}
               </p>
             </div>
             <button
@@ -1049,11 +1047,6 @@ function AlaCarteTab() {
                     You saved {formatINR(discount)} by ordering on the website 🎉
                   </p>
                 )}
-                {belowMinimum && (
-                  <p className="mt-2 text-xs text-amber-700 font-medium">
-                    Add {formatINR(RAKHI_MIN_ORDER - subtotal)} more to reach the {formatINR(RAKHI_MIN_ORDER)} minimum.
-                  </p>
-                )}
                 <Divider />
                 <div className="text-xs text-rakhi-muted space-y-0.5">
                   <p>Pickup: {RAKHI_PICKUP_ADDRESS}</p>
@@ -1121,9 +1114,7 @@ function AlaCarteTab() {
               <div className="mt-5 mb-2">
                 {!canOrder && grandTotal > 0 && (
                   <p className="mb-2 text-center text-xs text-amber-700">
-                    {belowMinimum
-                      ? `Add ${formatINR(RAKHI_MIN_ORDER - subtotal)} more to reach the minimum.`
-                      : 'Please enter your name and select a pickup time.'}
+                    Please enter your name and select a pickup time.
                   </p>
                 )}
                 <button
@@ -1317,14 +1308,12 @@ export function RakhiOrder({
         </div>
       </div>
 
-      {/* The whole rulebook, on one line */}
+      {/* What a guest needs to know, on one line */}
       <div className="border-b border-rakhi-gold/20 bg-rakhi-bg">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2.5 gap-y-1 px-5 py-2.5 text-xs text-rakhi-muted">
           <span className="flex items-center gap-1.5 font-medium text-rakhi-deep">
             <VegMark /> Pure vegetarian
           </span>
-          <span aria-hidden="true" className="text-rakhi-gold/60">·</span>
-          <span>Orders from <strong className="font-semibold text-rakhi-deep">{formatINR(RAKHI_MIN_ORDER)}</strong></span>
           <span aria-hidden="true" className="text-rakhi-gold/60">·</span>
           <span>Pickup {RAKHI_PICKUP_DATE}, Salt Lake</span>
         </div>
