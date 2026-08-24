@@ -13,7 +13,11 @@ import { isValidOrderPayload, prepWindowFor } from '@/lib/rakhi-orders'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const SHEET_TIMEOUT_MS = 6000
+// Apps Script answers a warm request in 3-4s, but a cold start after a quiet
+// spell runs longer and a tight limit silently drops that order's row. The
+// customer sees "Preparing graphic..." while this runs, so the extra headroom
+// costs a visible wait only on the rare cold call.
+const SHEET_TIMEOUT_MS = 11000
 
 export async function POST(request: Request) {
   let payload: unknown
