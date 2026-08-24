@@ -33,6 +33,22 @@ function setUp() {
   SpreadsheetApp.getActive().toast('Order book ready.');
 }
 
+/**
+ * Wipes every recorded order, keeping the headers and the summary tabs.
+ * Order numbering restarts at RB-001, because the next number is worked out
+ * from how many rows are present. Use it after testing.
+ */
+function resetOrders() {
+  var ss = SpreadsheetApp.getActive();
+  ['Orders', 'Line items'].forEach(function (name) {
+    var sheet = ss.getSheetByName(name);
+    if (!sheet) return;
+    var rows = sheet.getLastRow() - 1;
+    if (rows > 0) sheet.deleteRows(2, rows);
+  });
+  ss.toast('Order book cleared. Next order will be RB-001.');
+}
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
   try {

@@ -14,19 +14,6 @@ export const RAKHI_PICKUP_DATE_VALUE = '2026-08-28'
 export const RAKHI_PICKUP_ADDRESS = 'Urban Rasoi, AE-287, Saltlake Sector-1, Kolkata'
 export const RAKHI_WHATSAPP = '919830725556'
 
-/**
- * Website-only discount. Applied automatically — nothing to type, nothing to
- * qualify for, so it adds no steps to the order. Measured against the item
- * total, before it becomes the amount to pay.
- */
-export const RAKHI_DISCOUNT_PERCENT = 10
-export const RAKHI_DISCOUNT_CAP = 300
-
-export function rakhiDiscount(subtotal: number): number {
-  if (subtotal <= 0) return 0
-  return Math.min(Math.floor((subtotal * RAKHI_DISCOUNT_PERCENT) / 100), RAKHI_DISCOUNT_CAP)
-}
-
 export type RakhiItem = {
   id: string
   name: string

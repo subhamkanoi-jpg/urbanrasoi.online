@@ -9,8 +9,6 @@ import { clearOrderState, loadOrderState, saveOrderState } from '@/lib/order-sto
 import {
   RAKHI_PICKUP_DATE,
   RAKHI_PICKUP_ADDRESS,
-  RAKHI_DISCOUNT_CAP,
-  RAKHI_DISCOUNT_PERCENT,
   PICKUP_TIME_SLOTS,
   type RakhiItem,
   type RakhiSection,
@@ -18,7 +16,6 @@ import {
   formatINR,
   orderedRakhiSections,
   popularRakhiItems,
-  rakhiDiscount,
 } from '@/lib/rakhi-menu'
 import { prepWindowFor } from '@/lib/rakhi-orders'
 import { cn } from '@/lib/utils'
@@ -597,8 +594,7 @@ function AlaCarteTab() {
   )
 
   const subtotal = lines.reduce((sum, l) => sum + l.lineTotal, 0)
-  const discount = rakhiDiscount(subtotal)
-  const grandTotal = subtotal - discount
+  const grandTotal = subtotal
   const itemCount = lines.length
   // The minimum is judged on the subtotal, so the website saving is allowed to
   // take the payable amount below it.
@@ -654,12 +650,14 @@ function AlaCarteTab() {
           })),
           pieces: lines.reduce((sum, line) => sum + line.qty, 0),
           itemTotal: subtotal,
-          discount,
+          discount: 0,
           toPay: grandTotal,
           placedAt: new Date().toISOString(),
           source: 'rakhi-website',
         }),
-        signal: AbortSignal.timeout(7000),
+        // Slightly beyond the server's own sheet timeout, so a slow write
+        // still returns its order number rather than being abandoned here.
+        signal: AbortSignal.timeout(12000),
       })
       const result = await response.json().catch(() => null)
       return result?.orderId ?? null
@@ -679,11 +677,7 @@ function AlaCarteTab() {
       parts.push(`• ${line.name} (${line.unit}) x${line.qty} — ${formatINR(line.lineTotal)}`)
     }
     parts.push('')
-    parts.push(`Item total: ${formatINR(subtotal)}`)
-    if (discount > 0) {
-      parts.push(`Website saving (${RAKHI_DISCOUNT_PERCENT}%): -${formatINR(discount)}`)
-    }
-    parts.push(`*To pay: ${formatINR(grandTotal)}*`)
+    parts.push(`*Total: ${formatINR(grandTotal)}*`)
     parts.push('')
     parts.push('*PICKUP DETAILS*')
     parts.push(`Date: ${RAKHI_PICKUP_DATE}`)
@@ -728,17 +722,8 @@ function AlaCarteTab() {
               total: formatINR(line.lineTotal),
             })),
           },
-          ...(discount > 0
-            ? [{
-                heading: 'Savings',
-                rows: [
-                  { name: 'Item total', total: formatINR(subtotal) },
-                  { name: `Website saving (${RAKHI_DISCOUNT_PERCENT}%)`, total: `− ${formatINR(discount)}` },
-                ] as SlipRow[],
-              }]
-            : []),
         ],
-        totalLabel: 'To pay',
+        totalLabel: 'Total',
         totalValue: formatINR(grandTotal),
         note: details.note || undefined,
       },
@@ -821,17 +806,6 @@ function AlaCarteTab() {
 
       {/* Menu list */}
       <div className="mx-auto max-w-3xl px-4 pb-36 md:px-8">
-        {/* Website-only saving — a strip, not a card, so the menu stays close */}
-        <div className="mt-3 flex items-center gap-2.5 rounded-xl border border-dashed border-rakhi-saffron/45 bg-rakhi-saffron/8 px-3.5 py-2.5">
-          <span className="text-base" aria-hidden="true">🎟️</span>
-          <p className="text-xs text-rakhi-muted">
-            <strong className="font-semibold text-rakhi-deep">
-              {RAKHI_DISCOUNT_PERCENT}% off, up to {formatINR(RAKHI_DISCOUNT_CAP)}
-            </strong>{' '}
-            — applied automatically, nothing to enter.
-          </p>
-        </div>
-
         {/* Most ordered — hidden while searching or filtering */}
         {!query && !popularOnly && popularRakhiItems.length > 0 && (
           <section className="mt-7" aria-labelledby="most-ordered-heading">
@@ -940,17 +914,9 @@ function AlaCarteTab() {
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rakhi-gold/20 bg-rakhi-bg/97 p-3 backdrop-blur-sm md:p-4">
           <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
             <div>
-              <p className="flex items-baseline gap-2">
-                <span className="font-serif text-xl font-semibold text-rakhi-deep">{formatINR(grandTotal)}</span>
-                {discount > 0 && (
-                  <span className="text-sm text-rakhi-muted line-through">{formatINR(subtotal)}</span>
-                )}
-              </p>
+              <p className="font-serif text-xl font-semibold text-rakhi-deep">{formatINR(grandTotal)}</p>
               <p className="text-xs text-rakhi-muted">
                 {itemCount} {itemCount === 1 ? 'item' : 'items'}
-                {discount > 0 && (
-                  <span className="ml-1.5 font-semibold text-green-700">· saved {formatINR(discount)}</span>
-                )}
               </p>
             </div>
             <button
@@ -1031,22 +997,8 @@ function AlaCarteTab() {
                   <BillRow key={line.id} label={line.name} value={formatINR(line.lineTotal)} />
                 ))}
                 <div className="mt-2 border-t border-rakhi-gold/20 pt-2">
-                  <BillRow label="Item total" value={formatINR(subtotal)} />
-                  {discount > 0 && (
-                    <div className="flex justify-between gap-2 py-1 text-green-700">
-                      <span>Website saving ({RAKHI_DISCOUNT_PERCENT}%)</span>
-                      <span className="font-semibold">− {formatINR(discount)}</span>
-                    </div>
-                  )}
+                  <BillRow label="Total" value={formatINR(grandTotal)} bold />
                 </div>
-                <div className="mt-2 border-t border-rakhi-gold/20 pt-2">
-                  <BillRow label="To pay" value={formatINR(grandTotal)} bold />
-                </div>
-                {discount > 0 && (
-                  <p className="mt-2 rounded-lg bg-green-50 px-3 py-2 text-center text-xs font-semibold text-green-700">
-                    You saved {formatINR(discount)} by ordering on the website 🎉
-                  </p>
-                )}
                 <Divider />
                 <div className="text-xs text-rakhi-muted space-y-0.5">
                   <p>Pickup: {RAKHI_PICKUP_ADDRESS}</p>
