@@ -21,6 +21,7 @@ import {
   popularRakhiItems,
   rakhiDiscount,
 } from '@/lib/rakhi-menu'
+import { prepWindowFor } from '@/lib/rakhi-orders'
 import { cn } from '@/lib/utils'
 import { site } from '@/lib/site'
 
@@ -624,9 +625,53 @@ function AlaCarteTab() {
     window.setTimeout(() => { suppressSpy.current = false }, 700)
   }
 
-  function buildWhatsappText() {
+  /**
+   * Records the order in the kitchen's order book and returns its number.
+   *
+   * Best effort by design: the customer's WhatsApp message is the real order,
+   * so a failure here must not cost them anything. Worst case they send an
+   * order without a number and it gets matched by name.
+   */
+  async function recordOrder(): Promise<string | null> {
+    try {
+      const response = await fetch('/api/rakhi/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer: details.name.trim(),
+          phone: details.phone.trim(),
+          pickupSlot: details.time,
+          prepWindow: prepWindowFor(details.time),
+          note: details.note.trim(),
+          lines: lines.map((line) => ({
+            id: line.id,
+            name: line.name,
+            section: findRakhiItem(line.id)?.section.name ?? '',
+            unit: line.unit,
+            qty: line.qty,
+            unitPrice: line.price,
+            lineTotal: line.lineTotal,
+          })),
+          pieces: lines.reduce((sum, line) => sum + line.qty, 0),
+          itemTotal: subtotal,
+          discount,
+          toPay: grandTotal,
+          placedAt: new Date().toISOString(),
+          source: 'rakhi-website',
+        }),
+        signal: AbortSignal.timeout(7000),
+      })
+      const result = await response.json().catch(() => null)
+      return result?.orderId ?? null
+    } catch {
+      return null
+    }
+  }
+
+  function buildWhatsappText(orderId: string | null) {
     const parts = [
       'Raksha Bandhan Order — Urban Rasoi',
+      ...(orderId ? [`Order ${orderId}`] : []),
       '',
       '*ORDER DETAILS*',
     ]
@@ -659,7 +704,11 @@ function AlaCarteTab() {
     if (!canOrder || sharing) return
     setSharing(true)
 
-    const facts = [`Name: ${details.name}`]
+    // Record first so the order number can travel on the message and the slip.
+    const orderId = await recordOrder()
+
+    const facts = orderId ? [`Order ${orderId}`] : []
+    facts.push(`Name: ${details.name}`)
     if (details.phone) facts.push(`Phone: ${details.phone}`)
     facts.push(`Pickup: ${RAKHI_PICKUP_DATE}  ·  ${details.time}`)
     facts.push(RAKHI_PICKUP_ADDRESS)
@@ -693,7 +742,7 @@ function AlaCarteTab() {
         totalValue: formatINR(grandTotal),
         note: details.note || undefined,
       },
-      text: buildWhatsappText(),
+      text: buildWhatsappText(orderId),
       fileName: 'urban-rasoi-rakhi-order.png',
       title: 'Raksha Bandhan Order — Urban Rasoi',
       tracking: {
