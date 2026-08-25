@@ -9,5 +9,6 @@ export default function robots(): MetadataRoute.Robots {
       disallow: '/api/',
     },
     sitemap: `${site.url}/sitemap.xml`,
+    host: 'www.urbanrasoi.online',
   }
 }

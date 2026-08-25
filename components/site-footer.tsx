@@ -47,6 +47,9 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
             <p className="mt-4 hidden text-sm leading-relaxed text-background/60 md:block">
               {site.tagline}
             </p>
+            <p className="mt-3 hidden text-xs leading-relaxed text-background/45 md:block">
+              {site.address.line}
+            </p>
             {/* Social + contact */}
             <div className="mt-4 flex items-center gap-3 md:mt-6">
               <a
@@ -90,6 +93,14 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/vegetarian-catering-kolkata"
+                  className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
+                >
+                  Vegetarian catering
+                </Link>
+              </li>
               {liveCampaigns.includes('rakhi') && (
                 <li>
                   <Link
@@ -140,7 +151,7 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
               </WhatsAppLink>
             </div>
             <div className="text-xs text-background/40 leading-relaxed">
-              <p>{site.location}</p>
+              <p>{site.address.line}</p>
               <p className="mt-1">{site.fssai}</p>
             </div>
           </div>

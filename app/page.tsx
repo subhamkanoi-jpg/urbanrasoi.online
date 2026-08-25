@@ -1,14 +1,21 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { EventStories } from '@/components/event-stories'
 import { FAQSection, HowItWorks, TrustStrip, faqItems } from '@/components/conversion-sections'
+import { JsonLd } from '@/components/json-ld'
 import { MaharajComparison } from '@/components/maharaj-comparison'
 import { Reveal } from '@/components/reveal'
 import { TelLink } from '@/components/tracked-links'
 import { WhatsAppButton } from '@/components/whatsapp-button'
+import { faqNode, webPageNode } from '@/lib/seo'
 import { products } from '@/lib/products'
 import { isLive } from '@/lib/seasonal'
 import { site, structuredWhatsappMessage } from '@/lib/site'
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+}
 
 const serviceFacts: Record<string, string[]> = {
   'grazing-tables': ['From 15 guests', 'Styled & set up'],
@@ -17,20 +24,23 @@ const serviceFacts: Record<string, string[]> = {
   'packed-meals': ['20–500+ boxes', 'Cooked same day'],
 }
 
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faqItems.map((item) => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: { '@type': 'Answer', text: item.answer },
-  })),
-}
-
 export default function HomePage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            webPageNode({
+              path: '/',
+              name: 'Urban Rasoi | Vegetarian Party Catering in Kolkata',
+              description:
+                '100% vegetarian catering for house parties, grazing tables and offices in Kolkata.',
+            }),
+            faqNode(faqItems),
+          ],
+        }}
+      />
       <section className="relative h-[78svh] min-h-[560px] overflow-hidden md:h-[92svh]">
         <video
           className="absolute inset-0 size-full object-cover object-center"
@@ -38,7 +48,7 @@ export default function HomePage() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           poster="/media/customer-stories/story-6-poster.png"
           aria-hidden="true"
         >
@@ -48,12 +58,12 @@ export default function HomePage() {
 
         <div className="absolute inset-x-0 bottom-0 px-5 pb-10 md:px-10 md:pb-16">
           <Reveal>
-            <p className="section-label text-terracotta-light">House party catering · Kolkata</p>
+            <p className="section-label text-terracotta-light">Vegetarian house party catering · Kolkata</p>
             <h1 className="mt-3 max-w-4xl font-serif text-[2.8rem] font-semibold leading-[1.04] tracking-tight text-primary-foreground text-balance md:text-7xl">
               Finally, enjoy your own party.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-primary-foreground/85 md:text-lg">
-              Gourmet menus, cooked and delivered — from {site.partyMenusFrom} a guest.
+              100% vegetarian menus, cooked and delivered — from {site.partyMenusFrom} a guest.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
@@ -84,7 +94,9 @@ export default function HomePage() {
         >
           <span aria-hidden="true">🪔</span>
           <span>Sawan special — satvik Rudra Abhishek catering, ₹30,000 for 40 guests</span>
-          <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>
+          <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
+            →
+          </span>
         </Link>
       )}
 
@@ -115,7 +127,9 @@ export default function HomePage() {
                   <h3 className="font-serif text-xl font-semibold text-ink sm:text-2xl">{product.shortName}</h3>
                   <ul className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
                     {serviceFacts[product.slug].map((fact) => (
-                      <li key={fact} className="rounded-full bg-cream px-2.5 py-1 text-xs font-medium text-ink sm:px-3 sm:py-1.5 sm:text-sm">{fact}</li>
+                      <li key={fact} className="rounded-full bg-cream px-2.5 py-1 text-xs font-medium text-ink sm:px-3 sm:py-1.5 sm:text-sm">
+                        {fact}
+                      </li>
                     ))}
                   </ul>
                   <span className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-terracotta transition-all group-hover:gap-3 sm:mt-5 sm:text-base">
@@ -125,6 +139,30 @@ export default function HomePage() {
               </Link>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      <section className="border-y border-border bg-card">
+        <div className="mx-auto grid max-w-7xl gap-6 px-5 py-12 md:grid-cols-[0.9fr_1.1fr] md:gap-12 md:px-10 md:py-16">
+          <Reveal>
+            <p className="section-label">A Salt Lake kitchen</p>
+            <h2 className="mt-3 font-serif text-3xl font-semibold text-ink text-balance md:text-4xl">
+              100% vegetarian catering, cooked in Kolkata.
+            </h2>
+          </Reveal>
+          <Reveal delay={80}>
+            <p className="text-base leading-relaxed text-ink-soft md:text-lg">
+              Urban Rasoi has cooked vegetarian food for Kolkata hosts since 2015 — house parties, grazing tables,
+              offices and pujas. Everything leaves our FSSAI-licensed kitchen at {site.address.street} and is
+              delivered across {site.areasServed.slice(0, 6).join(', ')} and the rest of the city.
+            </p>
+            <Link
+              href="/vegetarian-catering-kolkata"
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-terracotta hover:text-terracotta-deep"
+            >
+              Why we cook vegetarian-only <span aria-hidden="true">→</span>
+            </Link>
+          </Reveal>
         </div>
       </section>
 
@@ -154,7 +192,10 @@ export default function HomePage() {
               <WhatsAppButton message={structuredWhatsappMessage} label="Chat on WhatsApp" placement="home-final-cta" variant="light" size="large" className="justify-center" />
             </div>
             <p className="mt-4 text-sm text-primary-foreground/60">
-              or call <TelLink placement="home-final-cta" className="font-semibold underline-offset-2 hover:underline">{site.phone}</TelLink>
+              or call{' '}
+              <TelLink placement="home-final-cta" className="font-semibold underline-offset-2 hover:underline">
+                {site.phone}
+              </TelLink>
             </p>
           </Reveal>
         </div>

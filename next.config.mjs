@@ -1,3 +1,8 @@
+import { createRequire } from 'node:module'
+
+const require = createRequire(import.meta.url)
+const seoRedirects = require('./lib/seo-redirects.json')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async redirects() {
@@ -6,6 +11,7 @@ const nextConfig = {
       // which prices dishes by the piece with a live total. Links to menu.html
       // were shared on WhatsApp, so keep them working.
       { source: '/menu.html', destination: '/order', permanent: true },
+      ...seoRedirects.map((rule) => ({ ...rule, permanent: true })),
     ]
   },
 }

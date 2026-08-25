@@ -7,14 +7,14 @@ import { WhatsAppLink } from '@/components/tracked-links'
 import { site } from '@/lib/site'
 
 export const metadata: Metadata = {
-  title: 'Get-Together & Party Catering in Kolkata | Urban Rasoi',
+  title: 'Vegetarian Party Catering in Kolkata | Skip the Maharaj — Urban Rasoi',
   description:
-    'Skip the maharaj. Gourmet, chef-crafted party food for get-togethers, birthdays and house parties across Kolkata — delivered or fully served, your kitchen stays spotless. Enquire on WhatsApp.',
+    '100% vegetarian catering for get-togethers, birthdays and house parties across Kolkata. Chef-crafted menus from a Salt Lake kitchen — delivered or fully served. Enquire on WhatsApp.',
   alternates: { canonical: '/kolkata-catering' },
   openGraph: {
-    title: 'Get-Together & Party Catering in Kolkata | Urban Rasoi',
+    title: 'Vegetarian Party Catering in Kolkata | Urban Rasoi',
     description:
-      'Gourmet party food without the maharaj headache — chef-crafted menus, spotless execution and dependable service across Kolkata. Tell us your date, guests and area on WhatsApp.',
+      'Gourmet vegetarian party food without the maharaj headache — chef-crafted menus, spotless execution, Salt Lake kitchen since 2015.',
     url: '/kolkata-catering',
     images: ['/images/og-image.jpg'],
   },
@@ -38,20 +38,13 @@ const testimonials = [
 
 const businessSchema = {
   '@context': 'https://schema.org',
-  '@type': 'FoodEstablishment',
-  name: site.name,
+  '@type': 'WebPage',
+  name: 'Vegetarian party catering in Kolkata',
   url: `${site.url}/kolkata-catering`,
-  telephone: site.phone,
-  image: `${site.url}/images/og-image.jpg`,
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Kolkata',
-    addressRegion: 'West Bengal',
-    addressCountry: 'IN',
-  },
-  areaServed: { '@type': 'City', name: 'Kolkata' },
-  servesCuisine: ['Indian', 'Continental', 'Vegetarian'],
-  slogan: 'Crafted food experiences in Kolkata since 2015',
+  description:
+    '100% vegetarian catering for get-togethers, birthdays and house parties across Kolkata.',
+  isPartOf: { '@id': `${site.url}/#website` },
+  about: { '@id': `${site.url}/#business` },
 }
 
 export default function KolkataCateringPage() {
