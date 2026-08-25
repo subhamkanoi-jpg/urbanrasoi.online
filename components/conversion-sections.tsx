@@ -26,9 +26,9 @@ export const faqItems = [
       'Everything is cooked in our FSSAI-licensed kitchen and delivered or served at your venue. No mess, no repeats — chef-crafted vegetarian menus across six cuisines, never oily-same-old.',
   },
   {
-    question: 'What kinds of events do you cater?',
+    question: 'Which parts of Kolkata do you deliver to?',
     answer:
-      'House parties, birthdays, anniversaries, festive gatherings, corporate meals, grazing tables and large celebrations — across Kolkata.',
+      'We cook in Salt Lake Sector 1 and deliver across the city — Salt Lake, New Town, Rajarhat, South Kolkata (Alipore, Ballygunge, Gariahat, Tollygunge), Howrah and Dum Dum. WhatsApp your pin code and we confirm the slot.',
   },
   {
     question: 'What is the minimum guest count?',

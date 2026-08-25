@@ -27,6 +27,10 @@ export const site = {
     latitude: 22.59112,
     longitude: 88.40403,
   },
+  /** Straight-line delivery radius from the Salt Lake kitchen, in kilometres. */
+  deliveryRadiusKm: 20,
+  mapsUrl:
+    'https://www.google.com/maps/search/?api=1&query=AE-287%2C+Salt+Lake+Sector+1%2C+Kolkata+700064',
   /** Neighbourhoods we actually cook for — used in copy, footer and schema. */
   areasServed: [
     'Salt Lake',

@@ -1,16 +1,21 @@
 # Urban Rasoi
 
-100% vegetarian party catering in Kolkata. FSSAI-licensed kitchen at AE-287, Salt Lake Sector 1, Kolkata 700064. Cooking for house parties, grazing tables, offices and pujas since 2015.
+100% vegetarian party catering in Kolkata. FSSAI-licensed kitchen at AE-287, Salt Lake Sector 1, Kolkata 700064 (22.59112, 88.40403). Cooking for house parties, grazing tables, offices and pujas since 2015. Delivery radius about 20 km.
 
 ## Site
 - Home: https://www.urbanrasoi.online
 - Vegetarian catering: https://www.urbanrasoi.online/vegetarian-catering-kolkata
+- Areas we serve: https://www.urbanrasoi.online/catering-across-kolkata
+- Salt Lake: https://www.urbanrasoi.online/salt-lake-catering
+- New Town: https://www.urbanrasoi.online/new-town-catering
+- South Kolkata: https://www.urbanrasoi.online/south-kolkata-catering
 - Plan a party: https://www.urbanrasoi.online/plan
 - Order à la carte: https://www.urbanrasoi.online/order
 - House parties: https://www.urbanrasoi.online/house-parties
 - Grazing tables: https://www.urbanrasoi.online/grazing-tables
 - Corporate: https://www.urbanrasoi.online/corporate
 - Packed meals: https://www.urbanrasoi.online/packed-meals
+- Google Maps: https://www.google.com/maps/search/?api=1&query=AE-287%2C+Salt+Lake+Sector+1%2C+Kolkata+700064
 
 ## Facts
 - Pure vegetarian kitchen (no meat, no shared tandoor)
@@ -18,3 +23,4 @@
 - À la carte priced by the piece, no minimum
 - Phone / WhatsApp: +91 98307 25556
 - Instagram: https://www.instagram.com/urbanrasoi_kolkata/
+- Serves: Salt Lake, New Town, Rajarhat, Sector V, Alipore, Ballygunge, Gariahat, Park Street, Tollygunge, Behala, Dum Dum, Howrah

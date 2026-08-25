@@ -8,5 +8,18 @@
   { "source": "/corporate-catering-kolkata", "destination": "/corporate" },
   { "source": "/grazing-table-kolkata", "destination": "/grazing-tables" },
   { "source": "/grazing-tables-kolkata", "destination": "/grazing-tables" },
-  { "source": "/packed-meals-kolkata", "destination": "/packed-meals" }
+  { "source": "/packed-meals-kolkata", "destination": "/packed-meals" },
+  { "source": "/areas", "destination": "/catering-across-kolkata" },
+  { "source": "/areas-we-serve", "destination": "/catering-across-kolkata" },
+  { "source": "/kolkata-areas", "destination": "/catering-across-kolkata" },
+  { "source": "/salt-lake-catering-kolkata", "destination": "/salt-lake-catering" },
+  { "source": "/bidhannagar-catering", "destination": "/salt-lake-catering" },
+  { "source": "/catering-in-salt-lake", "destination": "/salt-lake-catering" },
+  { "source": "/new-town-catering-kolkata", "destination": "/new-town-catering" },
+  { "source": "/rajarhat-catering", "destination": "/new-town-catering" },
+  { "source": "/action-area-catering", "destination": "/new-town-catering" },
+  { "source": "/south-kolkata-catering-kolkata", "destination": "/south-kolkata-catering" },
+  { "source": "/alipore-catering", "destination": "/south-kolkata-catering" },
+  { "source": "/ballygunge-catering", "destination": "/south-kolkata-catering" },
+  { "source": "/gariahat-catering", "destination": "/south-kolkata-catering" }
 ]

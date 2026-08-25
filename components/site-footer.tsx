@@ -101,6 +101,14 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
                   Vegetarian catering
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/catering-across-kolkata"
+                  className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
+                >
+                  Across Kolkata
+                </Link>
+              </li>
               {liveCampaigns.includes('rakhi') && (
                 <li>
                   <Link
@@ -151,7 +159,27 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
               </WhatsAppLink>
             </div>
             <div className="text-xs text-background/40 leading-relaxed">
-              <p>{site.address.line}</p>
+              <p>
+                <a
+                  href={site.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-terracotta"
+                >
+                  {site.address.line}
+                </a>
+              </p>
+              <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+                <Link href="/salt-lake-catering" className="hover:text-terracotta">
+                  Salt Lake
+                </Link>
+                <Link href="/new-town-catering" className="hover:text-terracotta">
+                  New Town
+                </Link>
+                <Link href="/south-kolkata-catering" className="hover:text-terracotta">
+                  South Kolkata
+                </Link>
+              </p>
               <p className="mt-1">{site.fssai}</p>
             </div>
           </div>

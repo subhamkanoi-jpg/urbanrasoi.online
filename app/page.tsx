@@ -156,12 +156,20 @@ export default function HomePage() {
               offices and pujas. Everything leaves our FSSAI-licensed kitchen at {site.address.street} and is
               delivered across {site.areasServed.slice(0, 6).join(', ')} and the rest of the city.
             </p>
-            <Link
-              href="/vegetarian-catering-kolkata"
-              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-terracotta hover:text-terracotta-deep"
-            >
-              Why we cook vegetarian-only <span aria-hidden="true">→</span>
-            </Link>
+            <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:gap-5">
+              <Link
+                href="/vegetarian-catering-kolkata"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-terracotta hover:text-terracotta-deep"
+              >
+                Why we cook vegetarian-only <span aria-hidden="true">→</span>
+              </Link>
+              <Link
+                href="/catering-across-kolkata"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-terracotta hover:text-terracotta-deep"
+              >
+                Where we deliver <span aria-hidden="true">→</span>
+              </Link>
+            </div>
           </Reveal>
         </div>
       </section>
