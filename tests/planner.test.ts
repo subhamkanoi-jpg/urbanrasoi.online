@@ -57,7 +57,7 @@ describe('packagesForGuests', () => {
       [...PLATED_PACKAGE_IDS].sort(),
     )
     for (const id of GRAZING_PACKAGE_IDS) {
-      assert.equal(PLATED_PACKAGE_IDS.includes(id), false)
+      assert.equal((PLATED_PACKAGE_IDS as readonly string[]).includes(id), false)
     }
   })
 })
