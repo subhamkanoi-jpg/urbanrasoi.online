@@ -6,13 +6,26 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { shareOrderSlip, type SlipRow } from '@/lib/order-slip'
 import { clearOrderState, loadOrderState, saveOrderState } from '@/lib/order-storage'
 import {
-  CELEBRATION_MIN_GUESTS,
+  getPackage,
+  labelSlot,
+  packagesForGuests,
+  slotItemName,
+  slotSummary,
+  swapPoolIds,
+  type SlotKind,
+} from '@/lib/party-packages'
+import {
+  ALL_STEPS,
+  GRAZING_MIN_GUESTS,
   type Plan,
-  type ServiceId,
+  type Step,
+  applyGuests,
+  applyService,
+  billedGuests,
+  budgets,
+  canSendPlan,
   composeWhatsappMessage,
-  cuisineOptions,
   dateNote,
-  daysUntil,
   emptyPlan,
   estimatePlan,
   formatINR,
@@ -20,46 +33,77 @@ import {
   guestNote,
   nextWeekendISO,
   occasions,
+  perGuestPrice,
   prettyDate,
+  selectPackage,
   services,
+  stepsFor,
+  swapSlot,
 } from '@/lib/planner'
 import { site } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
-const STORAGE_KEY = 'ur-plan-v1'
-const STEPS = ['occasion', 'guests', 'date', 'service', 'food', 'summary'] as const
-type Step = (typeof STEPS)[number]
+const STORAGE_KEY = 'ur-plan-v2'
 
 const stepTitles: Record<Step, string> = {
   occasion: "What's the occasion?",
   guests: 'How many guests?',
-  date: 'When is the party?',
-  service: 'How hands-off do you want to be?',
-  food: "What's the food mood?",
-  summary: 'Your party, planned.',
+  service: 'How do you want it served?',
+  budget: 'Intimate or Signature?',
+  package: 'Pick a menu',
+  customise: 'Swap anything?',
+  summary: 'Your package.',
 }
 
 const guestPresets = [10, 15, 25, 40, 60, 100]
 
-function loadSaved(): { plan: Plan; step: number } | null {
-  const parsed = loadOrderState<{ plan?: Plan; step?: number }>(STORAGE_KEY)
+function isStep(value: unknown): value is Step {
+  return typeof value === 'string' && (ALL_STEPS as readonly string[]).includes(value)
+}
+
+function coerceStep(plan: Plan, step: Step): Step {
+  const visible = stepsFor(plan.guests)
+  return visible.includes(step) ? step : visible[visible.length - 1]!
+}
+
+function resolveItemId(plan: Plan, slotId: string, itemId: string): string {
+  const pkg = getPackage(plan.packageId)
+  if (!pkg) return itemId
+  const kind: SlotKind = slotId === 'live' ? 'live' : (pkg.slots.find((s) => s.id === slotId)?.kind ?? 'starter')
+  const pool = swapPoolIds(kind)
+  if (itemId && pool.includes(itemId)) return itemId
+  if (slotId === 'live') return pkg.defaultLiveId
+  return pkg.slots.find((s) => s.id === slotId)?.defaultItemId ?? itemId
+}
+
+function loadSaved(): { plan: Plan; step: Step } | null {
+  const parsed = loadOrderState<{ plan?: Plan; step?: Step }>(STORAGE_KEY)
   if (!parsed || typeof parsed.plan !== 'object' || parsed.plan === null) return null
-  return { plan: { ...emptyPlan, ...parsed.plan }, step: Math.min(parsed.step ?? 0, STEPS.length - 1) }
+  const plan: Plan = {
+    ...emptyPlan,
+    ...parsed.plan,
+    guests: typeof parsed.plan.guests === 'number' ? parsed.plan.guests : emptyPlan.guests,
+    slots: Array.isArray(parsed.plan.slots) ? parsed.plan.slots : [],
+  }
+  const step = isStep(parsed.step) ? coerceStep(plan, parsed.step) : 'occasion'
+  return { plan, step }
 }
 
 export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: string; source?: string }) {
   const preset = getOccasion(initialOccasion)
   const [plan, setPlan] = useState<Plan>(() => ({ ...emptyPlan, occasion: preset?.id }))
-  const [step, setStep] = useState(() => (preset ? 1 : 0))
+  const [step, setStep] = useState<Step>(() => (preset ? 'guests' : 'occasion'))
   const [resumed, setResumed] = useState(false)
   const [hydrated, setHydrated] = useState(false)
   const [sending, setSending] = useState(false)
   const [sentPlan, setSentPlan] = useState(false)
+  const [gateBanner, setGateBanner] = useState(false)
+  const [swappingSlot, setSwappingSlot] = useState<string | null>(null)
   const topRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const saved = loadSaved()
-    if (saved && !preset && (saved.plan.occasion || saved.step > 0)) {
+    if (saved && !preset && (saved.plan.occasion || saved.step !== 'occasion')) {
       setPlan(saved.plan)
       setStep(saved.step)
       setResumed(true)
@@ -69,62 +113,120 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const visibleSteps = stepsFor(plan.guests)
+  const current = coerceStep(plan, step)
+  const currentIndex = visibleSteps.indexOf(current)
+  const estimate = useMemo(() => estimatePlan(plan), [plan])
+  const sendBlocked =
+    sending || !canSendPlan(plan) || (plan.guests >= GRAZING_MIN_GUESTS && estimate == null)
+
+  useEffect(() => {
+    if (current !== step) setStep(current)
+  }, [current, step])
+
   useEffect(() => {
     if (!hydrated || sentPlan) return
-    saveOrderState(STORAGE_KEY, { plan, step })
-  }, [plan, step, hydrated, sentPlan])
+    saveOrderState(STORAGE_KEY, { plan, step: current })
+  }, [plan, current, hydrated, sentPlan])
 
-  const goTo = useCallback((next: number) => {
+  useEffect(() => {
+    if (current !== 'customise') setSwappingSlot(null)
+  }, [current])
+
+  const goTo = useCallback((next: Step) => {
     setResumed(false)
-    setStep(Math.max(0, Math.min(next, STEPS.length - 1)))
+    setStep(next)
     topRef.current?.scrollIntoView({ block: 'start' })
   }, [])
 
   const update = useCallback((patch: Partial<Plan>) => {
-    setPlan((current) => ({ ...current, ...patch }))
+    setPlan((currentPlan) => ({ ...currentPlan, ...patch }))
   }, [])
 
-  const current = STEPS[step]
-  const estimate = useMemo(() => estimatePlan(plan), [plan])
+  const setGuests = useCallback((n: number) => {
+    const { plan: next, cleared } = applyGuests(plan, n)
+    setPlan(next)
+    if (cleared) setGateBanner(true)
+  }, [plan])
+
+  const goBack = useCallback(() => {
+    const index = visibleSteps.indexOf(current)
+    if (index > 0) goTo(visibleSteps[index - 1]!)
+  }, [visibleSteps, current, goTo])
+
+  const slotRows = useMemo(() => {
+    const pkg = getPackage(plan.packageId)
+    if (!pkg) return []
+    const kinds: SlotKind[] = plan.slots.map((s) =>
+      s.slotId === 'live' ? 'live' : (pkg.slots.find((ps) => ps.id === s.slotId)?.kind ?? 'starter'),
+    )
+    const counts = new Map<SlotKind, number>()
+    for (const kind of kinds) counts.set(kind, (counts.get(kind) ?? 0) + 1)
+    const seen = new Map<SlotKind, number>()
+    return plan.slots.map((s, i) => {
+      const kind = kinds[i]!
+      const index = (seen.get(kind) ?? 0) + 1
+      seen.set(kind, index)
+      const itemId = resolveItemId(plan, s.slotId, s.itemId)
+      const pool = swapPoolIds(kind)
+      return {
+        slotId: s.slotId,
+        kind,
+        itemId,
+        label: labelSlot(kind, index, counts.get(kind) ?? 1),
+        pool,
+        swappable: pool.length > 1,
+      }
+    })
+  }, [plan])
 
   async function send() {
-    if (sending) return
+    if (sendBlocked) return
     setSending(true)
 
-    const value = estimate ? Math.round((estimate.total[0] + estimate.total[1]) / 2) : undefined
-    const service = services.find((s) => s.id === plan.service)
+    const toSend: Plan = {
+      ...plan,
+      slots: plan.slots.map((s) => ({ ...s, itemId: resolveItemId(plan, s.slotId, s.itemId) })),
+    }
+    const value = estimate?.total
+    const service = services.find((s) => s.id === toSend.service)
+    const budget = budgets.find((b) => b.id === toSend.budget)
+    const pkg = getPackage(toSend.packageId)
 
     const details: SlipRow[] = [
-      { name: 'Occasion', qty: getOccasion(plan.occasion)?.label ?? '—' },
-      { name: 'Guests', qty: `${plan.guests}` },
-      { name: 'Date', qty: plan.date ? prettyDate(plan.date) : plan.dateFlexible ? 'Flexible' : '—' },
-      { name: 'Service', qty: service?.label ?? 'Help me choose' },
+      { name: 'Occasion', qty: getOccasion(toSend.occasion)?.label ?? '—' },
+      { name: 'Guests', qty: `${toSend.guests}${toSend.guests >= 100 ? '+' : ''}` },
     ]
-    if (plan.area) details.push({ name: 'Area', qty: plan.area })
-    if (plan.pureVeg) details.push({ name: 'Preference', qty: 'Pure vegetarian' })
+    if (toSend.dateFlexible) details.push({ name: 'Date', qty: 'Flexible' })
+    else if (toSend.date) details.push({ name: 'Date', qty: prettyDate(toSend.date) })
+    if (service) details.push({ name: 'Service', qty: service.label })
+    if (budget) details.push({ name: 'Budget', qty: budget.label })
+    if (pkg) details.push({ name: 'Package', qty: pkg.name })
+    if (toSend.area) details.push({ name: 'Area', qty: toSend.area })
 
     const groups = [{ heading: 'Your party', rows: details }]
-    if (plan.cuisines.length) {
-      groups.push({ heading: 'Food mood', rows: plan.cuisines.map((c) => ({ name: c })) })
+    if (toSend.slots.length) {
+      groups.push({
+        heading: 'Menu',
+        rows: toSend.slots.map((s) => ({ name: slotItemName(s.itemId) })),
+      })
     }
 
     const outcome = await shareOrderSlip({
       slip: {
         eyebrow: 'Party plan',
-        facts: plan.name ? [`Name: ${plan.name}`] : undefined,
+        facts: toSend.name ? [`Name: ${toSend.name}`] : undefined,
         groups,
-        totalLabel: estimate ? 'Estimate' : undefined,
-        totalValue: estimate
-          ? `${formatINR(estimate.total[0])}–${formatINR(estimate.total[1])}`
-          : undefined,
-        note: plan.note || undefined,
+        totalLabel: estimate ? 'Your package' : undefined,
+        totalValue: estimate ? formatINR(estimate.total) : undefined,
+        note: toSend.note || undefined,
       },
-      text: composeWhatsappMessage(plan),
+      text: composeWhatsappMessage(toSend),
       fileName: 'urban-rasoi-party-plan.png',
       title: 'My Urban Rasoi party plan',
       tracking: {
         placement: 'planner',
-        occasion: getOccasion(plan.occasion)?.label,
+        occasion: getOccasion(toSend.occasion)?.label,
         contentName: 'Party Planner',
         value,
         currency: value != null ? 'INR' : undefined,
@@ -134,9 +236,12 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
     setSending(false)
     if (outcome === 'cancelled') return
     setSentPlan(true)
-    // Start fresh next time rather than resuming a plan already sent.
     clearOrderState(STORAGE_KEY)
   }
+
+  const questionTotal = visibleSteps.length - 1
+  const questionNumber = currentIndex + 1
+  const underFifteen = plan.guests < GRAZING_MIN_GUESTS
 
   return (
     <div ref={topRef} className="mx-auto flex min-h-svh w-full max-w-2xl flex-col px-5 pb-10">
@@ -152,8 +257,8 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
           </Link>
         </div>
         <div className="mt-3 flex gap-1.5" aria-hidden="true">
-          {STEPS.map((s, i) => (
-            <span key={s} className={cn('h-1 flex-1 rounded-full transition-colors duration-300', i <= step ? 'bg-terracotta' : 'bg-cream-dark')} />
+          {visibleSteps.map((s, i) => (
+            <span key={s} className={cn('h-1 flex-1 rounded-full transition-colors duration-300', i <= currentIndex ? 'bg-terracotta' : 'bg-cream-dark')} />
           ))}
         </div>
       </div>
@@ -161,16 +266,26 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
       {resumed && (
         <button
           type="button"
-          onClick={() => { setPlan({ ...emptyPlan }); goTo(0) }}
+          onClick={() => {
+            setPlan({ ...emptyPlan })
+            setGateBanner(false)
+            goTo('occasion')
+          }}
           className="mt-3 self-start rounded-full bg-cream px-4 py-2 text-sm font-medium text-ink-soft"
         >
           Welcome back — picked up where you left off. Start over?
         </button>
       )}
 
+      {gateBanner && (
+        <p className="mt-3 rounded-xl bg-cream px-4 py-3 text-sm font-medium text-ink" role="status">
+          Guest count changed the menus we can offer.
+        </p>
+      )}
+
       <div className="mt-6 flex flex-1 flex-col md:mt-10">
         <p className="section-label">
-          {current === 'summary' ? 'One tap to our kitchen' : `Question ${step + 1} of ${STEPS.length - 1}`}
+          {current === 'summary' ? 'One tap to our kitchen' : `Question ${questionNumber} of ${questionTotal}`}
         </p>
         <h1 className="mt-2 font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">{stepTitles[current]}</h1>
 
@@ -183,7 +298,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
                 <button
                   key={occasion.id}
                   type="button"
-                  onClick={() => { update({ occasion: occasion.id }); goTo(1) }}
+                  onClick={() => { update({ occasion: occasion.id }); goTo('guests') }}
                   className={cn(
                     'flex min-h-24 flex-col items-start justify-between rounded-2xl border bg-card p-4 text-left transition-all active:scale-[0.98]',
                     plan.occasion === occasion.id ? 'border-terracotta ring-2 ring-terracotta/30' : 'border-border hover:border-terracotta/50',
@@ -203,7 +318,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
             <div className="mt-8 flex items-center justify-center gap-6">
               <button
                 type="button"
-                onClick={() => update({ guests: Math.max(5, plan.guests - 5) })}
+                onClick={() => setGuests(plan.guests - 5)}
                 aria-label="Fewer guests"
                 className="flex size-14 items-center justify-center rounded-full border border-border bg-card text-2xl text-ink active:scale-95"
               >
@@ -215,7 +330,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
               </div>
               <button
                 type="button"
-                onClick={() => update({ guests: Math.min(500, plan.guests + 5) })}
+                onClick={() => setGuests(plan.guests + 5)}
                 aria-label="More guests"
                 className="flex size-14 items-center justify-center rounded-full border border-border bg-card text-2xl text-ink active:scale-95"
               >
@@ -227,7 +342,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
                 <button
                   key={n}
                   type="button"
-                  onClick={() => update({ guests: n })}
+                  onClick={() => setGuests(n)}
                   className={cn(
                     'rounded-full px-4 py-2 text-sm font-semibold transition-colors',
                     plan.guests === n ? 'bg-ink text-background' : 'bg-cream text-ink',
@@ -240,42 +355,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
             <p className="mt-6 rounded-xl bg-cream p-4 text-center text-sm font-medium text-ink" aria-live="polite">
               {guestNote(plan.guests)}
             </p>
-            <PrimaryButton onClick={() => goTo(2)}>Continue</PrimaryButton>
-          </>
-        )}
-
-        {/* ── Date ─────────────────────────────────── */}
-        {current === 'date' && (
-          <>
-            <div className="mt-6 flex flex-wrap gap-2">
-              <Chip active={!plan.dateFlexible && plan.date === nextWeekendISO()} onClick={() => update({ date: nextWeekendISO(), dateFlexible: false })}>
-                This Saturday
-              </Chip>
-              <Chip active={!plan.dateFlexible && plan.date === nextWeekendISO(1)} onClick={() => update({ date: nextWeekendISO(1), dateFlexible: false })}>
-                Next Saturday
-              </Chip>
-              <Chip active={!!plan.dateFlexible} onClick={() => update({ dateFlexible: true, date: undefined })}>
-                Still deciding
-              </Chip>
-            </div>
-            <label className="mt-5 block">
-              <span className="text-sm font-medium text-ink-soft">Or pick a date</span>
-              <input
-                type="date"
-                value={plan.dateFlexible ? '' : plan.date ?? ''}
-                min={new Date().toISOString().slice(0, 10)}
-                onChange={(event) => update({ date: event.target.value || undefined, dateFlexible: false })}
-                className="mt-2 w-full rounded-xl border border-border bg-card p-4 text-lg text-ink"
-              />
-            </label>
-            {plan.date && !plan.dateFlexible && dateNote(plan.date) && (
-              <p className="mt-4 rounded-xl bg-cream p-4 text-sm font-medium text-ink" aria-live="polite">
-                {dateNote(plan.date)}
-              </p>
-            )}
-            <PrimaryButton onClick={() => goTo(3)} disabled={!plan.date && !plan.dateFlexible}>
-              Continue
-            </PrimaryButton>
+            <PrimaryButton onClick={() => goTo(underFifteen ? 'summary' : 'service')}>Continue</PrimaryButton>
           </>
         )}
 
@@ -286,7 +366,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
               <button
                 key={service.id}
                 type="button"
-                onClick={() => { update({ service: service.id as ServiceId }); goTo(4) }}
+                onClick={() => { setPlan(applyService(plan, service.id)); goTo('budget') }}
                 className={cn(
                   'flex items-center justify-between gap-4 rounded-2xl border bg-card p-5 text-left transition-all active:scale-[0.99]',
                   plan.service === service.id ? 'border-terracotta ring-2 ring-terracotta/30' : 'border-border hover:border-terracotta/50',
@@ -296,7 +376,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
                   <span className="block font-serif text-xl font-semibold text-ink">{service.label}</span>
                   <span className="mt-1 block text-sm text-ink-soft">{service.detail}</span>
                 </span>
-                {service.fromPlate && plan.guests >= CELEBRATION_MIN_GUESTS && (
+                {plan.guests >= GRAZING_MIN_GUESTS && (
                   <span className="shrink-0 rounded-full bg-cream px-3 py-1.5 text-sm font-semibold text-terracotta">
                     from {formatINR(service.fromPlate)}/guest
                   </span>
@@ -306,46 +386,94 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
           </div>
         )}
 
-        {/* ── Food ─────────────────────────────────── */}
-        {current === 'food' && (
+        {/* ── Budget ───────────────────────────────── */}
+        {current === 'budget' && (
+          <div className="mt-6 flex flex-col gap-3">
+            {budgets.map((budget) => (
+              <button
+                key={budget.id}
+                type="button"
+                onClick={() => { update({ budget: budget.id }); goTo('package') }}
+                className={cn(
+                  'flex items-center justify-between gap-4 rounded-2xl border bg-card p-5 text-left transition-all active:scale-[0.99]',
+                  plan.budget === budget.id ? 'border-terracotta ring-2 ring-terracotta/30' : 'border-border hover:border-terracotta/50',
+                )}
+              >
+                <span>
+                  <span className="block font-serif text-xl font-semibold text-ink">{budget.label}</span>
+                  <span className="mt-1 block text-sm text-ink-soft">{budget.blurb}</span>
+                </span>
+                {plan.service && (
+                  <span className="shrink-0 rounded-full bg-cream px-3 py-1.5 text-sm font-semibold text-terracotta">
+                    {formatINR(perGuestPrice(plan.service, budget.id))}/guest
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ── Package ──────────────────────────────── */}
+        {current === 'package' && (
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            {packagesForGuests(plan.guests).map((pkg) => (
+              <button
+                key={pkg.id}
+                type="button"
+                onClick={() => { setPlan(selectPackage(plan, pkg.id)); goTo('customise') }}
+                className={cn(
+                  'flex min-h-24 flex-col items-start justify-between rounded-2xl border bg-card p-4 text-left transition-all active:scale-[0.98]',
+                  plan.packageId === pkg.id ? 'border-terracotta ring-2 ring-terracotta/30' : 'border-border hover:border-terracotta/50',
+                )}
+              >
+                <span className="font-serif text-lg font-semibold text-ink">{pkg.name}</span>
+                <span className="mt-1 text-sm text-ink-soft">{slotSummary(pkg, plan.service ?? 'delivery')}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ── Customise ────────────────────────────── */}
+        {current === 'customise' && (
           <>
-            <p className="mt-2 text-sm text-ink-soft">Pick as many as you like.</p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {cuisineOptions.map((cuisine) => {
-                const active = plan.cuisines.includes(cuisine)
-                return (
-                  <Chip
-                    key={cuisine}
-                    active={active}
-                    onClick={() =>
-                      update({ cuisines: active ? plan.cuisines.filter((c) => c !== cuisine) : [...plan.cuisines, cuisine] })
-                    }
-                  >
-                    {cuisine}
-                  </Chip>
-                )
-              })}
+            <div className="mt-6 divide-y divide-border rounded-2xl border border-border bg-card">
+              {slotRows.map((row) => (
+                <div key={row.slotId} className="p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-ink-lighter">{row.label}</p>
+                      <p className="truncate font-medium text-ink">{slotItemName(row.itemId)}</p>
+                    </div>
+                    {row.swappable && (
+                      <button
+                        type="button"
+                        onClick={() => setSwappingSlot((id) => (id === row.slotId ? null : row.slotId))}
+                        className="shrink-0 text-sm font-semibold text-terracotta"
+                      >
+                        {swappingSlot === row.slotId ? 'Close' : 'Swap'}
+                      </button>
+                    )}
+                  </div>
+                  {swappingSlot === row.slotId && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {row.pool.map((id) => (
+                        <Chip
+                          key={id}
+                          active={id === row.itemId}
+                          onClick={() => {
+                            setPlan(swapSlot(plan, row.slotId, id))
+                            setSwappingSlot(null)
+                          }}
+                        >
+                          {slotItemName(id)}
+                        </Chip>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-            <label className="mt-6 flex items-center justify-between rounded-2xl border border-border bg-card p-4">
-              <span className="font-medium text-ink">Pure veg kitchen for this event</span>
-              <input
-                type="checkbox"
-                checked={plan.pureVeg}
-                onChange={(event) => update({ pureVeg: event.target.checked })}
-                className="size-5 accent-terracotta"
-              />
-            </label>
-            <label className="mt-3 block">
-              <span className="text-sm font-medium text-ink-soft">Allergies or must-haves? (optional)</span>
-              <input
-                type="text"
-                value={plan.note ?? ''}
-                onChange={(event) => update({ note: event.target.value })}
-                placeholder="e.g. no nuts, extra desserts"
-                className="mt-2 w-full rounded-xl border border-border bg-card p-4 text-ink placeholder:text-ink-lighter"
-              />
-            </label>
-            <PrimaryButton onClick={() => goTo(5)}>See my plan</PrimaryButton>
+            <PrimaryButton onClick={() => goTo('summary')}>Continue</PrimaryButton>
           </>
         )}
 
@@ -353,34 +481,63 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
         {current === 'summary' && (
           <>
             <div className="mt-6 divide-y divide-border rounded-2xl border border-border bg-card">
-              <SummaryRow label="Occasion" value={getOccasion(plan.occasion)?.label ?? '—'} onEdit={() => goTo(0)} emoji={getOccasion(plan.occasion)?.emoji} />
-              <SummaryRow label="Guests" value={`${plan.guests}${plan.guests >= 100 ? '+' : ''}`} onEdit={() => goTo(1)} emoji="👥" />
-              <SummaryRow
-                label="Date"
-                value={plan.dateFlexible || !plan.date ? 'Still deciding' : prettyDate(plan.date)}
-                onEdit={() => goTo(2)}
-                emoji="🗓️"
-              />
-              <SummaryRow label="Service" value={services.find((s) => s.id === plan.service)?.label ?? '—'} onEdit={() => goTo(3)} emoji="🍽️" />
-              <SummaryRow
-                label="Food"
-                value={[plan.cuisines.join(', ') || 'Open to ideas', plan.pureVeg ? 'Pure veg' : null].filter(Boolean).join(' · ')}
-                onEdit={() => goTo(4)}
-                emoji="🥘"
-              />
+              <SummaryRow label="Occasion" value={getOccasion(plan.occasion)?.label ?? '—'} onEdit={() => goTo('occasion')} emoji={getOccasion(plan.occasion)?.emoji} />
+              <SummaryRow label="Guests" value={`${plan.guests}${plan.guests >= 100 ? '+' : ''}`} onEdit={() => goTo('guests')} emoji="👥" />
+              {!underFifteen && (
+                <>
+                  <SummaryRow label="Service" value={services.find((s) => s.id === plan.service)?.label ?? '—'} onEdit={() => goTo('service')} emoji="🍽️" />
+                  <SummaryRow label="Budget" value={budgets.find((b) => b.id === plan.budget)?.label ?? '—'} onEdit={() => goTo('budget')} emoji="✨" />
+                  <SummaryRow label="Package" value={getPackage(plan.packageId)?.name ?? '—'} onEdit={() => goTo('package')} emoji="🥘" />
+                </>
+              )}
             </div>
 
-            {estimate && (
+            {underFifteen ? (
+              <p className="mt-4 rounded-xl bg-cream p-4 text-center text-sm font-medium text-ink">
+                We'll tailor a menu.
+              </p>
+            ) : estimate ? (
               <div className="mt-4 rounded-2xl bg-ink p-5 text-primary-foreground">
-                <p className="section-label text-terracotta-light">Live estimate</p>
-                <p className="mt-1 font-serif text-3xl font-semibold">
-                  {formatINR(estimate.total[0])}–{formatINR(estimate.total[1])}
-                </p>
+                <p className="section-label text-terracotta-light">Your package</p>
+                <p className="mt-1 font-serif text-3xl font-semibold">{formatINR(estimate.total)}</p>
                 <p className="mt-1 text-sm text-primary-foreground/70">
-                  {formatINR(estimate.perGuest[0])}–{formatINR(estimate.perGuest[1])} per guest · final quote on WhatsApp
+                  {formatINR(estimate.perGuest)} per guest × {billedGuests(plan.guests)}
+                </p>
+                <p className="mt-2 text-sm text-primary-foreground/70">
+                  Delivery extra as per area — confirmed on WhatsApp.
                 </p>
               </div>
-            )}
+            ) : null}
+
+            <div className="mt-4">
+              <p className="text-sm font-medium text-ink-soft">When is the party? (optional)</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Chip active={!plan.dateFlexible && plan.date === nextWeekendISO()} onClick={() => update({ date: nextWeekendISO(), dateFlexible: false })}>
+                  This Saturday
+                </Chip>
+                <Chip active={!plan.dateFlexible && plan.date === nextWeekendISO(1)} onClick={() => update({ date: nextWeekendISO(1), dateFlexible: false })}>
+                  Next Saturday
+                </Chip>
+                <Chip active={!!plan.dateFlexible} onClick={() => update({ dateFlexible: true, date: undefined })}>
+                  Still deciding
+                </Chip>
+              </div>
+              <label className="mt-3 block">
+                <span className="text-sm font-medium text-ink-soft">Or pick a date</span>
+                <input
+                  type="date"
+                  value={plan.dateFlexible ? '' : plan.date ?? ''}
+                  min={new Date().toISOString().slice(0, 10)}
+                  onChange={(event) => update({ date: event.target.value || undefined, dateFlexible: false })}
+                  className="mt-2 w-full rounded-xl border border-border bg-card p-4 text-lg text-ink"
+                />
+              </label>
+              {plan.date && !plan.dateFlexible && dateNote(plan.date) && (
+                <p className="mt-4 rounded-xl bg-cream p-4 text-sm font-medium text-ink" aria-live="polite">
+                  {dateNote(plan.date)}
+                </p>
+              )}
+            </div>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <label className="block">
@@ -403,19 +560,33 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
                 />
               </label>
             </div>
+            <label className="mt-3 block">
+              <span className="text-sm font-medium text-ink-soft">Allergies or must-haves? (optional)</span>
+              <input
+                type="text"
+                value={plan.note ?? ''}
+                onChange={(event) => update({ note: event.target.value })}
+                placeholder="e.g. no nuts, extra desserts"
+                className="mt-1.5 w-full rounded-xl border border-border bg-card p-3.5 text-ink placeholder:text-ink-lighter"
+              />
+            </label>
 
             <button
               type="button"
               onClick={send}
-              disabled={sending}
+              disabled={sendBlocked}
               className={cn(
                 'mt-6 flex w-full items-center justify-center gap-2.5 rounded-full px-8 py-4.5 text-lg font-semibold transition-all',
-                sending
+                sendBlocked
                   ? 'cursor-not-allowed bg-cream text-ink-lighter'
                   : 'bg-terracotta text-primary-foreground hover:bg-terracotta-deep active:scale-[0.99]',
               )}
             >
-              {sending ? 'Preparing your plan…' : 'Send my plan on WhatsApp →'}
+              {sending
+                ? 'Preparing your plan…'
+                : underFifteen
+                  ? 'Send on WhatsApp'
+                  : 'Send my plan on WhatsApp →'}
             </button>
             {sentPlan ? (
               <p className="mt-3 text-center text-sm font-medium text-terracotta">
@@ -423,7 +594,9 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
               </p>
             ) : (
               <p className="mt-3 text-center text-sm text-ink-soft">
-                Sent as an image plus the details. No payment now — menus &amp; quote usually within hours.
+                {underFifteen
+                  ? "We'll tailor a menu. No payment now — usually within hours."
+                  : 'Sent as an image plus the details. No payment now — menus & quote usually within hours.'}
               </p>
             )}
 
@@ -439,13 +612,8 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
         )}
 
         {/* Back */}
-        {step > 0 && current !== 'summary' && (
-          <button type="button" onClick={() => goTo(step - 1)} className="mt-8 self-start text-sm font-medium text-ink-soft hover:text-ink">
-            ← Back
-          </button>
-        )}
-        {current === 'summary' && (
-          <button type="button" onClick={() => goTo(4)} className="mt-6 self-start text-sm font-medium text-ink-soft hover:text-ink">
+        {currentIndex > 0 && (
+          <button type="button" onClick={goBack} className="mt-8 self-start text-sm font-medium text-ink-soft hover:text-ink">
             ← Back
           </button>
         )}
