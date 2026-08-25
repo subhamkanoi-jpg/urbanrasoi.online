@@ -1,9 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { HeroVideo } from '@/components/hero-video'
+import { JsonLd } from '@/components/json-ld'
 import { Reveal } from '@/components/reveal'
 import { TelLink } from '@/components/tracked-links'
 import { WhatsAppButton } from '@/components/whatsapp-button'
+import { breadcrumbList, serviceNode, webPageNode } from '@/lib/seo'
 import { site } from '@/lib/site'
 import { cn } from '@/lib/utils'
 import type { Product } from '@/lib/products'
@@ -17,9 +19,27 @@ const serviceFit: Record<string, string[]> = {
 
 export function ProductLanding({ product }: { product: Product }) {
   const facts = serviceFit[product.slug]
+  const crumbs = [
+    { name: 'Home', path: '/' },
+    { name: product.shortName, path: `/${product.slug}` },
+  ]
 
   return (
     <>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            webPageNode({
+              path: `/${product.slug}`,
+              name: product.metaTitle,
+              description: product.metaDescription,
+            }),
+            serviceNode(product),
+            breadcrumbList(crumbs),
+          ],
+        }}
+      />
       <section className="relative min-h-[600px] overflow-hidden md:h-[92svh] md:min-h-[680px]">
         {product.heroVideo ? (
           <HeroVideo src={product.heroVideo} poster={product.heroImage} alt={product.name} positionClassName={product.heroImagePosition} />
@@ -34,7 +54,17 @@ export function ProductLanding({ product }: { product: Product }) {
               <h1 className="mt-3 font-serif text-4xl font-semibold leading-[1.05] tracking-tight text-primary-foreground text-balance md:text-7xl">{product.headline}</h1>
               <p className="mt-4 line-clamp-2 max-w-2xl text-base leading-relaxed text-primary-foreground/85 md:mt-5 md:line-clamp-none md:text-lg">{product.promise}</p>
               <ul className="mt-5 flex flex-wrap gap-2 md:mt-6">
-                {facts.map((fact, index) => <li key={fact} className={cn('rounded-full border border-primary-foreground/25 bg-ink/25 px-3 py-2 text-sm font-medium text-primary-foreground backdrop-blur-sm', index === 2 && 'hidden md:list-item')}>{fact}</li>)}
+                {facts.map((fact, index) => (
+                  <li
+                    key={fact}
+                    className={cn(
+                      'rounded-full border border-primary-foreground/25 bg-ink/25 px-3 py-2 text-sm font-medium text-primary-foreground backdrop-blur-sm',
+                      index === 2 && 'hidden md:list-item',
+                    )}
+                  >
+                    {fact}
+                  </li>
+                ))}
               </ul>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
                 {product.plannerOccasion ? (
@@ -47,7 +77,14 @@ export function ProductLanding({ product }: { product: Product }) {
                 ) : (
                   <WhatsAppButton message={product.whatsappMessage} label={product.ctaLabel} placement="product-hero" occasion={product.name} size="large" className="justify-center" />
                 )}
-                {product.builderCta && <a href={product.builderCta.href} className="flex items-center justify-center rounded-full border border-primary-foreground/40 px-6 py-4 font-semibold text-primary-foreground hover:bg-primary-foreground hover:text-ink">{product.builderCta.label} →</a>}
+                {product.builderCta && (
+                  <a
+                    href={product.builderCta.href}
+                    className="flex items-center justify-center rounded-full border border-primary-foreground/40 px-6 py-4 font-semibold text-primary-foreground hover:bg-primary-foreground hover:text-ink"
+                  >
+                    {product.builderCta.label} →
+                  </a>
+                )}
               </div>
             </div>
           </Reveal>
@@ -56,8 +93,19 @@ export function ProductLanding({ product }: { product: Product }) {
 
       <section className="border-b border-border bg-card">
         <div className="mx-auto grid max-w-7xl gap-4 px-5 py-9 md:grid-cols-[0.8fr_1.2fr] md:gap-8 md:px-10 md:py-16">
-          <Reveal><h2 className="font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">{product.name}</h2></Reveal>
-          <Reveal delay={80}><p className="line-clamp-3 text-base leading-relaxed text-ink-soft md:line-clamp-none md:text-lg">{product.description}</p></Reveal>
+          <Reveal>
+            <h2 className="font-serif text-3xl font-semibold text-ink text-balance md:text-5xl">{product.name} in Kolkata</h2>
+          </Reveal>
+          <Reveal delay={80}>
+            <p className="line-clamp-3 text-base leading-relaxed text-ink-soft md:line-clamp-none md:text-lg">{product.description}</p>
+            <p className="mt-4 text-sm text-ink-soft">
+              <Link href="/vegetarian-catering-kolkata" className="font-semibold text-terracotta hover:text-terracotta-deep">
+                100% vegetarian kitchen
+              </Link>
+              {' · '}
+              cooked in Salt Lake, delivered across the city.
+            </p>
+          </Reveal>
         </div>
       </section>
 
@@ -84,8 +132,13 @@ export function ProductLanding({ product }: { product: Product }) {
           {product.included.map((item, index) => (
             <Reveal key={item.title} delay={index * 45}>
               <li className="flex h-full gap-3 rounded-2xl border border-border bg-card p-4 md:gap-4 md:p-6">
-                <span className="mt-0.5 font-semibold text-terracotta" aria-hidden="true">✓</span>
-                <div><h3 className="font-serif text-lg font-semibold text-ink">{item.title}</h3><p className="mt-2 hidden leading-relaxed text-ink-soft md:block">{item.detail}</p></div>
+                <span className="mt-0.5 font-semibold text-terracotta" aria-hidden="true">
+                  ✓
+                </span>
+                <div>
+                  <h3 className="font-serif text-lg font-semibold text-ink">{item.title}</h3>
+                  <p className="mt-2 hidden leading-relaxed text-ink-soft md:block">{item.detail}</p>
+                </div>
               </li>
             </Reveal>
           ))}
@@ -94,7 +147,10 @@ export function ProductLanding({ product }: { product: Product }) {
 
       <section className="bg-cream py-14 md:py-20">
         <div className="mx-auto max-w-7xl px-5 md:px-10">
-          <Reveal><p className="section-label">From enquiry to event</p><h2 className="mt-3 font-serif text-3xl font-semibold text-ink md:text-5xl">How it works</h2></Reveal>
+          <Reveal>
+            <p className="section-label">From enquiry to event</p>
+            <h2 className="mt-3 font-serif text-3xl font-semibold text-ink md:text-5xl">How it works</h2>
+          </Reveal>
           <ol className="mt-9 grid gap-4 md:grid-cols-3">
             {product.steps.map((step, index) => (
               <Reveal key={step.title} delay={index * 70}>
@@ -112,7 +168,12 @@ export function ProductLanding({ product }: { product: Product }) {
       <section className="py-14 md:py-20">
         <div className="mx-auto flex max-w-4xl flex-col items-center px-5 text-center md:px-10">
           <p className="section-label">A customer note</p>
-          <Reveal><blockquote className="mt-5 font-serif text-3xl font-semibold leading-snug text-ink text-balance md:text-5xl">“The flavors were perfect and everyone enjoyed the meal. Surely looking forward to ordering again.”</blockquote><p className="mt-5 text-sm text-ink-soft">Abhinav · customer message shared with permission</p></Reveal>
+          <Reveal>
+            <blockquote className="mt-5 font-serif text-3xl font-semibold leading-snug text-ink text-balance md:text-5xl">
+              “The flavors were perfect and everyone enjoyed the meal. Surely looking forward to ordering again.”
+            </blockquote>
+            <p className="mt-5 text-sm text-ink-soft">Abhinav · customer message shared with permission</p>
+          </Reveal>
         </div>
       </section>
 
@@ -121,11 +182,25 @@ export function ProductLanding({ product }: { product: Product }) {
         <div className="absolute inset-0 bg-ink/82" />
         <div className="relative mx-auto flex max-w-3xl flex-col items-center px-5 py-24 text-center md:py-32">
           <Reveal>
-            <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-primary-foreground text-balance md:text-6xl">{product.closingHeadline}</h2>
+            <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-primary-foreground text-balance md:text-6xl">
+              {product.closingHeadline}
+            </h2>
             <p className="mx-auto mt-5 hidden max-w-2xl leading-relaxed text-primary-foreground/75 md:block">{product.closingCopy}</p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <WhatsAppButton message={product.whatsappMessage} label={product.ctaLabel} placement="product-final-cta" occasion={product.name} size="large" className="justify-center" />
-              <TelLink placement="product-final-cta" className="flex items-center justify-center rounded-full border border-primary-foreground/30 px-6 py-4 font-medium text-primary-foreground hover:bg-primary-foreground/10">Call {site.phone}</TelLink>
+              <WhatsAppButton
+                message={product.whatsappMessage}
+                label={product.ctaLabel}
+                placement="product-final-cta"
+                occasion={product.name}
+                size="large"
+                className="justify-center"
+              />
+              <TelLink
+                placement="product-final-cta"
+                className="flex items-center justify-center rounded-full border border-primary-foreground/30 px-6 py-4 font-medium text-primary-foreground hover:bg-primary-foreground/10"
+              >
+                Call {site.phone}
+              </TelLink>
             </div>
           </Reveal>
         </div>

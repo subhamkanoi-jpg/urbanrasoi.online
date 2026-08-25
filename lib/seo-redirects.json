@@ -1,0 +1,12 @@
+[
+  { "source": "/vegetarian-catering", "destination": "/vegetarian-catering-kolkata" },
+  { "source": "/veg-catering", "destination": "/vegetarian-catering-kolkata" },
+  { "source": "/veg-catering-kolkata", "destination": "/vegetarian-catering-kolkata" },
+  { "source": "/vegetarian-catering-in-kolkata", "destination": "/vegetarian-catering-kolkata" },
+  { "source": "/house-party-catering", "destination": "/house-parties" },
+  { "source": "/house-party-catering-kolkata", "destination": "/house-parties" },
+  { "source": "/corporate-catering-kolkata", "destination": "/corporate" },
+  { "source": "/grazing-table-kolkata", "destination": "/grazing-tables" },
+  { "source": "/grazing-tables-kolkata", "destination": "/grazing-tables" },
+  { "source": "/packed-meals-kolkata", "destination": "/packed-meals" }
+]

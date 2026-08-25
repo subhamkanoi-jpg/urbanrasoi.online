@@ -30,31 +30,30 @@ const jost = Jost({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: 'Urban Rasoi — Gourmet Party & Get-Together Catering in Kolkata',
+    default: 'Urban Rasoi | Vegetarian Party Catering in Kolkata',
     template: '%s',
   },
   description:
-    'Gourmet catering for get-togethers, house parties and celebrations in Kolkata — chef-crafted menus, spotless execution and zero kitchen chaos. Grazing tables, corporate catering and packed meals since 2015.',
-  alternates: {
-    canonical: '/',
-  },
+    '100% vegetarian catering for house parties, grazing tables and offices in Kolkata. Chef-crafted menus from ₹749 a guest, cooked in our FSSAI kitchen in Salt Lake. Order online or WhatsApp.',
   openGraph: {
-    title: 'Urban Rasoi — Gourmet Party & Get-Together Catering in Kolkata',
+    title: 'Urban Rasoi | Vegetarian Party Catering in Kolkata',
     description:
-      'The change Kolkata’s party food scene always needed. Chef-crafted menus, dependable service and zero kitchen chaos — since 2015.',
+      '100% vegetarian party food from a Salt Lake kitchen — house parties, grazing tables and offices across Kolkata, since 2015.',
     url: '/',
     siteName: 'Urban Rasoi',
     type: 'website',
     locale: 'en_IN',
-    images: [{ url: '/images/og-image.jpg', width: 1200, height: 630, alt: 'Urban Rasoi gourmet catering in Kolkata' }],
+    images: [{ url: '/images/og-image.jpg', width: 1200, height: 630, alt: 'Urban Rasoi vegetarian catering in Kolkata' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Urban Rasoi — Gourmet Party & Get-Together Catering in Kolkata',
+    title: 'Urban Rasoi | Vegetarian Party Catering in Kolkata',
     description:
-      'Chef-crafted menus, dependable service and zero kitchen chaos for get-togethers across Kolkata.',
+      '100% vegetarian party catering in Kolkata — house parties, grazing tables and offices, from ₹749 a guest.',
     images: ['/images/og-image.jpg'],
+    site: site.instagramHandle,
   },
+  robots: { index: true, follow: true },
   ...(process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION
     ? { other: { 'facebook-domain-verification': process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION } }
     : {}),
@@ -66,7 +65,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${playfair.variable} ${jost.variable} bg-background`}>
+    <html lang="en-IN" data-scroll-behavior="smooth" className={`${playfair.variable} ${jost.variable} bg-background`}>
       <body className="font-sans">
         <StructuredData />
         <SiteShell liveCampaigns={liveCampaignIds()}>{children}</SiteShell>

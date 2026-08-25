@@ -16,16 +16,23 @@ const steps = [
 
 export const faqItems = [
   {
+    question: 'Is Urban Rasoi vegetarian?',
+    answer:
+      'Yes — 100%. Everything is cooked in a vegetarian-only, FSSAI-licensed kitchen in Salt Lake. No meat, no shared tandoor, no mixed kitchen.',
+  },
+  {
     question: 'How is Urban Rasoi different from calling a maharaj?',
-    answer: 'Everything is cooked in our FSSAI-licensed kitchen and delivered or served at your venue. No mess, no repeats — chef-crafted menus across six cuisines, never oily-same-old.',
+    answer:
+      'Everything is cooked in our FSSAI-licensed kitchen and delivered or served at your venue. No mess, no repeats — chef-crafted vegetarian menus across six cuisines, never oily-same-old.',
   },
   {
     question: 'What kinds of events do you cater?',
-    answer: 'House parties, birthdays, anniversaries, festive gatherings, corporate meals, grazing tables and large celebrations — across Kolkata.',
+    answer:
+      'House parties, birthdays, anniversaries, festive gatherings, corporate meals, grazing tables and large celebrations — across Kolkata.',
   },
   {
     question: 'What is the minimum guest count?',
-    answer: 'Grazing tables from 15 guests, corporate from 10, celebration menus from 25.',
+    answer: 'Grazing tables from 15 guests, corporate from 10, celebration menus from 25. À la carte orders have no minimum.',
   },
   {
     question: 'Can menus be customised for taste and diet?',
@@ -93,7 +100,9 @@ export function FAQSection() {
             <details key={item.question} className="group py-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-serif text-lg font-semibold text-ink marker:content-none">
                 {item.question}
-                <span className="text-terracotta transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+                <span className="text-terracotta transition-transform group-open:rotate-45" aria-hidden="true">
+                  +
+                </span>
               </summary>
               <p className="max-w-2xl pt-3 leading-relaxed text-ink-soft">{item.answer}</p>
             </details>

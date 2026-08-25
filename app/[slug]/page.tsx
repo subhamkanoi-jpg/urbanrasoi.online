@@ -26,6 +26,14 @@ export async function generateMetadata({
       title: product.metaTitle,
       description: product.metaDescription,
       url: `/${product.slug}`,
+      type: 'website',
+      locale: 'en_IN',
+      images: [{ url: product.heroImage, alt: product.name }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.metaTitle,
+      description: product.metaDescription,
       images: [product.heroImage],
     },
   }
