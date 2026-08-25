@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "npx --yes tsx --test tests/meta-capi.test.ts"
+    "test": "npx --yes tsx --test tests/meta-capi.test.ts tests/planner.test.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
