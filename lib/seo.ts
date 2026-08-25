@@ -3,12 +3,15 @@
  * Keep schema honest: only facts that appear on the site, no invented ratings.
  */
 
+import { serviceAreas, type ServiceArea } from './areas'
 import { products, type Product } from './products'
 import { site } from './site'
 import seoRedirectsJson from './seo-redirects.json'
 
 export const businessId = `${site.url}/#business`
 export const websiteId = `${site.url}/#website`
+export const kitchenId = `${site.url}/#kitchen`
+export const kolkataId = `${site.url}/#kolkata`
 export const seoRedirects: { source: string; destination: string }[] = seoRedirectsJson
 
 export function serializeJsonLd(data: unknown): string {
@@ -35,6 +38,77 @@ export function breadcrumbList(items: Crumb[]) {
   }
 }
 
+function postalAddress() {
+  return {
+    '@type': 'PostalAddress' as const,
+    streetAddress: site.address.street,
+    addressLocality: site.address.locality,
+    addressRegion: site.address.region,
+    postalCode: site.address.postalCode,
+    addressCountry: site.address.country,
+  }
+}
+
+function geoCoordinates(geo: { latitude: number; longitude: number } = site.geo) {
+  return {
+    '@type': 'GeoCoordinates' as const,
+    latitude: geo.latitude,
+    longitude: geo.longitude,
+  }
+}
+
+export function kitchenPlace() {
+  return {
+    '@type': 'Place' as const,
+    '@id': kitchenId,
+    name: 'Urban Rasoi kitchen',
+    description: 'Vegetarian production kitchen in Salt Lake Sector 1 — not a walk-in restaurant.',
+    address: postalAddress(),
+    geo: geoCoordinates(),
+    hasMap: site.mapsUrl,
+    containedInPlace: { '@id': kolkataId },
+  }
+}
+
+export function kolkataPlace() {
+  return {
+    '@type': 'City' as const,
+    '@id': kolkataId,
+    name: 'Kolkata',
+    containedInPlace: {
+      '@type': 'State',
+      name: 'West Bengal',
+      containedInPlace: { '@type': 'Country', name: 'India' },
+    },
+  }
+}
+
+export function deliveryCircle() {
+  return {
+    '@type': 'GeoCircle' as const,
+    geoMidpoint: geoCoordinates(),
+    geoRadius: site.deliveryRadiusKm * 1000,
+    description: `Vegetarian catering delivery within about ${site.deliveryRadiusKm} km of the Salt Lake kitchen.`,
+  }
+}
+
+export function areaPlace(area: ServiceArea) {
+  return {
+    '@type': 'Place' as const,
+    '@id': `${absoluteUrl(`/${area.slug}`)}#place`,
+    name: area.name,
+    address: {
+      '@type': 'PostalAddress' as const,
+      addressLocality: area.name,
+      addressRegion: 'West Bengal',
+      postalCode: area.pin,
+      addressCountry: 'IN',
+    },
+    geo: geoCoordinates(area.geo),
+    containedInPlace: { '@id': kolkataId },
+  }
+}
+
 export function cateringBusiness() {
   return {
     '@type': 'CateringBusiness',
@@ -49,24 +123,13 @@ export function cateringBusiness() {
     foundingDate: String(site.foundedYear),
     priceRange: '₹₹',
     currenciesAccepted: 'INR',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: site.address.street,
-      addressLocality: site.address.locality,
-      addressRegion: site.address.region,
-      postalCode: site.address.postalCode,
-      addressCountry: site.address.country,
-    },
-    geo: {
-      '@type': 'GeoCoordinates',
-      latitude: site.geo.latitude,
-      longitude: site.geo.longitude,
-    },
-    hasMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address.line)}`,
-    areaServed: [
-      { '@type': 'City', name: 'Kolkata' },
-      ...site.areasServed.map((name) => ({ '@type': 'AdministrativeArea' as const, name })),
-    ],
+    address: postalAddress(),
+    geo: geoCoordinates(),
+    location: { '@id': kitchenId },
+    hasMap: site.mapsUrl,
+    containedInPlace: { '@id': kolkataId },
+    areaServed: [{ '@id': kolkataId }, deliveryCircle(), ...serviceAreas.map(areaPlace)],
+    serviceArea: deliveryCircle(),
     servesCuisine: ['Indian', 'Bengali', 'Rajasthani', 'South Indian', 'Indo-Chinese', 'Continental', 'Vegetarian'],
     suitableForDiet: 'https://schema.org/VegetarianDiet',
     hasMenu: absoluteUrl('/order'),
@@ -78,6 +141,8 @@ export function cateringBusiness() {
       'Corporate catering',
       'Bengali catering',
       'Puja catering',
+      'Salt Lake catering',
+      'New Town catering',
     ],
     identifier: {
       '@type': 'PropertyValue',
@@ -100,18 +165,15 @@ export function cateringBusiness() {
 export function siteGraph() {
   return {
     '@context': 'https://schema.org',
-    '@graph': [
-      cateringBusiness(),
-      {
-        '@type': 'WebSite',
-        '@id': websiteId,
-        url: site.url,
-        name: site.name,
-        description: site.tagline,
-        inLanguage: 'en-IN',
-        publisher: { '@id': businessId },
-      },
-    ],
+    '@graph': [cateringBusiness(), kitchenPlace(), kolkataPlace(), {
+      '@type': 'WebSite',
+      '@id': websiteId,
+      url: site.url,
+      name: site.name,
+      description: site.tagline,
+      inLanguage: 'en-IN',
+      publisher: { '@id': businessId },
+    }],
   }
 }
 
@@ -144,9 +206,22 @@ export function serviceNode(product: Product) {
     serviceType: 'Vegetarian catering',
     description: product.metaDescription,
     provider: { '@id': businessId },
-    areaServed: { '@type': 'City', name: 'Kolkata' },
+    areaServed: { '@id': kolkataId },
     url: absoluteUrl(`/${product.slug}`),
     image: absoluteUrl(product.heroImage),
+  }
+}
+
+export function areaServiceNode(area: ServiceArea) {
+  return {
+    '@type': 'Service',
+    '@id': `${absoluteUrl(`/${area.slug}`)}#service`,
+    name: `Vegetarian catering in ${area.name}`,
+    serviceType: 'Vegetarian catering',
+    description: area.metaDescription,
+    provider: { '@id': businessId },
+    areaServed: areaPlace(area),
+    url: absoluteUrl(`/${area.slug}`),
   }
 }
 

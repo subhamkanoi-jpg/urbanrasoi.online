@@ -176,12 +176,37 @@ export default function VegetarianCateringPage() {
         <section className="mx-auto max-w-3xl px-5 py-12 md:px-8 md:py-16">
           <h2 className="font-serif text-3xl font-semibold text-ink md:text-4xl">Where we deliver</h2>
           <p className="mt-3 leading-relaxed text-ink-soft">
-            Cooked in Salt Lake, delivered across Kolkata. Typical areas include {site.areasServed.join(', ')}.
-            Tell us your pin code with the order — we will confirm timing the same day.
+            Cooked in Salt Lake, delivered across Kolkata — about {site.deliveryRadiusKm} km from the kitchen.
+            Tell us your pin code with the order and we confirm timing the same day.
           </p>
+          <ul className="mt-6 grid gap-3 sm:grid-cols-3">
+            <li>
+              <Link href="/salt-lake-catering" className="block rounded-2xl border border-border bg-card px-4 py-4 font-semibold text-ink hover:border-terracotta/50">
+                Salt Lake →
+              </Link>
+            </li>
+            <li>
+              <Link href="/new-town-catering" className="block rounded-2xl border border-border bg-card px-4 py-4 font-semibold text-ink hover:border-terracotta/50">
+                New Town →
+              </Link>
+            </li>
+            <li>
+              <Link href="/south-kolkata-catering" className="block rounded-2xl border border-border bg-card px-4 py-4 font-semibold text-ink hover:border-terracotta/50">
+                South Kolkata →
+              </Link>
+            </li>
+          </ul>
           <p className="mt-4 text-sm text-ink-soft">
-            Kitchen: {site.address.line} · {site.phone} · {site.fssai}
+            Kitchen:{' '}
+            <a href={site.mapsUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-terracotta hover:text-terracotta-deep">
+              {site.address.line}
+            </a>
+            {' · '}
+            {site.phone} · {site.fssai}
           </p>
+          <Link href="/catering-across-kolkata" className="mt-3 inline-flex text-sm font-semibold text-terracotta hover:text-terracotta-deep">
+            All areas we deliver to →
+          </Link>
         </section>
 
         <section className="bg-card py-12 md:py-16">

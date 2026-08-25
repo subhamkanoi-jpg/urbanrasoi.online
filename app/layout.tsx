@@ -54,9 +54,15 @@ export const metadata: Metadata = {
     site: site.instagramHandle,
   },
   robots: { index: true, follow: true },
-  ...(process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION
-    ? { other: { 'facebook-domain-verification': process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION } }
-    : {}),
+  other: {
+    'geo.region': 'IN-WB',
+    'geo.placename': 'Salt Lake, Kolkata',
+    'geo.position': `${site.geo.latitude};${site.geo.longitude}`,
+    ICBM: `${site.geo.latitude}, ${site.geo.longitude}`,
+    ...(process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION
+      ? { 'facebook-domain-verification': process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION }
+      : {}),
+  },
 }
 
 export default function RootLayout({
