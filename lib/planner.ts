@@ -3,7 +3,6 @@ import {
   packagesForGuests,
   slotItemName,
   slotsForPackage,
-  type SlotFill,
 } from './party-packages'
 
 export type ServiceId = 'delivery' | 'buffet' | 'live'
@@ -85,6 +84,7 @@ export function canSendPlan(plan: Plan): boolean {
   if (!plan.occasion) return false
   if (plan.guests < GRAZING_MIN_GUESTS) return true
   if (!plan.service || !plan.budget || !plan.packageId) return false
+  if (!packagesForGuests(plan.guests).some((p) => p.id === plan.packageId)) return false
   const pkg = getPackage(plan.packageId)
   if (!pkg) return false
   const expected = slotsForPackage(pkg, plan.service)
@@ -94,6 +94,20 @@ export function canSendPlan(plan: Plan): boolean {
 
 export function applyGuests(plan: Plan, guests: number): { plan: Plan; cleared: boolean } {
   const next = Math.min(500, Math.max(5, guests))
+  if (next < GRAZING_MIN_GUESTS) {
+    const cleared = Boolean(plan.packageId || plan.slots.length)
+    return {
+      plan: {
+        ...plan,
+        guests: next,
+        service: undefined,
+        budget: undefined,
+        packageId: undefined,
+        slots: [],
+      },
+      cleared,
+    }
+  }
   const stillOk = !plan.packageId || packagesForGuests(next).some((p) => p.id === plan.packageId)
   if (stillOk) return { plan: { ...plan, guests: next }, cleared: false }
   return { plan: { ...plan, guests: next, packageId: undefined, slots: [] }, cleared: true }
@@ -117,10 +131,13 @@ export function selectPackage(plan: Plan, packageId: string): Plan {
   if (!pkg) return plan
   if (!packagesForGuests(plan.guests).some((p) => p.id === packageId)) return plan
   const service = plan.service ?? 'delivery'
+  const defaults = slotsForPackage(pkg, service).map((s) => ({ slotId: s.slotId, itemId: s.itemId }))
+  if (plan.packageId !== packageId) return { ...plan, packageId, slots: defaults }
+  const kept = new Map(plan.slots.map((s) => [s.slotId, s.itemId]))
   return {
     ...plan,
     packageId,
-    slots: slotsForPackage(pkg, service).map((s) => ({ slotId: s.slotId, itemId: s.itemId })),
+    slots: defaults.map((s) => ({ slotId: s.slotId, itemId: kept.get(s.slotId) ?? s.itemId })),
   }
 }
 
@@ -196,10 +213,12 @@ export function composeWhatsappMessage(plan: Plan): string {
   if (plan.dateFlexible) lines.push('🗓️ Date: Still deciding')
   else if (plan.date) lines.push(`🗓️ Date: ${prettyDate(plan.date)}`)
   lines.push(`👥 Guests: ${plan.guests}${plan.guests >= 100 ? '+' : ''}`)
-  if (service) lines.push(`🍽️ Service: ${service.label} — ${service.detail}`)
-  if (budget) lines.push(`✨ Budget: ${budget.label}`)
-  if (pkg) lines.push(`🥘 Package: ${pkg.name}`)
-  if (plan.slots.length) {
+  if (plan.guests >= GRAZING_MIN_GUESTS) {
+    if (service) lines.push(`🍽️ Service: ${service.label} — ${service.detail}`)
+    if (budget) lines.push(`✨ Budget: ${budget.label}`)
+    if (pkg) lines.push(`🥘 Package: ${pkg.name}`)
+  }
+  if (plan.guests >= GRAZING_MIN_GUESTS && plan.slots.length) {
     lines.push('📋 Menu:')
     for (const slot of plan.slots) {
       lines.push(`- ${slotItemName(slot.itemId)}`)

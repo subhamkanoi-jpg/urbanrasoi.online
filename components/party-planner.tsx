@@ -117,8 +117,11 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
   const current = coerceStep(plan, step)
   const currentIndex = visibleSteps.indexOf(current)
   const estimate = useMemo(() => estimatePlan(plan), [plan])
-  const sendBlocked =
-    sending || !canSendPlan(plan) || (plan.guests >= GRAZING_MIN_GUESTS && estimate == null)
+  const sendBlocked = sending || !canSendPlan(plan)
+  const offeredPackages = packagesForGuests(plan.guests)
+  const selectedPackageOffered = Boolean(
+    plan.packageId && offeredPackages.some((p) => p.id === plan.packageId),
+  )
 
   useEffect(() => {
     if (current !== step) setStep(current)
@@ -151,8 +154,9 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
 
   const goBack = useCallback(() => {
     const index = visibleSteps.indexOf(current)
+    if (current === 'guests' && plan.packageId) setGateBanner(false)
     if (index > 0) goTo(visibleSteps[index - 1]!)
-  }, [visibleSteps, current, goTo])
+  }, [visibleSteps, current, goTo, plan.packageId])
 
   const slotRows = useMemo(() => {
     const pkg = getPackage(plan.packageId)
@@ -277,7 +281,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
         </button>
       )}
 
-      {gateBanner && (
+      {gateBanner && current !== 'summary' && (
         <p className="mt-3 rounded-xl bg-cream px-4 py-3 text-sm font-medium text-ink" role="status">
           Guest count changed the menus we can offer.
         </p>
@@ -355,7 +359,14 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
             <p className="mt-6 rounded-xl bg-cream p-4 text-center text-sm font-medium text-ink" aria-live="polite">
               {guestNote(plan.guests)}
             </p>
-            <PrimaryButton onClick={() => goTo(underFifteen ? 'summary' : 'service')}>Continue</PrimaryButton>
+            <PrimaryButton
+              onClick={() => {
+                if (plan.packageId) setGateBanner(false)
+                goTo(underFifteen ? 'summary' : 'service')
+              }}
+            >
+              Continue
+            </PrimaryButton>
           </>
         )}
 
@@ -415,65 +426,89 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
 
         {/* ── Package ──────────────────────────────── */}
         {current === 'package' && (
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            {packagesForGuests(plan.guests).map((pkg) => (
-              <button
-                key={pkg.id}
-                type="button"
-                onClick={() => { setPlan(selectPackage(plan, pkg.id)); goTo('customise') }}
-                className={cn(
-                  'flex min-h-24 flex-col items-start justify-between rounded-2xl border bg-card p-4 text-left transition-all active:scale-[0.98]',
-                  plan.packageId === pkg.id ? 'border-terracotta ring-2 ring-terracotta/30' : 'border-border hover:border-terracotta/50',
-                )}
+          <>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              {offeredPackages.map((pkg) => (
+                <button
+                  key={pkg.id}
+                  type="button"
+                  onClick={() => {
+                    setPlan(selectPackage(plan, pkg.id))
+                    setGateBanner(false)
+                    goTo('customise')
+                  }}
+                  className={cn(
+                    'flex min-h-24 flex-col items-start justify-between rounded-2xl border bg-card p-4 text-left transition-all active:scale-[0.98]',
+                    plan.packageId === pkg.id ? 'border-terracotta ring-2 ring-terracotta/30' : 'border-border hover:border-terracotta/50',
+                  )}
+                >
+                  <span className="font-serif text-lg font-semibold text-ink">{pkg.name}</span>
+                  <span className="mt-1 text-sm text-ink-soft">{slotSummary(pkg, plan.service ?? 'delivery')}</span>
+                </button>
+              ))}
+            </div>
+            {selectedPackageOffered && (
+              <PrimaryButton
+                onClick={() => {
+                  setGateBanner(false)
+                  goTo('customise')
+                }}
               >
-                <span className="font-serif text-lg font-semibold text-ink">{pkg.name}</span>
-                <span className="mt-1 text-sm text-ink-soft">{slotSummary(pkg, plan.service ?? 'delivery')}</span>
-              </button>
-            ))}
-          </div>
+                Continue
+              </PrimaryButton>
+            )}
+          </>
         )}
 
         {/* ── Customise ────────────────────────────── */}
         {current === 'customise' && (
           <>
-            <div className="mt-6 divide-y divide-border rounded-2xl border border-border bg-card">
-              {slotRows.map((row) => (
-                <div key={row.slotId} className="p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-ink-lighter">{row.label}</p>
-                      <p className="truncate font-medium text-ink">{slotItemName(row.itemId)}</p>
+            {slotRows.length === 0 ? (
+              <p className="mt-6 rounded-xl bg-cream p-4 text-center text-sm font-medium text-ink">
+                No dishes to swap yet — go back to Pick a menu.
+              </p>
+            ) : (
+              <div className="mt-6 divide-y divide-border rounded-2xl border border-border bg-card">
+                {slotRows.map((row) => (
+                  <div key={row.slotId} className="p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-ink-lighter">{row.label}</p>
+                        <p className="truncate font-medium text-ink">{slotItemName(row.itemId)}</p>
+                      </div>
+                      {row.swappable && (
+                        <button
+                          type="button"
+                          onClick={() => setSwappingSlot((id) => (id === row.slotId ? null : row.slotId))}
+                          className="shrink-0 text-sm font-semibold text-terracotta"
+                        >
+                          {swappingSlot === row.slotId ? 'Close' : 'Swap'}
+                        </button>
+                      )}
                     </div>
-                    {row.swappable && (
-                      <button
-                        type="button"
-                        onClick={() => setSwappingSlot((id) => (id === row.slotId ? null : row.slotId))}
-                        className="shrink-0 text-sm font-semibold text-terracotta"
-                      >
-                        {swappingSlot === row.slotId ? 'Close' : 'Swap'}
-                      </button>
+                    {swappingSlot === row.slotId && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {row.pool.map((id) => (
+                          <Chip
+                            key={id}
+                            active={id === row.itemId}
+                            onClick={() => {
+                              setPlan(swapSlot(plan, row.slotId, id))
+                              setSwappingSlot(null)
+                            }}
+                          >
+                            {slotItemName(id)}
+                          </Chip>
+                        ))}
+                      </div>
                     )}
                   </div>
-                  {swappingSlot === row.slotId && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {row.pool.map((id) => (
-                        <Chip
-                          key={id}
-                          active={id === row.itemId}
-                          onClick={() => {
-                            setPlan(swapSlot(plan, row.slotId, id))
-                            setSwappingSlot(null)
-                          }}
-                        >
-                          {slotItemName(id)}
-                        </Chip>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            <PrimaryButton onClick={() => goTo('summary')}>Continue</PrimaryButton>
+                ))}
+              </div>
+            )}
+            <PrimaryButton onClick={() => goTo('summary')} disabled={slotRows.length === 0}>
+              Continue
+            </PrimaryButton>
           </>
         )}
 
@@ -501,7 +536,7 @@ export function PartyPlanner({ initialOccasion, source }: { initialOccasion?: st
                 <p className="section-label text-terracotta-light">Your package</p>
                 <p className="mt-1 font-serif text-3xl font-semibold">{formatINR(estimate.total)}</p>
                 <p className="mt-1 text-sm text-primary-foreground/70">
-                  {formatINR(estimate.perGuest)} per guest × {billedGuests(plan.guests)}
+                  {formatINR(estimate.perGuest)} per guest × {billedGuests(plan.guests)} = {formatINR(estimate.total)}
                 </p>
                 <p className="mt-2 text-sm text-primary-foreground/70">
                   Delivery extra as per area — confirmed on WhatsApp.

@@ -305,6 +305,8 @@ const KIND_PLURAL: Record<Exclude<SlotKind, 'live'>, string> = {
   chutney: 'chutney',
 }
 
+const COUNTED_KINDS: ReadonlySet<SlotKind> = new Set(['starter', 'main'])
+
 export function slotSummary(
   pkg: PartyPackage,
   service: 'delivery' | 'buffet' | 'live',
@@ -315,7 +317,11 @@ export function slotSummary(
   for (const kind of ['starter', 'main', 'rice', 'bread', 'noodles', 'dessert', 'chutney'] as const) {
     const n = counts.get(kind)
     if (!n) continue
-    parts.push(n === 1 ? KIND_PLURAL[kind] : `${n} ${KIND_PLURAL[kind]}`)
+    if (!COUNTED_KINDS.has(kind)) {
+      parts.push(KIND_PLURAL[kind])
+      continue
+    }
+    parts.push(n === 1 ? kind : `${n} ${KIND_PLURAL[kind]}`)
   }
   if (service === 'live') {
     parts.push(slotItemName(pkg.defaultLiveId).toLowerCase())

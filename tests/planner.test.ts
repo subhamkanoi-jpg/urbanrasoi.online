@@ -6,6 +6,7 @@ import {
   PLATED_PACKAGE_IDS,
   getPackage,
   packagesForGuests,
+  slotSummary,
   slotsForPackage,
   swapPoolIds,
 } from '../lib/party-packages'
@@ -39,10 +40,10 @@ describe('packagesForGuests', () => {
   })
 
   it('returns only grazing/live-led ids at 15–24', () => {
-    assert.deepEqual(
-      packagesForGuests(20).map((p) => p.id).sort(),
-      [...GRAZING_PACKAGE_IDS].sort(),
-    )
+    const grazing = [...GRAZING_PACKAGE_IDS].sort()
+    assert.deepEqual(packagesForGuests(15).map((p) => p.id).sort(), grazing)
+    assert.deepEqual(packagesForGuests(20).map((p) => p.id).sort(), grazing)
+    assert.deepEqual(packagesForGuests(24).map((p) => p.id).sort(), grazing)
     assert.deepEqual(GRAZING_PACKAGE_IDS, [
       'grazing-board',
       'chaat-party',
@@ -52,10 +53,9 @@ describe('packagesForGuests', () => {
   })
 
   it('returns only the seven plated ids at 25+', () => {
-    assert.deepEqual(
-      packagesForGuests(40).map((p) => p.id).sort(),
-      [...PLATED_PACKAGE_IDS].sort(),
-    )
+    const plated = [...PLATED_PACKAGE_IDS].sort()
+    assert.deepEqual(packagesForGuests(25).map((p) => p.id).sort(), plated)
+    assert.deepEqual(packagesForGuests(40).map((p) => p.id).sort(), plated)
     for (const id of GRAZING_PACKAGE_IDS) {
       assert.equal((PLATED_PACKAGE_IDS as readonly string[]).includes(id), false)
     }
@@ -139,6 +139,20 @@ describe('gates', () => {
     assert.deepEqual(plan.slots, [])
     assert.equal(plan.guests, 20)
   })
+
+  it('clears service, budget, and package below 15 guests', () => {
+    const plated = selectPackage(
+      { ...emptyPlan, guests: 40, service: 'delivery', budget: 'intimate' },
+      'north-indian',
+    )
+    const { plan, cleared } = applyGuests(plated, 10)
+    assert.equal(cleared, true)
+    assert.equal(plan.guests, 10)
+    assert.equal(plan.service, undefined)
+    assert.equal(plan.budget, undefined)
+    assert.equal(plan.packageId, undefined)
+    assert.deepEqual(plan.slots, [])
+  })
 })
 
 describe('send + WhatsApp', () => {
@@ -163,5 +177,87 @@ describe('send + WhatsApp', () => {
     assert.match(text, /₹29,960/)
     assert.match(text, /₹749/)
     assert.doesNotMatch(text, /–₹/)
+  })
+
+  it('does not send a plated package at 20 guests', () => {
+    const plated = selectPackage(
+      { ...emptyPlan, occasion: 'birthday', guests: 40, service: 'delivery', budget: 'intimate' },
+      'north-indian',
+    )
+    assert.equal(canSendPlan({ ...plated, guests: 20 }), false)
+  })
+
+  it('omits service, budget, and package lines under 15 guests', () => {
+    const text = composeWhatsappMessage({
+      ...emptyPlan,
+      occasion: 'birthday',
+      guests: 10,
+      service: 'delivery',
+      budget: 'intimate',
+      packageId: 'north-indian',
+    })
+    assert.doesNotMatch(text, /Service:/)
+    assert.doesNotMatch(text, /Budget:/)
+    assert.doesNotMatch(text, /Package:/)
+    assert.match(text, /Guests: 10/)
+  })
+})
+
+describe('selectPackage', () => {
+  it('keeps food swaps when re-selecting the same package', () => {
+    let plan = selectPackage(
+      { ...emptyPlan, guests: 40, service: 'delivery', budget: 'intimate' },
+      'north-indian',
+    )
+    plan = swapSlot(plan, 'starter-1', 'quesadillas')
+    const again = selectPackage(plan, 'north-indian')
+    assert.equal(again.slots.find((s) => s.slotId === 'starter-1')?.itemId, 'quesadillas')
+    assert.equal(again.packageId, 'north-indian')
+
+    const live = selectPackage({ ...again, service: 'live' }, 'north-indian')
+    assert.equal(live.slots.find((s) => s.slotId === 'starter-1')?.itemId, 'quesadillas')
+    assert.equal(live.slots.find((s) => s.slotId === 'live')?.itemId, 'live-tandoor')
+    const delivery = selectPackage({ ...live, service: 'delivery' }, 'north-indian')
+    assert.equal(delivery.slots.some((s) => s.slotId === 'live'), false)
+    assert.equal(delivery.slots.find((s) => s.slotId === 'starter-1')?.itemId, 'quesadillas')
+  })
+})
+
+describe('applyService', () => {
+  it('adds the live slot on Live and drops it on Delivery', () => {
+    let plan = selectPackage(
+      { ...emptyPlan, guests: 40, service: 'delivery', budget: 'intimate' },
+      'north-indian',
+    )
+    plan = swapSlot(plan, 'starter-1', 'quesadillas')
+    assert.equal(plan.slots.some((s) => s.slotId === 'live'), false)
+
+    const live = applyService(plan, 'live')
+    assert.equal(live.service, 'live')
+    assert.equal(live.slots.find((s) => s.slotId === 'live')?.itemId, 'live-tandoor')
+    assert.equal(live.slots.find((s) => s.slotId === 'starter-1')?.itemId, 'quesadillas')
+
+    const delivery = applyService(live, 'delivery')
+    assert.equal(delivery.service, 'delivery')
+    assert.equal(delivery.slots.some((s) => s.slotId === 'live'), false)
+    assert.equal(delivery.slots.find((s) => s.slotId === 'starter-1')?.itemId, 'quesadillas')
+  })
+})
+
+describe('slotSummary', () => {
+  it('uses singular for n=1 countable kinds and leaves rice · bread · dessert uncounted', () => {
+    const bengali = getPackage('bengali-table')
+    assert.ok(bengali)
+    assert.equal(
+      slotSummary(bengali, 'delivery'),
+      'starter · 2 mains · rice · bread · dessert · chutney',
+    )
+
+    const north = getPackage('north-indian')
+    assert.ok(north)
+    assert.equal(
+      slotSummary(north, 'delivery'),
+      '2 starters · 3 mains · rice · bread · dessert',
+    )
   })
 })
