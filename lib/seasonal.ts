@@ -35,9 +35,9 @@ export const campaigns: Campaign[] = [
     id: 'rakhi',
     label: 'Rakhi Order',
     href: '/rakhi',
-    // Orders close three days before the 28 August pickup, to give the kitchen
-    // prep time. Pickup date itself lives in lib/rakhi-menu.ts.
-    endsOn: '2026-08-25',
+    // Last order day is 27 August — one day of kitchen prep before the
+    // 28 August pickup. Pickup date itself lives in lib/rakhi-menu.ts.
+    endsOn: '2026-08-27',
     closedTitle: 'Raksha Bandhan orders have closed',
     closedBody:
       'Our Rakhi 2026 festive menu was a pickup-only special and is no longer taking orders. Our full house-party menu is available all year.',

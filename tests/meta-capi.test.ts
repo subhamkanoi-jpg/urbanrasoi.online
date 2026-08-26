@@ -44,9 +44,9 @@ describe('Kolkata dates', () => {
     assert.equal(kolkataToday(lateUtc), '2026-08-17')
   })
 
-  it('treats Rakhi as live on 25 Aug and closed on 26 Aug', () => {
+  it('treats Rakhi as live on 27 Aug and closed on 28 Aug', () => {
     const rakhi = getCampaign('rakhi')
-    assert.equal(isCampaignLive(rakhi, new Date('2026-08-25T06:00:00Z')), true)
-    assert.equal(isCampaignLive(rakhi, new Date('2026-08-26T06:00:00Z')), false)
+    assert.equal(isCampaignLive(rakhi, new Date('2026-08-27T06:00:00Z')), true)
+    assert.equal(isCampaignLive(rakhi, new Date('2026-08-28T06:00:00Z')), false)
   })
 })
