@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { trackContact } from '@/lib/meta-tracking'
 import { shareOrderSlip, type SlipRow } from '@/lib/order-slip'
 import { clearOrderState, loadOrderState, saveOrderState } from '@/lib/order-storage'
@@ -89,19 +88,6 @@ const CATERING_MENU = [
 ]
 
 /* ── Ornamental divider ─────────────────────────────────────────────────── */
-function Divider() {
-  return (
-    <div className="flex items-center gap-3 py-2" aria-hidden="true">
-      <div className="h-px flex-1 bg-rakhi-gold/30" />
-      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="text-rakhi-gold shrink-0">
-        <path d="M10 2L10 18M2 10L18 10M4.929 4.929L15.071 15.071M15.071 4.929L4.929 15.071" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
-        <circle cx="10" cy="10" r="2.5" fill="currentColor" />
-      </svg>
-      <div className="h-px flex-1 bg-rakhi-gold/30" />
-    </div>
-  )
-}
-
 /* ── Stepper ────────────────────────────────────────────────────────────── */
 function Stepper({ qty, onChange }: { qty: number; onChange: (next: number) => void }) {
   return (
@@ -320,7 +306,7 @@ function SectionBlock({
   registerRef: (el: HTMLElement | null) => void
 }) {
   return (
-    <section id={section.id} ref={registerRef} className="scroll-mt-36">
+    <section id={section.id} ref={registerRef} className="scroll-mt-[15rem]">
       <div className="flex items-baseline justify-between gap-3 border-t-8 border-rakhi-gold/15 pt-6">
         <h2 className="font-serif text-xl font-semibold text-rakhi-deep">{section.name}</h2>
         <span className="text-xs font-medium text-rakhi-muted">
@@ -339,16 +325,6 @@ function SectionBlock({
         ))}
       </div>
     </section>
-  )
-}
-
-/* ── Bill Row ────────────────────────────────────────────────────────────── */
-function BillRow({ label, value, bold }: { label: string; value: string; bold?: boolean }) {
-  return (
-    <div className={cn('flex justify-between gap-2 py-1', bold && 'font-semibold')}>
-      <span className={bold ? 'text-rakhi-deep' : 'text-rakhi-muted'}>{label}</span>
-      <span className={bold ? 'text-rakhi-saffron font-serif text-lg' : 'text-rakhi-deep'}>{value}</span>
-    </div>
   )
 }
 
@@ -447,7 +423,7 @@ function CateringTab() {
       {/* Menu breakdown */}
       <div className="mt-5 rounded-2xl border border-rakhi-gold/25 bg-rakhi-cream overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-[1fr_6rem_6rem] gap-2 px-4 py-3 border-b border-rakhi-gold/20 bg-rakhi-saffron/8">
+        <div className="grid grid-cols-[minmax(0,1fr)_3.75rem_3.75rem] gap-2 px-4 py-3 border-b border-rakhi-gold/20 bg-rakhi-saffron/8 sm:grid-cols-[1fr_6rem_6rem]">
           <p className="text-xs font-semibold text-rakhi-deep">ITEM</p>
           <p className="text-xs font-semibold text-rakhi-saffron text-right">15 PAX</p>
           <p className="text-xs font-semibold text-rakhi-saffron text-right">25 PAX</p>
@@ -461,7 +437,7 @@ function CateringTab() {
               <div
                 key={item.name}
                 className={cn(
-                  'grid grid-cols-[1fr_6rem_6rem] gap-2 px-4 py-2.5 border-b border-rakhi-gold/10',
+                  'grid grid-cols-[minmax(0,1fr)_3.75rem_3.75rem] gap-2 px-4 py-2.5 border-b border-rakhi-gold/10 sm:grid-cols-[1fr_6rem_6rem]',
                   selectedPkg === '15pax' ? 'bg-rakhi-cream/50' : 'bg-white/60',
                 )}
               >
@@ -550,6 +526,15 @@ function AlaCarteTab() {
     if (!hydrated) return
     saveOrderState(STORAGE_KEY, { cart, details, perPiece: true })
   }, [cart, details, hydrated])
+
+  useEffect(() => {
+    if (!cartOpen && !menuOpen) return
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previous
+    }
+  }, [cartOpen, menuOpen])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -696,6 +681,8 @@ function AlaCarteTab() {
 
   async function sendOrder() {
     if (!canOrder || sharing) return
+    // Dismiss the keyboard before the share sheet so iOS does not keep the page zoomed.
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
     setSharing(true)
 
     // Record first so the order number can travel on the message and the slip.
@@ -751,8 +738,8 @@ function AlaCarteTab() {
 
   return (
     <>
-      {/* Search + category rail */}
-      <div className="sticky top-16 z-30 border-b border-rakhi-gold/20 bg-rakhi-bg/95 backdrop-blur-sm">
+      {/* Search + category rail — sits under the service tabs, which also stick at top-16. */}
+      <div className="sticky top-[7.75rem] z-30 border-b border-rakhi-gold/20 bg-rakhi-bg/95 backdrop-blur-sm">
         <div className="mx-auto max-w-3xl px-4 pb-2.5 pt-3">
           <label className="relative block">
             <span className="sr-only">Search the Rakhi menu</span>
@@ -862,7 +849,7 @@ function AlaCarteTab() {
           onClick={() => setMenuOpen(true)}
           className={cn(
             'fixed right-4 z-40 flex items-center gap-2 rounded-xl bg-rakhi-deep px-4 py-3 text-sm font-semibold text-white shadow-xl transition-all md:right-6',
-            itemCount > 0 ? 'bottom-24' : 'bottom-6',
+            itemCount > 0 || orderSent ? 'bottom-24' : 'bottom-6',
           )}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
@@ -909,6 +896,24 @@ function AlaCarteTab() {
         </div>
       )}
 
+      {orderSent && !cartOpen && (
+        <div
+          role="status"
+          className="fixed inset-x-0 bottom-0 z-50 border-t border-rakhi-gold/20 bg-rakhi-deep px-5 py-4 text-white"
+        >
+          <div className="mx-auto flex max-w-3xl flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm font-medium">Order sent on WhatsApp. We will confirm shortly.</p>
+            <button
+              type="button"
+              onClick={() => setOrderSent(false)}
+              className="shrink-0 rounded-full bg-rakhi-saffron px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-rakhi-saffron-deep"
+            >
+              Place another order
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Sticky cart bar */}
       {itemCount > 0 && !cartOpen && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rakhi-gold/20 bg-rakhi-bg/97 p-3 backdrop-blur-sm md:p-4">
@@ -938,8 +943,7 @@ function AlaCarteTab() {
           aria-modal="true"
           aria-label="Your Rakhi order"
         >
-          <div className="flex max-h-[92svh] w-full max-w-2xl flex-col rounded-t-3xl bg-rakhi-bg md:rounded-3xl overflow-hidden">
-            {/* Sheet header */}
+          <div className="flex h-[100svh] w-full max-w-2xl min-w-0 flex-col overflow-hidden rounded-t-3xl bg-rakhi-bg md:h-auto md:max-h-[85vh] md:rounded-3xl">
             <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-rakhi-gold/20 md:px-8">
               <div>
                 <p className="text-xs font-semibold tracking-widest uppercase text-rakhi-saffron">Raksha Bandhan 2026</p>
@@ -955,25 +959,8 @@ function AlaCarteTab() {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 pb-4 md:px-8">
-              {/* Order image card */}
-              <div className="mt-4 rounded-xl overflow-hidden relative h-28">
-                <Image
-                  src="/images/gallery-diwali.jpg"
-                  alt="Urban Rasoi festive spread"
-                  fill
-                  className="object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-rakhi-deep/70 to-transparent flex items-center px-4">
-                  <div>
-                    <p className="text-white font-serif text-lg font-semibold">Urban Rasoi</p>
-                    <p className="text-white/70 text-xs">Raksha Bandhan 2026 · Festive Order</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Order lines */}
-              <ul className="mt-4 divide-y divide-rakhi-gold/15">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-4 md:px-8">
+              <ul className="mt-3 divide-y divide-rakhi-gold/15">
                 {lines.map((line) => (
                   <li key={line.id} className="flex items-center justify-between gap-3 py-3">
                     <div className="min-w-0">
@@ -990,23 +977,10 @@ function AlaCarteTab() {
                 ))}
               </ul>
 
-              {/* Bill summary */}
-              <div className="mt-4 rounded-2xl bg-rakhi-cream border border-rakhi-gold/20 p-4">
-                <Divider />
-                {lines.map((line) => (
-                  <BillRow key={line.id} label={line.name} value={formatINR(line.lineTotal)} />
-                ))}
-                <div className="mt-2 border-t border-rakhi-gold/20 pt-2">
-                  <BillRow label="Total" value={formatINR(grandTotal)} bold />
-                </div>
-                <Divider />
-                <div className="text-xs text-rakhi-muted space-y-0.5">
-                  <p>Pickup: {RAKHI_PICKUP_ADDRESS}</p>
-                  <p>Date: {RAKHI_PICKUP_DATE}</p>
-                </div>
-              </div>
+              <p className="mt-3 text-xs leading-relaxed text-rakhi-muted">
+                Pickup {RAKHI_PICKUP_DATE} · {RAKHI_PICKUP_ADDRESS}
+              </p>
 
-              {/* Customer details */}
               <div className="mt-5 space-y-3">
                 <p className="text-xs font-semibold tracking-widest uppercase text-rakhi-saffron">Your Details</p>
                 <div>
@@ -1016,7 +990,7 @@ function AlaCarteTab() {
                   <select
                     value={details.time}
                     onChange={(e) => setDetails({ ...details, time: e.target.value })}
-                    className="w-full rounded-xl border border-rakhi-gold/30 bg-white p-3 text-rakhi-deep text-sm focus:border-rakhi-saffron focus:outline-none"
+                    className="w-full max-w-full rounded-xl border border-rakhi-gold/30 bg-white p-3 text-base text-rakhi-deep focus:border-rakhi-saffron focus:outline-none"
                   >
                     <option value="">Select a time slot</option>
                     {PICKUP_TIME_SLOTS.map((slot) => (
@@ -1034,7 +1008,7 @@ function AlaCarteTab() {
                       value={details.name}
                       onChange={(e) => setDetails({ ...details, name: e.target.value })}
                       placeholder="Full name"
-                      className="w-full rounded-xl border border-rakhi-gold/30 bg-white p-3 text-rakhi-deep text-sm placeholder:text-rakhi-muted focus:border-rakhi-saffron focus:outline-none"
+                      className="w-full max-w-full rounded-xl border border-rakhi-gold/30 bg-white p-3 text-base text-rakhi-deep placeholder:text-rakhi-muted focus:border-rakhi-saffron focus:outline-none"
                     />
                   </div>
                   <div>
@@ -1044,7 +1018,7 @@ function AlaCarteTab() {
                       value={details.phone}
                       onChange={(e) => setDetails({ ...details, phone: e.target.value })}
                       placeholder="9XXXXXXXXX"
-                      className="w-full rounded-xl border border-rakhi-gold/30 bg-white p-3 text-rakhi-deep text-sm placeholder:text-rakhi-muted focus:border-rakhi-saffron focus:outline-none"
+                      className="w-full max-w-full rounded-xl border border-rakhi-gold/30 bg-white p-3 text-base text-rakhi-deep placeholder:text-rakhi-muted focus:border-rakhi-saffron focus:outline-none"
                     />
                   </div>
                 </div>
@@ -1055,68 +1029,65 @@ function AlaCarteTab() {
                     value={details.note}
                     onChange={(e) => setDetails({ ...details, note: e.target.value })}
                     placeholder="Allergies, packing preferences…"
-                    className="w-full rounded-xl border border-rakhi-gold/30 bg-white p-3 text-rakhi-deep text-sm placeholder:text-rakhi-muted focus:border-rakhi-saffron focus:outline-none"
+                    className="w-full max-w-full rounded-xl border border-rakhi-gold/30 bg-white p-3 text-base text-rakhi-deep placeholder:text-rakhi-muted focus:border-rakhi-saffron focus:outline-none"
                   />
                 </div>
               </div>
 
               <VoiceNoteNudge />
 
-              {/* Send button */}
-              <div className="mt-5 mb-2">
-                {!canOrder && grandTotal > 0 && (
-                  <p className="mb-2 text-center text-xs text-amber-700">
-                    Please enter your name and select a pickup time.
-                  </p>
-                )}
-                <button
-                  type="button"
-                  onClick={sendOrder}
-                  disabled={!canOrder || sharing}
-                  className={cn(
-                    'flex w-full items-center justify-center gap-2.5 rounded-2xl py-4 font-semibold text-base transition-all',
-                    canOrder && !sharing
-                      ? 'bg-rakhi-saffron text-white hover:bg-rakhi-saffron-deep active:scale-[0.98]'
-                      : 'bg-rakhi-cream text-rakhi-muted cursor-not-allowed',
-                  )}
-                >
-                  {sharing ? (
-                    <>
-                      <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-                      </svg>
-                      Preparing graphic…
-                    </>
-                  ) : (
-                    <>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                        <path d="M5.077 19.938A11.924 11.924 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12c0 2.185.627 4.236 1.718 5.961L2 22l3.077-2.062zM12 4a8 8 0 1 1 0 16A8 8 0 0 1 12 4z" />
-                      </svg>
-                      Send order on WhatsApp
-                    </>
-                  )}
-                </button>
-                {orderSent && (
-                  <p className="mt-3 text-center text-sm text-green-700 font-medium">
-                    Order sent! We will confirm shortly.
-                  </p>
-                )}
-                <p className="mt-3 text-center text-xs text-rakhi-muted">
-                  On mobile, your order graphic opens the share sheet — pick WhatsApp to send it directly.
-                  On desktop, the graphic is saved to your downloads; then WhatsApp opens with the order text.
-                </p>
+              <p className="mt-4 mb-1 text-center text-sm">
                 <a
                   href={`tel:${site.phone.replace(/\s/g, '')}`}
                   onClick={() => trackContact('rakhi-cart')}
-                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl border border-rakhi-gold/40 py-3 text-sm font-semibold text-rakhi-deep transition-colors hover:bg-rakhi-cream"
+                  className="text-rakhi-muted hover:text-rakhi-deep"
                 >
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
                   Rather talk it through? Call {site.phone}
                 </a>
+              </p>
+            </div>
+
+            <div className="relative z-10 shrink-0 border-t border-rakhi-gold/20 bg-rakhi-bg px-5 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:px-8">
+              <div className="flex items-baseline justify-between gap-3">
+                <p className="font-serif text-lg font-semibold text-rakhi-deep">Total</p>
+                <p className="font-serif text-2xl font-semibold text-rakhi-saffron tabular-nums">{formatINR(grandTotal)}</p>
               </div>
+              {!canOrder && grandTotal > 0 && (
+                <p className="mt-2 text-center text-xs font-medium text-amber-700">
+                  Please enter your name and select a pickup time.
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={sendOrder}
+                disabled={!canOrder || sharing}
+                className={cn(
+                  'mt-3 flex w-full items-center justify-center gap-2.5 rounded-2xl py-4 font-semibold text-base transition-all',
+                  canOrder && !sharing
+                    ? 'bg-rakhi-saffron text-white hover:bg-rakhi-saffron-deep active:scale-[0.98]'
+                    : 'bg-rakhi-cream text-rakhi-muted cursor-not-allowed',
+                )}
+              >
+                {sharing ? (
+                  <>
+                    <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                    </svg>
+                    Preparing graphic…
+                  </>
+                ) : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                      <path d="M5.077 19.938A11.924 11.924 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12c0 2.185.627 4.236 1.718 5.961L2 22l3.077-2.062zM12 4a8 8 0 1 1 0 16A8 8 0 0 1 12 4z" />
+                    </svg>
+                    Send order on WhatsApp
+                  </>
+                )}
+              </button>
+              <p className="mt-2 text-center text-xs text-rakhi-muted">
+                Opens WhatsApp with your order graphic. No payment now.
+              </p>
             </div>
           </div>
         </div>
