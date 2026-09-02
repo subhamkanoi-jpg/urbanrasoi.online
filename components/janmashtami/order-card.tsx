@@ -5,6 +5,7 @@ import {
   JANMASHTAMI_CONFIG,
   type JanmashtamiOrderPayload,
 } from '@/lib/janmashtami-config'
+import { shareOrderSlip, type SlipRow } from '@/lib/order-slip'
 import { OrderConfirmationModal } from './order-confirmation-modal'
 
 export function OrderCard() {
@@ -25,9 +26,22 @@ export function OrderCard() {
   // Calculations
   const pricePerBox = JANMASHTAMI_CONFIG.pricePerBox
   const deliveryFee = JANMASHTAMI_CONFIG.deliveryFee
-  const piecesPerBox = JANMASHTAMI_CONFIG.piecesPerBox
+
+  const [minPieces, maxPieces] = JANMASHTAMI_CONFIG.piecesPerBoxRange
+  const boxWeight = JANMASHTAMI_CONFIG.boxWeightGrams
 
   const subtotal = pricePerBox !== null ? pricePerBox * quantity : null
+
+  // Salt Lake is free above the threshold; everywhere else is the real Porter
+  // fare, which nobody can know at this point, so it is never added in here.
+  // Compared with case and spacing stripped, so "saltlake", "Salt Lake" and
+  // "Salt Lake Sector 1" all match what a guest actually types.
+  const flatten = (value: string) => value.toLowerCase().replace(/\s+/g, '')
+  const inFreeArea = flatten(area).includes(flatten(JANMASHTAMI_CONFIG.freeDeliveryArea))
+  const freeDelivery = inFreeArea && quantity >= JANMASHTAMI_CONFIG.freeDeliveryMinBoxes
+  const oneBoxFromFree =
+    inFreeArea && quantity === JANMASHTAMI_CONFIG.freeDeliveryMinBoxes - 1
+  const deliveryLabel = freeDelivery ? 'Free' : 'Charged at actuals (Porter)'
   const total = subtotal !== null ? subtotal + (deliveryFee || 0) : null
 
   const handleQuantitySelect = (q: number) => {
@@ -76,35 +90,118 @@ export function OrderCard() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/orders/janmashtami', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName,
-          mobileNumber: cleanMobile,
-          deliveryAddress,
-          area,
-          pincode: cleanPincode,
-          deliveryDate,
-          deliverySlot,
-          quantity,
-          specialInstructions,
-        }),
+      // Record the order, then hand it to WhatsApp exactly as the other flows
+      // do — the message is what actually reaches the kitchen, so the record
+      // is best effort and never blocks the share.
+      let orderRef: string | null = null
+      try {
+        const response = await fetch('/api/orders/janmashtami', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName,
+            mobileNumber: cleanMobile,
+            deliveryAddress,
+            area,
+            pincode: cleanPincode,
+            deliveryDate,
+            deliverySlot,
+            quantity,
+            specialInstructions,
+            freeDelivery,
+          }),
+          signal: AbortSignal.timeout(12000),
+        })
+        const data = await response.json().catch(() => null)
+        orderRef = data?.orderRef ?? null
+      } catch {
+        orderRef = null
+      }
+
+      const facts: string[] = []
+      if (orderRef) facts.push(`Order ${orderRef}`)
+      facts.push(`Name: ${fullName.trim()}`)
+      facts.push(`Phone: ${cleanMobile}`)
+      facts.push(`Deliver: ${deliveryDate} - ${deliverySlot}`)
+      facts.push(`${deliveryAddress.trim()}, ${area.trim()} ${cleanPincode}`)
+
+      const rows: SlipRow[] = [
+        {
+          name: JANMASHTAMI_CONFIG.name,
+          qty: `x${quantity}`,
+          price: pricePerBox !== null ? `Rs ${pricePerBox}` : undefined,
+          total: subtotal !== null ? `Rs ${subtotal}` : undefined,
+        },
+        { name: `${quantity * boxWeight} g in total`, qty: `about ${quantity * minPieces}-${quantity * maxPieces} laddu` },
+        { name: 'Delivery', qty: deliveryLabel },
+      ]
+
+      const textLines = [
+        'Janmashtami Order - Urban Rasoi',
+        ...(orderRef ? [`Order ${orderRef}`] : []),
+        '',
+        '*ORDER*',
+        `${JANMASHTAMI_CONFIG.name} x ${quantity} ${quantity === 1 ? 'box' : 'boxes'} (${quantity * boxWeight} g)`,
+        ...(subtotal !== null ? [`*Laddu total: Rs ${subtotal}*`] : []),
+        freeDelivery
+          ? 'Delivery: free (Salt Lake, 2+ boxes)'
+          : 'Delivery: charged at actual Porter fare',
+        '',
+        '*DELIVERY*',
+        `Date: ${deliveryDate}`,
+        `Slot: ${deliverySlot}`,
+        `Address: ${deliveryAddress.trim()}`,
+        `Area: ${area.trim()} - ${cleanPincode}`,
+        '',
+        '*CUSTOMER*',
+        `Name: ${fullName.trim()}`,
+        `Phone: ${cleanMobile}`,
+        ...(specialInstructions.trim() ? [`Note: ${specialInstructions.trim()}`] : []),
+      ]
+
+      const outcome = await shareOrderSlip({
+        slip: {
+          eyebrow: 'Janmashtami 2026 - festive order',
+          facts,
+          groups: [{ heading: 'Your order', rows }],
+          totalLabel: freeDelivery ? 'Total' : 'Laddu total',
+          totalValue: subtotal !== null ? `Rs ${subtotal}` : undefined,
+          note: specialInstructions.trim() || undefined,
+        },
+        text: textLines.join('\n'),
+        fileName: 'urban-rasoi-janmashtami-order.png',
+        title: 'Janmashtami Order - Urban Rasoi',
+        tracking: {
+          placement: 'janmashtami-order',
+          contentName: 'Janmashtami Nariyal ke Laddu',
+          value: subtotal ?? undefined,
+          currency: 'INR',
+        },
       })
 
-      const data = await response.json()
+      // A dismissed share sheet means "not yet" - leave the form filled in.
+      if (outcome === 'cancelled') return
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit order. Please try again.')
-      }
-
-      setCompletedOrder(data.order)
+      setCompletedOrder({
+        orderRef: orderRef ?? '',
+        fullName: fullName.trim(),
+        mobileNumber: cleanMobile,
+        deliveryAddress: deliveryAddress.trim(),
+        area: area.trim(),
+        pincode: cleanPincode,
+        deliveryDate,
+        deliverySlot,
+        quantity,
+        specialInstructions: specialInstructions.trim() || undefined,
+        subtotal,
+        deliveryFee,
+        totalAmount: subtotal,
+        timestamp: new Date().toISOString(),
+      })
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setFormError(err.message)
-      } else {
-        setFormError('An unexpected error occurred. Please try again.')
-      }
+      setFormError(
+        err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.',
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -152,11 +249,9 @@ export function OrderCard() {
           Orders accepted on 3rd & 4th September only. Freshly crafted in our Salt Lake kitchen.
         </p>
 
-        {piecesPerBox !== null && (
-          <p className="mt-2 text-xs font-medium text-terracotta">
-            {piecesPerBox} laddus per box
-          </p>
-        )}
+        <p className="mt-2 text-xs font-medium text-terracotta">
+          {boxWeight} g per box · roughly {minPieces}–{maxPieces} laddu
+        </p>
       </div>
 
       {/* Form Content */}
@@ -189,8 +284,8 @@ export function OrderCard() {
               1. Select Quantity
             </legend>
             <span className="text-xs text-ink-soft">
-              {quantity} Box{quantity > 1 ? 'es' : ''}
-              {piecesPerBox ? ` (${quantity * piecesPerBox} laddus)` : ''}
+              {quantity} Box{quantity > 1 ? 'es' : ''} · {quantity * boxWeight} g
+              {` (about ${quantity * minPieces}–${quantity * maxPieces} laddu)`}
             </span>
           </div>
 
@@ -433,17 +528,29 @@ export function OrderCard() {
               <span>Delivery area:</span>
               <span>{area ? `${area} (${pincode || 'Kolkata'})` : 'Kolkata'}</span>
             </div>
-            {deliveryFee !== null && deliveryFee > 0 && (
-              <div className="flex justify-between text-xs text-ink-soft">
-                <span>Delivery:</span>
-                <span>₹{deliveryFee}</span>
-              </div>
+            <div className="flex justify-between text-xs text-ink-soft">
+              <span>Delivery:</span>
+              <span className={freeDelivery ? 'font-semibold text-green-700' : ''}>
+                {deliveryLabel}
+              </span>
+            </div>
+            {oneBoxFromFree && (
+              <p className="rounded-lg bg-cream px-3 py-2 text-xs font-medium text-terracotta">
+                Add one more box and delivery in {JANMASHTAMI_CONFIG.freeDeliveryArea} is free.
+              </p>
             )}
             {total !== null && (
-              <div className="flex items-center justify-between border-t border-border pt-3 font-serif text-lg font-bold text-ink">
-                <span>Total:</span>
-                <span>₹{total}</span>
-              </div>
+              <>
+                <div className="flex items-center justify-between border-t border-border pt-3 font-serif text-lg font-bold text-ink">
+                  <span>{freeDelivery ? 'Total:' : 'Laddu total:'}</span>
+                  <span>₹{total}</span>
+                </div>
+                {!freeDelivery && (
+                  <p className="text-xs text-ink-soft">
+                    Delivery is billed on top at the actual Porter fare, confirmed on WhatsApp.
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>

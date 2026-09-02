@@ -17,8 +17,22 @@ export interface JanmashtamiProductConfig {
   orderDates: readonly ['3 September', '4 September']
   orderDateRestrictionNotice: string
   pricePerBox: number | null
+  /** Exact and verifiable, unlike the piece count. */
+  boxWeightGrams: number
+  /**
+   * Left null on purpose: laddu are rolled by hand, so a fixed number would
+   * become a promise. `piecesPerBoxRange` is what the page shows instead.
+   */
   piecesPerBox: number | null
+  piecesPerBoxRange: readonly [number, number]
+  /**
+   * No flat fee exists. Salt Lake is free above `freeDeliveryMinBoxes`;
+   * everywhere else is the actual Porter fare, which is not knowable here.
+   */
   deliveryFee: number | null
+  freeDeliveryArea: string
+  freeDeliveryMinBoxes: number
+  deliveryNote: string
   minBoxes: number
   maxBoxes: number
   quickQuantities: number[]
@@ -41,11 +55,15 @@ export const JANMASHTAMI_CONFIG: JanmashtamiProductConfig = {
   orderDates: ['3 September', '4 September'] as const,
   orderDateRestrictionNotice:
     'Janmashtami orders are available only on 3rd & 4th September.',
-  // Business owner can set actual price, pieces and delivery fee below:
-  // e.g., pricePerBox: 450, piecesPerBox: 10, deliveryFee: 50
-  pricePerBox: null,
+  pricePerBox: 379,
+  boxWeightGrams: 250,
   piecesPerBox: null,
+  piecesPerBoxRange: [8, 10] as const,
   deliveryFee: null,
+  freeDeliveryArea: 'Salt Lake',
+  freeDeliveryMinBoxes: 2,
+  deliveryNote:
+    'Free delivery in Salt Lake on 2 boxes or more. Anywhere else in Kolkata, delivery is charged at the actual Porter fare.',
   minBoxes: 1,
   maxBoxes: 20,
   quickQuantities: [1, 2, 4, 6],
