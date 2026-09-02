@@ -12,7 +12,7 @@
 
 import { kolkataToday } from './dates'
 
-export type CampaignId = 'rakhi' | 'rudrabhishek'
+export type CampaignId = 'rakhi' | 'rudrabhishek' | 'janmashtami'
 
 export type Campaign = {
   id: CampaignId
@@ -41,6 +41,17 @@ export const campaigns: Campaign[] = [
     closedTitle: 'Raksha Bandhan orders have closed',
     closedBody:
       'Our Rakhi 2026 festive menu was a pickup-only special and is no longer taking orders. Our full house-party menu is available all year.',
+  },
+  {
+    id: 'janmashtami',
+    label: 'Janmashtami Laddu',
+    href: '/janmashtami',
+    // Deliveries run on 3 and 4 September, and these are made to order on the
+    // day, so the page keeps taking orders through the final delivery date.
+    endsOn: '2026-09-04',
+    closedTitle: 'Janmashtami orders have closed',
+    closedBody:
+      'Our Nariyal ke Laddu were a two-day Janmashtami special. Our full menu is available all year — tell us what you are planning.',
   },
   {
     id: 'rudrabhishek',

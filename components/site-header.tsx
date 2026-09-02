@@ -12,15 +12,26 @@ import { cn } from '@/lib/utils'
 
 type NavItem = { label: string; href: string; highlight?: boolean }
 
+/**
+ * Routes that open on a light background. Everywhere else the hero is a dark
+ * photo or video, so the header starts transparent with cream type; over a
+ * pale hero that same type is invisible, so these start solid instead.
+ */
+const LIGHT_HERO_ROUTES = ['/janmashtami']
+
 // The two ways to actually order come first; browsing pages sit underneath.
 // Seasonal entries only appear while their campaign is still running.
 function buildNav(live: CampaignId[]) {
   const rakhi = getCampaign('rakhi')
   const puja = getCampaign('rudrabhishek')
+  const janmashtami = getCampaign('janmashtami')
 
   const primary: NavItem[] = [
     { label: 'Plan my party', href: '/plan?src=nav' },
     { label: 'Order à la carte', href: '/order' },
+    ...(live.includes('janmashtami')
+      ? [{ label: janmashtami.label, href: janmashtami.href, highlight: true }]
+      : []),
     ...(live.includes('rakhi') ? [{ label: rakhi.label, href: rakhi.href, highlight: true }] : []),
   ]
 
@@ -38,6 +49,7 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
   const pathname = usePathname()
   const dropdownRef = useRef<HTMLDivElement>(null)
   const { primary: primaryNav, browse: browseNav, all: navItems } = buildNav(liveCampaigns)
+  const solid = scrolled || LIGHT_HERO_ROUTES.includes(pathname)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 48)
@@ -72,7 +84,7 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        scrolled
+        solid
           ? 'bg-background/95 backdrop-blur-md border-b border-border shadow-sm'
           : 'bg-transparent',
       )}
@@ -90,7 +102,7 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
           <span
             className={cn(
               'font-serif text-lg font-semibold tracking-tight transition-colors duration-300',
-              scrolled ? 'text-ink' : 'text-background',
+              solid ? 'text-ink' : 'text-background',
             )}
           >
             Urban Rasoi
@@ -104,7 +116,7 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
             onClick={() => trackContact('header')}
             className={cn(
               'hidden text-sm font-medium transition-colors md:block',
-              scrolled ? 'text-ink-soft hover:text-ink' : 'text-white/80 hover:text-white',
+              solid ? 'text-ink-soft hover:text-ink' : 'text-white/80 hover:text-white',
             )}
           >
             {site.phone}
@@ -119,7 +131,7 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
               aria-label={open ? 'Close menu' : 'Open menu'}
               className={cn(
                 'flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200',
-                scrolled
+                solid
                   ? 'bg-cream text-ink hover:bg-cream-dark'
                   : 'bg-white/15 text-white hover:bg-white/25 backdrop-blur-sm',
               )}
@@ -193,7 +205,7 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
             aria-label={open ? 'Close menu' : 'Open menu'}
             className={cn(
               'relative z-10 flex size-10 flex-col items-center justify-center gap-[5px] rounded-full transition-colors md:hidden',
-              open ? 'bg-cream' : scrolled ? 'bg-cream' : 'bg-white/15',
+              open || solid ? 'bg-cream' : 'bg-white/15',
             )}
           >
             <span
@@ -201,13 +213,13 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
                 'h-[2px] w-5 rounded-full transition-all duration-300',
                 open
                   ? 'translate-y-[7px] rotate-45 bg-ink'
-                  : scrolled ? 'bg-ink' : 'bg-white',
+                  : solid ? 'bg-ink' : 'bg-white',
               )}
             />
             <span
               className={cn(
                 'h-[2px] w-5 rounded-full transition-all duration-300',
-                open ? 'opacity-0' : scrolled ? 'bg-ink' : 'bg-white',
+                open ? 'opacity-0' : solid ? 'bg-ink' : 'bg-white',
               )}
             />
             <span
@@ -215,7 +227,7 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
                 'h-[2px] w-5 rounded-full transition-all duration-300',
                 open
                   ? '-translate-y-[7px] -rotate-45 bg-ink'
-                  : scrolled ? 'bg-ink' : 'bg-white',
+                  : solid ? 'bg-ink' : 'bg-white',
               )}
             />
           </button>
