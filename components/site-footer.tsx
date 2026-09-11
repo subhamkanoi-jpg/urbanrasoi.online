@@ -27,138 +27,46 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
   const rakhi = getCampaign('rakhi')
   const puja = getCampaign('rudrabhishek')
   return (
-    <footer className="bg-ink text-background/85">
+    <footer className="bg-ink text-background/80">
       {/* Top portion */}
-      <div className="mx-auto max-w-7xl px-5 pb-8 pt-10 md:px-10 md:pb-14 md:pt-20">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-[1fr_auto_auto] md:gap-12">
+      <div className="mx-auto max-w-7xl px-5 pb-10 pt-12 md:px-10 md:pb-16 md:pt-20">
+        <div className="grid gap-10 md:grid-cols-[1.2fr_1fr_1fr] md:gap-12">
 
           {/* Brand column */}
-          <div className="col-span-2 max-w-xs md:col-span-1">
+          <div>
             <div className="flex items-center gap-3">
               <Image
                 src="/images/logo.jpg"
                 alt="Urban Rasoi logo"
-                width={44}
-                height={44}
-                className="size-11 rounded-full object-cover ring-2 ring-white/10"
+                width={40}
+                height={40}
+                className="size-10 rounded-full object-cover ring-1 ring-white/10"
               />
               <p className="font-serif text-xl font-semibold text-background">Urban Rasoi</p>
             </div>
-            <p className="mt-4 hidden text-sm leading-relaxed text-background/60 md:block">
-              {site.tagline}
-            </p>
-            <p className="mt-3 hidden text-xs leading-relaxed text-background/45 md:block">
-              {site.address.line}
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-background/55">
+              Premium vegetarian catering for house parties and celebrations across Kolkata, since {site.foundedYear}.
             </p>
             {/* Social + contact */}
-            <div className="mt-4 flex items-center gap-3 md:mt-6">
+            <div className="mt-5 flex items-center gap-3">
               <a
                 href={site.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="flex size-9 items-center justify-center rounded-full border border-white/15 text-background/70 transition-colors hover:border-terracotta hover:text-terracotta"
+                aria-label="Urban Rasoi on Instagram"
+                className="flex size-9 items-center justify-center rounded-full border border-white/12 text-background/60 transition-colors hover:border-terracotta hover:text-terracotta"
               >
                 <InstagramIcon className="size-4" />
               </a>
               <WhatsAppLink
                 placement="footer-social"
-                ariaLabel="WhatsApp"
-                className="flex size-9 items-center justify-center rounded-full border border-white/15 text-background/70 transition-colors hover:border-[#25D366] hover:text-[#25D366]"
+                ariaLabel="Chat on WhatsApp"
+                className="flex size-9 items-center justify-center rounded-full border border-white/12 text-background/60 transition-colors hover:border-[#25D366] hover:text-[#25D366]"
               >
                 <WhatsAppIcon className="size-4" />
               </WhatsAppLink>
-              <TelLink
-                placement="footer"
-                className="ml-2 inline-block py-1.5 text-sm text-background/60 transition-colors hover:text-terracotta"
-              >
-                {site.phone}
-              </TelLink>
             </div>
-          </div>
-
-          {/* Offerings */}
-          <nav aria-label="Offerings" className="min-w-[140px]">
-            <p className="text-xs font-semibold uppercase tracking-widest text-background/40">
-              Offerings
-            </p>
-            <ul className="mt-5 flex flex-col gap-3">
-              {products.map((p) => (
-                <li key={p.slug}>
-                  <Link
-                    href={`/${p.slug}`}
-                    className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
-                  >
-                    {p.name}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link
-                  href="/vegetarian-catering-kolkata"
-                  className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
-                >
-                  Vegetarian catering
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/catering-across-kolkata"
-                  className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
-                >
-                  Across Kolkata
-                </Link>
-              </li>
-              {liveCampaigns.includes('rakhi') && (
-                <li>
-                  <Link
-                    href={rakhi.href}
-                    className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
-                  >
-                    {rakhi.label}
-                  </Link>
-                </li>
-              )}
-              {liveCampaigns.includes('rudrabhishek') && (
-                <li>
-                  <Link
-                    href={puja.href}
-                    className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
-                  >
-                    Rudra Abhishek Puja Catering
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </nav>
-
-          {/* Order CTA */}
-          <div className="col-span-2 flex flex-col items-start gap-4 md:col-span-1 md:gap-5">
-            <p className="text-xs font-semibold uppercase tracking-widest text-background/40">
-              Order now
-            </p>
-            <div className="flex flex-col gap-3">
-              <Link
-                href="/plan?src=footer"
-                className="inline-flex items-center gap-2.5 rounded-full bg-terracotta px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-terracotta-deep hover:-translate-y-0.5"
-              >
-                Plan my party <span aria-hidden="true">→</span>
-              </Link>
-              <Link
-                href="/order"
-                className="inline-block py-1.5 text-sm text-background/70 transition-colors hover:text-terracotta"
-              >
-                Order à la carte →
-              </Link>
-              <WhatsAppLink
-                placement="footer-cta"
-                className="inline-flex items-center gap-2 py-1.5 text-sm text-background/70 transition-colors hover:text-[#25D366]"
-              >
-                <WhatsAppIcon className="size-4" />
-                Chat on WhatsApp
-              </WhatsAppLink>
-            </div>
-            <div className="text-xs text-background/40 leading-relaxed">
+            <div className="mt-5 space-y-1 text-xs text-background/40">
               <p>
                 <a
                   href={site.mapsUrl}
@@ -169,18 +77,100 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
                   {site.address.line}
                 </a>
               </p>
-              <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
-                <Link href="/salt-lake-catering" className="hover:text-terracotta">
-                  Salt Lake
-                </Link>
-                <Link href="/new-town-catering" className="hover:text-terracotta">
-                  New Town
-                </Link>
-                <Link href="/south-kolkata-catering" className="hover:text-terracotta">
-                  South Kolkata
-                </Link>
+              <p>
+                <TelLink placement="footer" className="transition-colors hover:text-terracotta">
+                  {site.phone}
+                </TelLink>
               </p>
-              <p className="mt-1">{site.fssai}</p>
+              <p>{site.fssai}</p>
+            </div>
+          </div>
+
+          {/* Offerings */}
+          <nav aria-label="Offerings">
+            <p className="text-xs font-semibold uppercase tracking-widest text-background/35">
+              Offerings
+            </p>
+            <ul className="mt-5 flex flex-col gap-2.5">
+              {products.map((p) => (
+                <li key={p.slug}>
+                  <Link
+                    href={`/${p.slug}`}
+                    className="inline-block py-1 text-sm text-background/65 transition-colors hover:text-terracotta"
+                  >
+                    {p.name}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href="/vegetarian-catering-kolkata"
+                  className="inline-block py-1 text-sm text-background/65 transition-colors hover:text-terracotta"
+                >
+                  Vegetarian catering
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/catering-across-kolkata"
+                  className="inline-block py-1 text-sm text-background/65 transition-colors hover:text-terracotta"
+                >
+                  Across Kolkata
+                </Link>
+              </li>
+              {liveCampaigns.includes('rakhi') && (
+                <li>
+                  <Link
+                    href={rakhi.href}
+                    className="inline-block py-1 text-sm text-background/65 transition-colors hover:text-terracotta"
+                  >
+                    {rakhi.label}
+                  </Link>
+                </li>
+              )}
+              {liveCampaigns.includes('rudrabhishek') && (
+                <li>
+                  <Link
+                    href={puja.href}
+                    className="inline-block py-1 text-sm text-background/65 transition-colors hover:text-terracotta"
+                  >
+                    Rudra Abhishek Puja Catering
+                  </Link>
+                </li>
+              )}
+            </ul>
+          </nav>
+
+          {/* Plan / Order */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-background/35">
+              Get started
+            </p>
+            <div className="mt-5 flex flex-col gap-3">
+              <Link
+                href="/plan?src=footer"
+                className="inline-flex w-fit items-center gap-2 rounded-full bg-terracotta px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-terracotta-deep hover:-translate-y-0.5"
+              >
+                Plan my party <span aria-hidden="true">→</span>
+              </Link>
+              <Link
+                href="/order"
+                className="inline-block py-1 text-sm text-background/65 transition-colors hover:text-terracotta"
+              >
+                Order à la carte →
+              </Link>
+              <WhatsAppLink
+                placement="footer-cta"
+                className="inline-flex items-center gap-2 py-1 text-sm text-background/65 transition-colors hover:text-[#25D366]"
+              >
+                <WhatsAppIcon className="size-4" />
+                Chat on WhatsApp
+              </WhatsAppLink>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-x-3 gap-y-1 text-xs text-background/35">
+              <Link href="/salt-lake-catering" className="py-0.5 hover:text-terracotta">Salt Lake</Link>
+              <Link href="/new-town-catering" className="py-0.5 hover:text-terracotta">New Town</Link>
+              <Link href="/south-kolkata-catering" className="py-0.5 hover:text-terracotta">South Kolkata</Link>
             </div>
           </div>
         </div>
@@ -189,7 +179,7 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
       {/* Bottom bar */}
       <div className="border-t border-white/8 mx-auto max-w-7xl px-5 py-5 md:px-10">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-background/35">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-background/30">
             <span>&copy; {new Date().getFullYear()} Urban Rasoi. All rights reserved.</span>
             <Link href="/privacy" className="py-1 underline-offset-2 transition-colors hover:text-terracotta hover:underline">
               Privacy
@@ -201,7 +191,7 @@ export function SiteFooter({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
               Refunds
             </Link>
           </div>
-          <p className="text-xs text-background/35">
+          <p className="text-xs text-background/30">
             Crafted food experiences — Kolkata
           </p>
         </div>

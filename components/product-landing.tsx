@@ -165,14 +165,17 @@ export function ProductLanding({ product }: { product: Product }) {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section className="bg-cream py-14 md:py-20">
         <div className="mx-auto flex max-w-4xl flex-col items-center px-5 text-center md:px-10">
-          <p className="section-label">A customer note</p>
+          <p className="eyebrow">From a real host</p>
           <Reveal>
             <blockquote className="mt-5 font-serif text-3xl font-semibold leading-snug text-ink text-balance md:text-5xl">
-              “The flavors were perfect and everyone enjoyed the meal. Surely looking forward to ordering again.”
+              “The quantity was sufficient, the flavours were perfect, and everyone enjoyed the meal.”
             </blockquote>
-            <p className="mt-5 text-sm text-ink-soft">Abhinav · customer message shared with permission</p>
+            <footer className="mt-5">
+              <p className="text-sm font-semibold text-ink">Abhinav</p>
+              <p className="mt-0.5 text-sm text-ink-soft">Customer message, shared with permission</p>
+            </footer>
           </Reveal>
         </div>
       </section>

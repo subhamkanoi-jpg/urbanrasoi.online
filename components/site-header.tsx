@@ -109,18 +109,20 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
           </span>
         </Link>
 
-        {/* Right side: phone + menu trigger */}
-        <div className="flex items-center gap-3">
-          <a
-            href={`tel:${site.phone.replace(/\s/g, '')}`}
-            onClick={() => trackContact('header')}
+        {/* Right side: CTA + menu trigger */}
+        <div className="flex items-center gap-2 md:gap-3">
+          {/* Desktop: Plan my party CTA */}
+          <Link
+            href="/plan?src=nav-cta"
             className={cn(
-              'hidden text-sm font-medium transition-colors md:block',
-              solid ? 'text-ink-soft hover:text-ink' : 'text-white/80 hover:text-white',
+              'hidden items-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 md:flex',
+              solid
+                ? 'bg-terracotta text-primary-foreground hover:bg-terracotta-deep'
+                : 'bg-terracotta text-primary-foreground hover:bg-terracotta-deep shadow-md',
             )}
           >
-            {site.phone}
-          </a>
+            Plan my party
+          </Link>
 
           {/* Desktop menu button */}
           <div className="relative hidden md:block" ref={dropdownRef}>
@@ -130,7 +132,7 @@ export function SiteHeader({ liveCampaigns = [] }: { liveCampaigns?: CampaignId[
               aria-expanded={open}
               aria-label={open ? 'Close menu' : 'Open menu'}
               className={cn(
-                'flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200',
+                'flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-200',
                 solid
                   ? 'bg-cream text-ink hover:bg-cream-dark'
                   : 'bg-white/15 text-white hover:bg-white/25 backdrop-blur-sm',
