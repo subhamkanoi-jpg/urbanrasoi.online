@@ -31,13 +31,13 @@ const body = Manrope({
 
 const defaultTitle = 'Urban Rasoi | Premium Vegetarian House Party Catering in Kolkata'
 const defaultDescription =
-  'Premium vegetarian catering for house parties, private dinners and celebrations across Kolkata. Cooked in our FSSAI-licensed Salt Lake kitchen since 2015. Menus from ₹749 a guest. Plan on WhatsApp.'
+  'Premium vegetarian catering for house parties, private dinners and celebrations across Kolkata. Cooked in our FSSAI-licensed Salt Lake kitchen since 2015. From ₹749 a guest. Plan on WhatsApp.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
     default: defaultTitle,
-    template: '%s',
+    template: '%s | Urban Rasoi',
   },
   description: defaultDescription,
   openGraph: {
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     siteName: 'Urban Rasoi',
     type: 'website',
     locale: 'en_IN',
-    images: [{ url: '/images/og-image.jpg', width: 1200, height: 630, alt: 'Urban Rasoi vegetarian catering in Kolkata' }],
+    images: [{ url: '/images/og-image.jpg', width: 1200, height: 630, alt: 'Urban Rasoi premium vegetarian catering in Kolkata' }],
   },
   twitter: {
     card: 'summary_large_image',

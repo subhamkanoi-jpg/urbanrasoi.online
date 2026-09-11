@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
+import { MobileCTABar } from '@/components/mobile-cta-bar'
 import type { CampaignId } from '@/lib/seasonal'
 
 export function SiteShell({
@@ -26,8 +27,12 @@ export function SiteShell({
   return (
     <>
       <SiteHeader liveCampaigns={liveCampaigns} />
-      <main className="min-h-svh">{children}</main>
-      <SiteFooter liveCampaigns={liveCampaigns} />
+      {/* pb-[env(safe-area-inset-bottom)] + 56px for mobile CTA bar height */}
+      <main className="min-h-svh pb-14 md:pb-0">{children}</main>
+      <div className="pb-14 md:pb-0">
+        <SiteFooter liveCampaigns={liveCampaigns} />
+      </div>
+      <MobileCTABar />
     </>
   )
 }

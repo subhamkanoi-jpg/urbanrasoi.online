@@ -66,16 +66,16 @@ export function FloatingWhatsApp({ message }: { message: string }) {
   }
 
   return (
+    // Desktop-only floating WhatsApp button — mobile uses MobileCTABar instead
     <a
       href={whatsappUrl(message)}
       onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Plan my party on WhatsApp"
-      className="fixed bottom-3 left-4 right-4 z-50 flex items-center justify-center gap-2.5 rounded-full bg-terracotta px-5 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta md:bottom-6 md:left-auto md:right-6 md:size-14 md:px-0 md:py-0"
+      aria-label="Chat on WhatsApp"
+      className="fixed bottom-6 right-6 z-50 hidden size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1ebe5d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#25D366] md:flex"
     >
-      <WhatsAppIcon className="size-5 md:size-7" />
-      <span className="md:sr-only">Plan my party on WhatsApp</span>
+      <WhatsAppIcon className="size-7" />
     </a>
   )
 }

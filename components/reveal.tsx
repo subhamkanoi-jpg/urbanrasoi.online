@@ -37,7 +37,7 @@ export function Reveal({
   return (
     <div
       ref={ref}
-      className={className}
+      className={cn('reveal', className)}
       style={delay ? { animationDelay: `${delay}ms` } : undefined}
     >
       {children}
