@@ -1,31 +1,32 @@
 @import 'tailwindcss';
 
 @theme inline {
-  --font-serif: var(--font-playfair), Georgia, serif;
-  --font-sans: var(--font-jost), system-ui, sans-serif;
+  --font-serif: var(--font-display), Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-body), system-ui, -apple-system, sans-serif;
 
-  /* Core palette — warm terracotta + cream + deep ink */
-  --color-background: #fdf8f1;
-  --color-foreground: #1e140b;
-  --color-cream: #f4ead8;
-  --color-cream-dark: #e8d8be;
-  --color-ink: #1e140b;
-  --color-ink-soft: #6b5343;
-  --color-ink-lighter: #9c8070;
-  --color-terracotta: #d4521a;
-  --color-terracotta-deep: #a83d0f;
-  --color-terracotta-light: #f0784a;
-  --color-card: #ffffff;
-  --color-border: #e2d4c0;
+  /* Editorial hospitality palette: warm ivory base, charcoal type, one muted accent. */
+  --color-background: #f6f1e8;
+  --color-foreground: #1b1917;
+  --color-cream: #ede6d8;
+  --color-cream-dark: #dfd5c2;
+  --color-ink: #1b1917;
+  --color-ink-soft: #57514a;
+  --color-ink-lighter: #8b837a;
+  --color-terracotta: #9a4b2c;
+  --color-terracotta-deep: #7a3a21;
+  --color-terracotta-light: #d9a48b;
+  --color-olive: #5c6b45;
+  --color-card: #fdfaf5;
+  --color-border: #e2d9ca;
 
-  --color-primary: #d4521a;
-  --color-primary-foreground: #fdf8f1;
-  --color-muted: #f4ead8;
-  --color-muted-foreground: #6b5343;
+  --color-primary: #1b1917;
+  --color-primary-foreground: #f6f1e8;
+  --color-muted: #ede6d8;
+  --color-muted-foreground: #57514a;
 
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
-  /* ── Rakhi festive palette ──────────────────────────────────────────── */
+  /* Rakhi festive palette (seasonal pages) */
   --color-rakhi-bg: #fdf5e6;
   --color-rakhi-cream: #faebd0;
   --color-rakhi-saffron: #c8621a;
@@ -45,14 +46,14 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background-color: var(--color-terracotta);
-  color: var(--color-primary-foreground);
+  background-color: var(--color-ink);
+  color: var(--color-background);
 }
 
-/* Customer stories — tactile editorial media treatment */
 video {
   accent-color: var(--color-terracotta);
 }
@@ -62,11 +63,52 @@ video:focus-visible {
   outline-offset: -2px;
 }
 
-/* ─── Reveal animations ─────────────────────────────── */
+/* Layout rhythm */
+.wrap {
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) {
+  .wrap {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* Small uppercase eyebrow label */
+.section-label,
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+}
+
+/* Horizontal swipe rows on mobile */
+.snap-row {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+}
+.snap-row::-webkit-scrollbar {
+  display: none;
+}
+.snap-row > * {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+
+/* Reveal animations */
 @keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translateY(32px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -74,35 +116,21 @@ video:focus-visible {
   }
 }
 
-@keyframes reveal-fade {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
 .reveal {
   opacity: 1;
 }
 
 .reveal.is-visible {
-  animation: reveal-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: reveal-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* ─── Image hover zoom ───────────────────────────────── */
+/* Image hover zoom */
 .img-zoom {
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
+.group:hover .img-zoom,
 .img-zoom:hover {
-  transform: scale(1.06);
-}
-
-/* ─── Section dividers ───────────────────────────────── */
-.section-label {
-  font-size: 0.65rem;
-  font-family: var(--font-sans);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-terracotta);
-  font-weight: 600;
+  transform: scale(1.04);
 }
 
 .scrollbar-hide {
@@ -113,13 +141,15 @@ video:focus-visible {
   display: none;
 }
 
-/* ─── Reduced motion ─────────────────────────────────── */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-  }
   .reveal.is-visible {
     animation: none;
+  }
+  .img-zoom,
+  .group:hover .img-zoom {
+    transition: none;
+    transform: none;
   }
   html {
     scroll-behavior: auto;
