@@ -31,7 +31,7 @@ export const site = {
   deliveryRadiusKm: 20,
   mapsUrl:
     'https://www.google.com/maps/search/?api=1&query=AE-287%2C+Salt+Lake+Sector+1%2C+Kolkata+700064',
-  /** Neighbourhoods we actually cook for — used in copy, footer and schema. */
+  /** Neighbourhoods we actually cook for. Used in copy, footer and schema. */
   areasServed: [
     'Salt Lake',
     'New Town',
@@ -61,4 +61,19 @@ Area in Kolkata:
 Dietary preferences or allergies:
 Service needed (delivery/setup/staff):`
 
-export const defaultWhatsappMessage = structuredWhatsappMessage
+/** Short, low-friction opener used by every general WhatsApp button. */
+export const quickWhatsappMessage = `Hi Urban Rasoi, I'd like to plan a party.
+Date: __
+Guest count: __
+Area: __`
+
+export const defaultWhatsappMessage = quickWhatsappMessage
+
+/** Primary conversion path. The quick enquiry lives on the contact page. */
+export const planPath = '/contact'
+
+export function planHref(src: string, occasion?: string): string {
+  const params = new URLSearchParams({ src })
+  if (occasion) params.set('occasion', occasion)
+  return `${planPath}?${params.toString()}`
+}
