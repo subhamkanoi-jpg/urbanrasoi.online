@@ -16,6 +16,8 @@ declare global {
 
 function trackPath(pathname: string) {
   if (!window.fbq) return
+  // Staff tool: our own visits must not land in ad audiences.
+  if (pathname.startsWith('/quote-builder')) return
   window.fbq('track', 'PageView')
 
   const product = getProduct(pathname.replace(/^\//, ''))
