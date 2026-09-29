@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: '/api/',
+      disallow: ['/api/', '/quote-builder'],
     },
     sitemap: `${site.url}/sitemap.xml`,
     host: 'www.urbanrasoi.online',

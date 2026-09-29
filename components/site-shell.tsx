@@ -20,7 +20,8 @@ export function SiteShell({
   const isBarePage =
     pathname === '/kolkata-catering' ||
     pathname === '/plan' ||
-    pathname === '/order'
+    pathname === '/order' ||
+    pathname === '/quote-builder'
 
   if (isBarePage) return <main className="min-h-svh">{children}</main>
 
