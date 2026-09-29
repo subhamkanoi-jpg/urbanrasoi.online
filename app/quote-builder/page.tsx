@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Montserrat, Mrs_Saint_Delafield } from 'next/font/google'
 import { isAuthConfigured, isSignedIn } from '@/lib/quote-auth'
 import { isStoreConfigured } from '@/lib/quote-db'
 import { QuoteBuilder } from '@/components/quote-builder/quote-builder'
@@ -18,16 +17,18 @@ export const metadata: Metadata = {
 }
 
 // The house party menu's own type: light serif caps, a script flourish and a
-// geometric sans. Scoped to this page so the rest of the site is untouched.
-const serif = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500'], variable: '--qb-serif', display: 'swap' })
-const sans = Montserrat({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--qb-sans', display: 'swap' })
-const script = Mrs_Saint_Delafield({ subsets: ['latin'], weight: '400', variable: '--qb-script', display: 'swap' })
+// geometric sans. Loaded by the browser rather than through next/font: these
+// are only for a staff page, and a Google Fonts hiccup during `next build`
+// failed a whole site deploy once. The page falls back cleanly if they are slow.
+const FONTS_HREF =
+  'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Montserrat:wght@400;500;600;700&family=Mrs+Saint+Delafield&display=swap'
 
 export default async function QuoteBuilderPage() {
-  const fonts = `${serif.variable} ${sans.variable} ${script.variable}`
   const signedIn = await isSignedIn()
   return (
-    <div className={fonts}>
+    <div>
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link rel="stylesheet" href={FONTS_HREF} precedence="default" />
       {signedIn ? <QuoteBuilder storeConfigured={isStoreConfigured()} /> : <QuoteLogin configured={isAuthConfigured()} />}
     </div>
   )

@@ -14,9 +14,9 @@
   --ur: #f05a28;
   --peach: #fde6cb;
   --danger: #c0392b;
-  --serif: var(--qb-serif), 'Cormorant Garamond', Georgia, serif;
-  --sans: var(--qb-sans), 'Montserrat', system-ui, sans-serif;
-  --script: var(--qb-script), 'Brush Script MT', cursive;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Montserrat', system-ui, sans-serif;
+  --script: 'Mrs Saint Delafield', 'Brush Script MT', cursive;
 
   background: var(--bg);
   color: var(--ink);
