@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/icon.jpg">
+<title>Diwali Taash Party · Mr. Shashank Kedia · Urban Rasoi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@400;500;600;700&family=Mrs+Saint+Delafield&display=swap">
+<style>
+/* One printable A4 sheet: the Kedia proposal (kedia-261007-8741f2.html) condensed to a single page,
+   with the menu set in one centred column like a printed menu card. Sized in mm so print = screen. */
+:root {
+  --ground: #efe6da;
+  --paper: #fffdf8;
+  --ink: #2a2622;
+  --soft: #5f5750;
+  --muted: #8f857b;
+  --amber: #e9982f;
+  --amber-ink: #a95d17;
+  --gold: #c9973a;
+  --peach: #fde3c3;
+  --peach-soft: #fff4e6;
+  --rule: #e8cfa9;
+  --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans: 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --script: 'Mrs Saint Delafield', 'Brush Script MT', 'Segoe Script', cursive;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--ground); color: var(--ink); font: 400 9pt/1.45 var(--sans); -webkit-font-smoothing: antialiased; }
+img { display: block; }
+
+.sheet { width: 210mm; height: 297mm; margin: 10mm auto; background: var(--paper); position: relative; overflow: hidden;
+  padding: 13mm 17mm 0; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(70, 40, 10, 0.16);
+  print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.sheet::before { content: ''; position: absolute; inset: 6mm 6mm 6mm; border: 0.3mm solid var(--rule); pointer-events: none; }
+.sheet::after { content: ''; position: absolute; inset: 7.2mm; border: 0.15mm solid var(--rule); pointer-events: none; }
+@media screen and (max-width: 230mm) { .sheet { margin: 0 auto; zoom: calc(100vw / 210mm); } }
+
+/* ── header ── */
+.tab { position: absolute; top: 0; right: 17mm; background: var(--amber); color: #fff; padding: 7mm 3mm 2.2mm; z-index: 1;
+  font: 600 6.2pt/1.3 var(--sans); letter-spacing: 0.16em; text-align: center; }
+.tab b { display: block; font-size: 7.6pt; letter-spacing: 0.06em; }
+.head { text-align: center; position: relative; }
+.mark { display: inline-flex; flex-direction: column; align-items: center; gap: 1mm; }
+.mark img { width: 11mm; height: 11mm; }
+.mark span { font: 500 7.5pt var(--sans); letter-spacing: 0.1em; color: #3a3633; }
+.eyebrow { margin: 3.2mm 0 0; font: 600 6.6pt var(--sans); letter-spacing: 0.32em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 1mm 0 0; font-weight: 400; line-height: 1; }
+h1 .a { display: block; font: 400 28pt/1 var(--serif); letter-spacing: 0.07em; color: var(--amber); }
+h1 .b { display: block; font: 400 38pt/0.85 var(--script); color: #3a3633; margin-top: -1.5mm; }
+.for { margin: 1mm 0 0; font: italic 400 12.5pt var(--serif); color: var(--soft); }
+.for b { font-style: normal; font-weight: 600; color: var(--ink); }
+.facts { margin: 3.2mm auto 0; padding: 2.4mm 0; border-block: 0.25mm solid var(--rule); display: flex; justify-content: center; align-items: center; gap: 0 4mm;
+  font: 600 7.4pt var(--sans); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); }
+.facts i { width: 1.2mm; height: 1.2mm; border-radius: 50%; background: var(--amber); flex: none; }
+.leaf { position: absolute; width: 6mm; }
+.leaf.l1 { left: 9mm; top: 13mm; transform: rotate(-24deg); }
+.leaf.l2 { right: 9mm; top: 46mm; width: 5.4mm; transform: rotate(32deg); }
+
+/* ── menu ── */
+.menu { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; padding-block: 1mm; }
+.course + .course, .orn + .course { margin-top: 3.6mm; }
+.orn { display: flex; align-items: center; justify-content: center; gap: 3mm; color: var(--gold); }
+.orn::before, .orn::after { content: ''; height: 0.25mm; width: 20mm; background: linear-gradient(90deg, transparent, var(--gold)); opacity: 0.6; }
+.orn::after { background: linear-gradient(90deg, var(--gold), transparent); }
+.orn svg { width: 5.4mm; height: 4.6mm; flex: none; }
+.course h2 { margin: 0; display: flex; align-items: center; justify-content: center; gap: 3mm; font: 600 7.8pt var(--sans); letter-spacing: 0.34em; text-transform: uppercase; color: var(--amber-ink); }
+.course h2::before, .course h2::after { content: ''; height: 0.25mm; width: 12mm; background: linear-gradient(90deg, transparent, var(--gold)); opacity: 0.7; }
+.course h2::after { background: linear-gradient(90deg, var(--gold), transparent); margin-left: -0.34em; }
+.course .note { margin: 0; font: italic 400 9.5pt var(--serif); color: var(--muted); }
+.dishes { list-style: none; margin: 0.8mm 0 0; padding: 0; }
+.dishes li { padding: 0.3mm 0; }
+.dishes h3 { margin: 0; font: 500 12.5pt/1.15 var(--serif); color: var(--ink); }
+.dishes h3 i { display: inline-block; width: 1.1mm; height: 1.1mm; margin: 0 3.2mm; border-radius: 50%; background: var(--amber); vertical-align: middle; }
+.dishes p { margin: 0; font: italic 400 9pt/1.2 var(--serif); color: var(--muted); }
+
+/* ── rate ── */
+.rate { margin: 0 -9.6mm; background: var(--peach-soft); border-block: 0.25mm solid var(--rule); padding: 3.4mm 9.6mm 3.6mm; text-align: center; position: relative; z-index: 1; }
+.rate .eyebrow { margin: 0; }
+.price { margin: 1mm 0 0; font: 500 30pt/1 var(--serif); color: var(--ink); font-variant-numeric: lining-nums; }
+.price small { font: italic 400 13pt var(--serif); color: var(--soft); }
+.sum { margin: 1.4mm 0 0; font: 500 8.6pt var(--sans); color: var(--soft); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.sum b { color: var(--ink); font-weight: 700; }
+
+/* ── included and terms ── */
+.cols { padding-block: 4mm 3mm; display: grid; grid-template-columns: 1fr 1fr; gap: 9mm; }
+.cols h2 { margin: 0 0 1.8mm; font: 600 7pt var(--sans); letter-spacing: 0.24em; text-transform: uppercase; color: var(--amber-ink); }
+.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1mm; }
+.list li { position: relative; padding-left: 4.4mm; font-size: 7.8pt; line-height: 1.42; color: var(--soft); }
+.list li b { color: var(--ink); font-weight: 600; }
+.list.ok li::before { content: ''; position: absolute; left: 0.3mm; top: 1.3mm; width: 2.2mm; height: 1.25mm; border-left: 0.35mm solid var(--amber-ink); border-bottom: 0.35mm solid var(--amber-ink); transform: rotate(-45deg); }
+.list.dot li::before { content: ''; position: absolute; left: 0.8mm; top: 1.7mm; width: 1.1mm; height: 1.1mm; border-radius: 50%; background: var(--amber); }
+
+/* ── footer ── */
+.foot { margin: 0 -17mm; background: var(--peach); padding: 3.4mm 17mm 3.6mm; display: flex; gap: 6mm; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+.call { display: flex; gap: 2.4mm; align-items: center; }
+.call i { width: 8.5mm; height: 8.5mm; background: #f6b233; border-radius: 1.6mm; display: flex; align-items: center; justify-content: center; flex: none; }
+.call i svg { width: 4.2mm; height: 4.2mm; }
+.call small { display: block; font: 600 5.8pt var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: #8a5a1f; }
+.call b { font: 700 12pt var(--sans); letter-spacing: 0.02em; }
+.tag { text-align: center; }
+.tag b { display: block; font: 400 24pt/0.9 var(--script); color: var(--ink); font-weight: 400; }
+.tag span { display: block; font: italic 400 9.5pt var(--serif); color: #6b5a48; }
+.meta { font-size: 6.8pt; line-height: 1.55; color: #6b5a48; text-align: right; }
+.meta b { color: var(--ink); font-weight: 600; }
+.meta a { color: inherit; text-decoration: none; }
+
+@media print {
+  @page { size: A4; margin: 0; }
+  body { background: none; }
+  .sheet { margin: 0; box-shadow: none; zoom: 1; }
+}
+</style>
+</head>
+<body>
+<article class="sheet">
+  <div class="tab">QUOTE<b>261007-01</b></div>
+  <img class="leaf l1" src="/images/quote/leaf-1.png" alt="">
+  <img class="leaf l2" src="/images/quote/leaf-2.png" alt="">
+
+  <header class="head">
+    <div class="mark"><img src="/images/quote/logo.png" alt="Urban Rasoi"><span>urban rasoi</span></div>
+    <p class="eyebrow">A Diwali evening menu</p>
+    <h1><span class="a">DIWALI TAASH PARTY</span><span class="b">menu</span></h1>
+    <p class="for">curated for <b>Mr. Shashank Kedia</b></p>
+    <div class="facts"><span>Sat, 31 Oct 2026</span><i></i><span>Swarnamani</span><i></i><span>50 guests</span><i></i><span>7 PM – 12 midnight</span></div>
+  </header>
+
+  <main class="menu">
+    <div class="orn" aria-hidden="true"><svg viewBox="0 0 26 22"><path d="M13 1c2.2 3 3 5 1.2 7.2-.6.7-2 .7-2.6 0C9.9 6 10.8 4 13 1z" fill="#e9982f"/><path d="M2 12h22c-.8 4.6-5.4 8-11 8S2.8 16.6 2 12z" fill="currentColor"/></svg></div>
+    <section class="course">
+      <h2>Drinks</h2>
+      <p class="note">served through the evening</p>
+      <ul class="dishes">
+        <li><h3>Strawberry Basil Lemonade<i></i>Virgin Mojito</h3></li>
+      </ul>
+    </section>
+
+    <section class="course">
+      <h2>Starters</h2>
+      <p class="note">served at the tables while you play</p>
+      <ul class="dishes">
+        <li><h3>Stuffed Tandoori Aloo Tikka</h3></li>
+        <li><h3>Hara Bhara Kebab Croquettes</h3></li>
+        <li><h3>Cheese &amp; Corn Samosa</h3></li>
+        <li><h3>Bite-size Quesadillas</h3></li>
+        <li><h3>Cheesy Veg Cigar Rolls</h3></li>
+      </ul>
+    </section>
+
+    <section class="course">
+      <h2>Main Course</h2>
+      <p class="note">a buffet dinner</p>
+      <ul class="dishes">
+        <li><h3>Paneer Butter Masala</h3></li>
+        <li><h3>Aloo Do Pyaza</h3></li>
+        <li><h3>Creamy Black Dal</h3></li>
+        <li><h3>Masala Kulcha</h3></li>
+        <li><h3>Pudina Lachha Paratha</h3></li>
+        <li><h3>Exotic Veg Stroganoff</h3></li>
+        <li><h3>Herbed Rice</h3></li>
+        <li><h3>Spaghetti Au Gratin</h3></li>
+        <li><p>with tandoori onion salad, pickle &amp; papad</p></li>
+      </ul>
+    </section>
+
+    <section class="course">
+      <h2>Desserts</h2>
+      <ul class="dishes">
+        <li><h3>Tiramisu in Shot Glasses<i></i>Baked Gur Rasogolla</h3></li>
+      </ul>
+    </section>
+  </main>
+
+  <section class="rate">
+    <p class="eyebrow">Per guest</p>
+    <p class="price">₹1,800 <small>a guest</small></p>
+    <p class="sum">50 guests × ₹1,800 = <b>₹90,000</b></p>
+  </section>
+
+  <div class="cols">
+    <section>
+      <h2>Included in the rate</h2>
+      <ul class="list ok">
+        <li>The full menu above, <b>drinks to desserts</b></li>
+        <li><b>Table layout</b> for the buffet and the card tables</li>
+        <li><b>4–5 stewards</b> serving through the evening</li>
+        <li><b>2–3 backend staff</b> finishing and replenishing the food</li>
+        <li><b>Eating cutlery</b> for every guest</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Good to know</h2>
+      <ul class="list dot">
+        <li>Overtime past midnight is <b>₹3,000 an hour</b>.</li>
+        <li>Extra guests at <b>₹1,800</b>; final count <b>3 days</b> before.</li>
+        <li><b>Kitchen access</b> with gas, water and power at the venue.</li>
+        <li>This quote is valid for <b>7 days</b>.</li>
+      </ul>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <div class="call">
+      <i><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1d1a17" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></i>
+      <div><small>To confirm your order</small><b>98307 25556</b></div>
+    </div>
+    <div class="tag"><b>Happy Diwali</b><span>Your party. Our kitchen.</span></div>
+    <div class="meta">
+      <b>@urbanrasoi_kolkata</b> · <a href="https://www.urbanrasoi.online">www.urbanrasoi.online</a><br>
+      AE-287, Salt Lake Sector 1, Kolkata 700064<br>
+      FSSAI Lic. No. 12823013000353
+    </div>
+  </footer>
+</article>
+</body>
+</html>
