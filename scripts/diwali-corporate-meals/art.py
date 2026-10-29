@@ -1,6 +1,8 @@
-"""Brand art: the meal tray, the orange box sleeve, sleeve doodles, marigolds and diyas."""
+"""Brand art: the orange box sleeve, sleeve doodles, marigolds and diyas."""
 import math, random
-from food import PAINTERS, f
+
+def f(v):
+    return ('%.1f' % v).rstrip('0').rstrip('.')
 
 ORANGE, ORANGE_DEEP, AMBER, CREAM, INK = '#ec6424', '#c94d16', '#f6b233', '#f6f1e8', '#1b1917'
 
@@ -72,24 +74,6 @@ def defs_svg():
             doodle_pattern('dood', '#ffffff', .2, 300, 2.2, 3) + doodle_pattern('doodsm', '#ffffff', .55, 200, 2.6, 5) +
             doodle_pattern('doodink', '#9a4b2c', .1, 320, 2.2, 7) + doodle_pattern('doodcream', '#f6f1e8', .1, 320, 2.2, 9) +
             SYMBOLS + '</defs></svg>')
-
-# ── tray ──
-TW, TH, RIM, GAP = 860, 560, 16, 12
-
-def tray(layout, seed, uid):
-    """layout: list of (x, y, w, h, painter) in inner tray units (0..828 x 0..528)."""
-    rng = random.Random(seed)
-    out = ['<g filter="url(#soft)"><rect x="0" y="0" width="%d" height="%d" rx="34" fill="#151312"/></g>' % (TW, TH),
-           '<rect x="3" y="3" width="%d" height="%d" rx="32" fill="none" stroke="#3a3533" stroke-width="2"/>' % (TW - 6, TH - 6)]
-    for i, (x, y, w, h, kind) in enumerate(layout):
-        X, Y = RIM + x, RIM + y
-        cid = '%s-c%d' % (uid, i)
-        out.append('<clipPath id="%s"><rect x="%s" y="%s" width="%s" height="%s" rx="16"/></clipPath>' % (cid, f(X), f(Y), f(w), f(h)))
-        out.append('<g clip-path="url(#%s)">%s</g>' % (cid, PAINTERS[kind](X, Y, w, h, rng)))
-        # compartment wall: dark inner edge + rim highlight
-        out.append('<rect x="%s" y="%s" width="%s" height="%s" rx="16" fill="none" stroke="#0c0a09" stroke-width="5" opacity=".75"/>' % (f(X), f(Y), f(w), f(h)))
-        out.append('<rect x="%s" y="%s" width="%s" height="%s" rx="18" fill="none" stroke="#2f2a28" stroke-width="2"/>' % (f(X - 3), f(Y - 3), f(w + 6), f(h + 6)))
-    return '<g>%s</g>' % ''.join(out)
 
 def sleeve(w=600, h=400, logo='/images/quote/logo.png', plain=False):
     if plain:

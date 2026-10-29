@@ -1,31 +1,21 @@
 import sys
 sys.path.insert(0, sys.argv[1])
-from art import tray, defs_svg, sleeve, toran, f
+from art import defs_svg, sleeve, toran, f
 
 OUT = sys.argv[2]
-TOTAL = 7
+TOTAL = 8
 
 BOXES = [
-    dict(no='01', kind='North Indian', title='The Diwali Thali', line='a proper festive feast, boxed', theme='cream', seed=11,
-         layout=[(0, 0, 190, 170, 'kebab'), (202, 0, 202, 170, 'dal_makhani'), (416, 0, 202, 170, 'paneer_makhani'), (630, 0, 198, 170, 'jalfrezi'),
-                 (0, 182, 190, 167, 'salad'), (0, 361, 190, 167, 'gulab'), (202, 182, 300, 346, 'pulao'), (514, 182, 170, 346, 'paratha'),
-                 (696, 182, 132, 167, 'papad'), (696, 361, 132, 167, 'onion')],
-         items=['Hara Bhara Kebab (2) with Mint Dip', 'Paneer Butter Masala', 'Creamy Black Dal', 'Subz Jalfrezi', 'Peas Pulao with Cashews',
-                'Pudina Lachha Paratha (2)', 'Salad', 'Pickled Onions', 'Papad', 'Gulab Jamun']),
-    dict(no='02', kind='Bengali', title='The Bengali Bhoj', line='Kolkata’s festive table, packed to go', theme='deep', seed=23,
-         layout=[(0, 0, 270, 230, 'aloo_dum'), (282, 0, 270, 230, 'cholar_dal'), (564, 0, 264, 230, 'gur_rasogolla'),
-                 (0, 242, 270, 286, 'radhavallabhi'), (282, 242, 330, 286, 'basanti'), (624, 242, 204, 137, 'chutney'), (624, 391, 204, 137, 'papad')],
-         items=['Radhavallabhi (4)', 'Aloo Dum', 'Narkel Cholar Dal', 'Basanti Pulao', 'Tomato Khejur Chutney', 'Papad', 'Baked Gur Rasogolla (2)']),
-    dict(no='03', kind='Indo-Chinese', title='The China Town Box', line='for the team that votes noodles, every time', theme='cream', seed=37,
-         layout=[(0, 0, 400, 258, 'fried_rice'), (412, 0, 416, 258, 'hot_garlic'),
-                 (0, 270, 200, 258, 'brownie'), (212, 270, 232, 258, 'rolls'), (456, 270, 372, 258, 'noodles')],
-         items=['Cheesy Veg Cigar Rolls (3) with Sweet Chilli Dip', 'Hakka Noodles', 'Burnt Ginger Garlic Fried Rice',
-                'Exotic Vegetables in Hot Garlic Sauce', 'Fudge Brownie']),
-    dict(no='04', kind='Continental', title='The Continental Box', line='our house signatures, in one box', theme='deep', seed=41,
-         layout=[(0, 0, 420, 300, 'stroganoff'), (432, 0, 396, 300, 'au_gratin'),
-                 (0, 312, 230, 216, 'quesadilla'), (242, 312, 190, 216, 'thai_salad'), (444, 312, 190, 216, 'garlic_bread'), (646, 312, 182, 216, 'monte_carlo')],
-         items=['Exotic Veg Stroganoff with Herbed Rice', 'Spaghetti Au Gratin', 'Bite-size Quesadillas with Salsa',
-                'Crunchy Thai Cabbage Salad', 'Cheesy Garlic Bread', 'Chocolate Monte Carlo']),
+    dict(no='01', kind='North Indian', title='The Diwali Thali', line='a royal festive feast, boxed', theme='cream', photo='box-1.jpg',
+         items=['Shahi Malai Kofta', 'Creamy Black Dal', 'Paneer Makhani', 'Jeera Rice', 'Paratha', 'Kebab Croquette', 'Dahi Vada', 'Kesariya Rasmalai']),
+    dict(no='02', kind='Bengali', title='The Bengali Bhoj', line='Kolkata\u2019s festive table, packed to go', theme='deep', photo='box-2.jpg',
+         items=['Aloo Dum', 'Cholar Dal', 'Chhanar Dalna', 'Basanti Pulao', 'Luchi', 'Veg Chop', 'Tomato Khejur Chutney', 'Rajbhog']),
+    dict(no='03', kind='North Indian', title='The Festive Classic', line='all the classics, none of the fuss', theme='cream', photo='box-3.jpg',
+         items=['Veg Kofta Curry', 'Kadhai Paneer', 'Dahi Vada', 'Veg Pulao', 'Paratha', 'Beetroot Cutlet', 'Gur Sandesh']),
+    dict(no='04', kind='Indo-Chinese', title='The China Town Box', line='for the team that votes noodles, every time', theme='deep', photo='box-4.jpg',
+         items=['Hakka Noodles', 'Schezwan Fried Rice', 'Veg Manchurian', 'Chilli Paneer']),
+    dict(no='05', kind='Indo-Continental', title='The Fusion Box', line='a little desi, a little continental', theme='cream', photo='box-5.jpg',
+         items=['Fusilli Arrabbiata', 'Chana Chaat', 'Jeera Rice', 'Aloo Tikki (2)', 'Paratha', 'Chocolate Bar']),
 ]
 
 LOGO = '<div class="badge"><img src="/images/quote/logo.png" alt="Urban Rasoi"></div>'
@@ -39,9 +29,8 @@ def corner_flowers():
             '<use href="#my" x="58" y="34" width="40" height="40"/><use href="#my" x="30" y="62" width="34" height="34"/></svg>')
 
 def box_slide(i, b):
-    art = ('<svg class="art" viewBox="0 0 1080 600" aria-hidden="true">'
-           '<g transform="translate(96 4) rotate(-6 310 200)">%s</g>'
-           '<g transform="translate(150 66) scale(.92) rotate(2.5 430 280)">%s</g></svg>') % (sleeve(plain=True), tray(b['layout'], b['seed'], 'b' + b['no']))
+    art = ('<div class="shot"><svg class="peek" viewBox="0 0 600 400" aria-hidden="true">%s</svg>'
+           '<figure><img src="%s" alt="%s, as packed by Urban Rasoi"></figure></div>') % (sleeve(plain=True), b['photo'], b['title'])
     items = ''.join('<span>%s</span>' % it for it in b['items'] + ['Cutlery'])
     return '''<section class="slide box %s">
   <div class="frame"></div>%s%s
@@ -68,7 +57,7 @@ COVER = '''<section class="slide orange cover">
   <p class="copy">Light up the office this Diwali with festive meal boxes for the whole team, cooked fresh that morning in our 100%% vegetarian kitchen.</p>
   <figure class="photo"><img src="box-crop.jpg" alt="The Urban Rasoi meal box with its orange sleeve"></figure>
   <p class="sticker">our real box, sleeve &amp; all!<svg viewBox="0 0 120 70" aria-hidden="true"><path d="M6 8c30 4 70 18 96 50" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round"/><path d="M84 54l20 6-2-20" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
-  <p class="swipe">Swipe for 4 festive boxes <b>→</b></p>
+  <p class="swipe">Swipe for 5 festive boxes <b>→</b></p>
   %s
 </section>''' % (toran(), DIYAS)
 
@@ -92,7 +81,7 @@ WHY = '''<section class="slide box cream why">
   <ul class="tiles">%s</ul>
   <div class="real"><h3>Real dishes from our kitchen</h3><ul>%s</ul></div>
   <ol class="steps"><li><b>1</b>Pick a box</li><li><b>2</b>Share headcount &amp; date</li><li><b>3</b>Delivered fresh, on your slot</li></ol>
-  <p class="count">06 / %02d</p>
+  <p class="count">07 / %02d</p>
 </section>''' % (corner_flowers(), LOGO, ''.join([
     tile('leaf', '100% vegetarian', 'A dedicated veg-only kitchen'),
     tile('sun', 'Cooked that morning', 'Delivered by mealtime'),
@@ -155,7 +144,11 @@ body { background: #d9d0c2; font-family: var(--body); color: var(--ink); -webkit
 .box h2 { margin-top: 6px !important; font: 800 92px/1 var(--display); letter-spacing: -.02em; font-variation-settings: 'SOFT' 50, 'WONK' 0; }
 .line { margin-top: 10px !important; font: 700 36px var(--hand); color: var(--orange); }
 .deep .line { color: var(--yellow); }
-.art { position: absolute; left: 0; top: 368px; width: 1080px; height: 600px; }
+.shot { position: absolute; left: 0; right: 0; top: 372px; height: 596px; }
+.peek { position: absolute; left: 84px; top: 44px; width: 540px; height: 360px; transform: rotate(-7deg); }
+.shot figure { position: absolute; left: 50%; top: 14px; width: 780px; margin: 0 0 0 -372px; padding: 12px; background: #fff; border-radius: 26px;
+  transform: rotate(2deg); box-shadow: 0 26px 46px rgba(60, 20, 0, .32); }
+.shot img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; }
 .inbox { position: absolute; left: 90px; right: 90px; top: 990px; }
 .inbox h3 { font: 800 21px var(--body); letter-spacing: .3em; text-transform: uppercase; color: var(--terracotta); }
 .deep .inbox h3 { color: var(--yellow); }
@@ -255,7 +248,7 @@ html = '''<!doctype html>
 </head>
 <body>
 <!-- Diwali corporate meal-box carousel: seven 1080x1350 Instagram slides in the Urban Rasoi box-sleeve
-     style (orange, cream and terracotta with white food doodles). Trays are illustrated inline SVG;
+     style (orange, cream and terracotta with white food doodles). Each box is a real photo (box-N.jpg);
      the cover uses the real branded box photo. Rendered to JPG slides and a PDF by the build script. -->
 %s
 %s
