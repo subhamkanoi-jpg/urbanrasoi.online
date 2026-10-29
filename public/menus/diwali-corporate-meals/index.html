@@ -72,11 +72,11 @@ body { background: #d9d0c2; font-family: var(--body); color: var(--ink); -webkit
 .cover h1 { margin-top: 0 !important; font: 800 94px/.95 var(--display); letter-spacing: -.02em; }
 .cover h1 span { display: block; font: italic 600 132px/1 var(--display); color: #ffe3ad; letter-spacing: -.01em; }
 .copy { width: 780px; margin: 22px auto 0 !important; font: 500 28px/1.45 var(--body); color: #fff4ea; text-wrap: balance; }
-.photo { position: absolute; left: 50%; top: 768px; width: 480px; margin: 0 0 0 -210px; padding: 14px; background: #fff; border-radius: 18px;
+.photo { position: absolute; left: 50%; top: 742px; width: 580px; margin: 0 0 0 -250px; padding: 14px; background: #fff; border-radius: 18px;
   transform: rotate(-3deg); box-shadow: 0 30px 50px rgba(70, 20, 0, .35); }
-.photo img { display: block; width: 100%; border-radius: 10px; }
-.sticker { position: absolute; left: 70px; top: 840px; width: 230px; font: 700 38px/1.1 var(--hand); color: var(--yellow); transform: rotate(-8deg); }
-.sticker svg { display: block; width: 120px; height: 70px; margin: 8px 0 0 90px; }
+.photo img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; }
+.sticker { position: absolute; left: 44px; top: 812px; width: 220px; font: 700 38px/1.1 var(--hand); color: var(--yellow); transform: rotate(-8deg); }
+.sticker svg { display: block; width: 110px; height: 64px; margin: 8px 0 0 100px; }
 .swipe { position: absolute; left: 50%; bottom: 74px; transform: translateX(-50%); padding: 18px 40px; border-radius: 999px; background: var(--yellow); color: var(--ink);
   font: 800 27px var(--body); letter-spacing: .04em; white-space: nowrap; box-shadow: 0 10px 24px rgba(80, 25, 0, .25); z-index: 2; }
 .swipe b { margin-left: 8px; }
@@ -109,7 +109,7 @@ body { background: #d9d0c2; font-family: var(--body); color: var(--ink); -webkit
 .real h3 { font: 800 20px var(--body); letter-spacing: .3em; text-transform: uppercase; color: var(--terracotta); }
 .real ul { list-style: none; padding: 0; margin-top: 20px !important; display: flex; justify-content: center; gap: 30px; }
 .real li { width: 190px; }
-.real img { width: 170px; height: 170px; border-radius: 50%; object-fit: cover; object-position: 50% 70%; border: 6px solid #fff; box-shadow: 0 10px 22px rgba(60, 25, 5, .18); }
+.real img { width: 170px; height: 170px; border-radius: 50%; object-fit: cover; border: 6px solid #fff; box-shadow: 0 10px 22px rgba(60, 25, 5, .18); }
 .real span { display: block; margin-top: 10px; font: 700 19px/1.25 var(--body); color: var(--soft); }
 .steps { list-style: none; padding: 0; position: absolute; left: 70px; right: 70px; bottom: 112px; display: flex; justify-content: center; gap: 12px; }
 .steps li { display: flex; align-items: center; gap: 12px; padding: 14px 22px 14px 14px; border-radius: 999px; background: #fff; border: 1.5px solid var(--rule);
@@ -122,7 +122,7 @@ body { background: #d9d0c2; font-family: var(--body); color: var(--ink); -webkit
 <body>
 <!-- Diwali corporate meal-box carousel: seven 1080x1350 Instagram slides in the Urban Rasoi box-sleeve
      style (orange, cream and terracotta with white food doodles). Each box is a real photo (box-N.jpg);
-     the cover uses the real branded box photo. Rendered to JPG slides and a PDF by the build script. -->
+     the cover leads with the Diwali Thali photo. Rendered to JPG slides and a PDF by the build script. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="glow"><stop offset="0" stop-color="#ffd36b" stop-opacity=".75"/><stop offset=".45" stop-color="#ffc24a" stop-opacity=".25"/><stop offset="1" stop-color="#ffc24a" stop-opacity="0"/></radialGradient>
 <linearGradient id="flame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb21f"/><stop offset=".55" stop-color="#ff8a12"/><stop offset="1" stop-color="#e2500c"/></linearGradient>
 <linearGradient id="clay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cf6a2c"/><stop offset="1" stop-color="#8a3610"/></linearGradient>
@@ -146,8 +146,8 @@ body { background: #d9d0c2; font-family: var(--body); color: var(--ink); -webkit
   <p class="hello">Hello Homesome!</p>
   <h1><span>Diwali</span>Corporate Meals</h1>
   <p class="copy">Light up the office this Diwali with festive meal boxes for the whole team, cooked fresh that morning in our 100% vegetarian kitchen.</p>
-  <figure class="photo"><img src="box-crop.jpg" alt="The Urban Rasoi meal box with its orange sleeve"></figure>
-  <p class="sticker">our real box, sleeve &amp; all!<svg viewBox="0 0 120 70" aria-hidden="true"><path d="M6 8c30 4 70 18 96 50" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round"/><path d="M84 54l20 6-2-20" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
+  <figure class="photo"><img src="box-1.jpg" alt="The Diwali Thali box, packed by Urban Rasoi"></figure>
+  <p class="sticker">packed fresh in our kitchen!<svg viewBox="0 0 120 70" aria-hidden="true"><path d="M6 8c30 4 70 18 96 50" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round"/><path d="M84 54l20 6-2-20" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
   <p class="swipe">Swipe for 5 festive boxes <b>→</b></p>
   <svg class="diyas" viewBox="0 0 1080 120" aria-hidden="true"><use href="#diya" x="40" y="40" width="100" height="72"/><use href="#my" x="150" y="82" width="28" height="28"/><use href="#mo" x="186" y="86" width="24" height="24"/><use href="#diya" x="880" y="40" width="100" height="72"/><use href="#mo" x="850" y="84" width="28" height="28"/><use href="#my" x="820" y="88" width="24" height="24"/></svg>
 </section>
@@ -212,7 +212,7 @@ body { background: #d9d0c2; font-family: var(--body); color: var(--ink); -webkit
   <h2>Why teams order from us</h2>
   <p class="line">homesome food, on your office clock</p>
   <ul class="tiles"><li><svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 38C10 20 22 10 38 10c0 16-10 28-28 28z"/><path d="M10 38L30 18"/></g></svg><b>100% vegetarian</b><span>A dedicated veg-only kitchen</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="28" r="8"/><path d="M24 12v4M10 28H6M42 28h-4M14 18l3 3M34 18l-3 3M8 38h32"/></g></svg><b>Cooked that morning</b><span>Delivered by mealtime</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="24" width="14" height="14" rx="2"/><rect x="26" y="24" width="14" height="14" rx="2"/><rect x="17" y="8" width="14" height="14" rx="2"/></g></svg><b>20 to 500+ boxes</b><span>One team or every floor</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 6l14 6v10c0 9-6 16-14 20-8-4-14-11-14-20V12z"/><path d="M17 24l5 5 9-10"/></g></svg><b>Leak-proof boxes</b><span>Hygienic, food-grade packing</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 42s-13-13-13-23a13 13 0 0 1 26 0c0 10-13 23-13 23z"/><circle cx="24" cy="19" r="5"/></g></svg><b>FSSAI kitchen</b><span>Salt Lake, Kolkata · since 2015</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M24 7l5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z"/></g></svg><b>Rated 4.9</b><span>By the hosts we cook for</span></li></ul>
-  <div class="real"><h3>Real dishes from our kitchen</h3><ul><li><img src="/images/menu/rakhi/exotic-veg-stroganoff-rice.jpg" alt=""><span>Veg Stroganoff</span></li><li><img src="/images/menu/rakhi/spaghetti-au-gratin.jpg" alt=""><span>Spaghetti Au Gratin</span></li><li><img src="/images/menu/rakhi/cheesy-veg-cigar-rolls.jpg" alt=""><span>Cheesy Cigar Rolls</span></li><li><img src="/images/menu/rakhi/crunchy-thai-cabbage-salad.jpg" alt=""><span>Thai Cabbage Salad</span></li></ul></div>
+  <div class="real"><h3>Straight from our boxes</h3><ul><li><img src="close-kofta.jpg" alt=""><span>Malai Kofta</span></li><li><img src="close-pulao.jpg" alt=""><span>Basanti Pulao</span></li><li><img src="close-paneer.jpg" alt=""><span>Kadhai Paneer</span></li><li><img src="close-noodles.jpg" alt=""><span>Hakka Noodles</span></li></ul></div>
   <ol class="steps"><li><b>1</b>Pick a box</li><li><b>2</b>Share headcount &amp; date</li><li><b>3</b>Delivered fresh, on your slot</li></ol>
   <p class="count">07 / 08</p>
 </section>

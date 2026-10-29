@@ -55,8 +55,8 @@ COVER = '''<section class="slide orange cover">
   <p class="hello">Hello Homesome!</p>
   <h1><span>Diwali</span>Corporate Meals</h1>
   <p class="copy">Light up the office this Diwali with festive meal boxes for the whole team, cooked fresh that morning in our 100%% vegetarian kitchen.</p>
-  <figure class="photo"><img src="box-crop.jpg" alt="The Urban Rasoi meal box with its orange sleeve"></figure>
-  <p class="sticker">our real box, sleeve &amp; all!<svg viewBox="0 0 120 70" aria-hidden="true"><path d="M6 8c30 4 70 18 96 50" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round"/><path d="M84 54l20 6-2-20" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
+  <figure class="photo"><img src="box-1.jpg" alt="The Diwali Thali box, packed by Urban Rasoi"></figure>
+  <p class="sticker">packed fresh in our kitchen!<svg viewBox="0 0 120 70" aria-hidden="true"><path d="M6 8c30 4 70 18 96 50" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round"/><path d="M84 54l20 6-2-20" fill="none" stroke="#f9c537" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></p>
   <p class="swipe">Swipe for 5 festive boxes <b>→</b></p>
   %s
 </section>''' % (toran(), DIYAS)
@@ -79,7 +79,7 @@ WHY = '''<section class="slide box cream why">
   <h2>Why teams order from us</h2>
   <p class="line">homesome food, on your office clock</p>
   <ul class="tiles">%s</ul>
-  <div class="real"><h3>Real dishes from our kitchen</h3><ul>%s</ul></div>
+  <div class="real"><h3>Straight from our boxes</h3><ul>%s</ul></div>
   <ol class="steps"><li><b>1</b>Pick a box</li><li><b>2</b>Share headcount &amp; date</li><li><b>3</b>Delivered fresh, on your slot</li></ol>
   <p class="count">07 / %02d</p>
 </section>''' % (corner_flowers(), LOGO, ''.join([
@@ -89,9 +89,8 @@ WHY = '''<section class="slide box cream why">
     tile('seal', 'Leak-proof boxes', 'Hygienic, food-grade packing'),
     tile('pin', 'FSSAI kitchen', 'Salt Lake, Kolkata · since 2015'),
     tile('star', 'Rated 4.9', 'By the hosts we cook for'),
-]), ''.join('<li><img src="/images/menu/rakhi/%s.jpg" alt=""><span>%s</span></li>' % p for p in [
-    ('exotic-veg-stroganoff-rice', 'Veg Stroganoff'), ('spaghetti-au-gratin', 'Spaghetti Au Gratin'),
-    ('cheesy-veg-cigar-rolls', 'Cheesy Cigar Rolls'), ('crunchy-thai-cabbage-salad', 'Thai Cabbage Salad')]), TOTAL)
+]), ''.join('<li><img src="close-%s.jpg" alt=""><span>%s</span></li>' % p for p in [
+    ('kofta', 'Malai Kofta'), ('pulao', 'Basanti Pulao'), ('paneer', 'Kadhai Paneer'), ('noodles', 'Hakka Noodles')]), TOTAL)
 
 CTA = '''<section class="slide orange cta">
   <svg class="toran" viewBox="0 -6 1080 160" aria-hidden="true">%s</svg>
@@ -173,11 +172,11 @@ body { background: #d9d0c2; font-family: var(--body); color: var(--ink); -webkit
 .cover h1 { margin-top: 0 !important; font: 800 94px/.95 var(--display); letter-spacing: -.02em; }
 .cover h1 span { display: block; font: italic 600 132px/1 var(--display); color: #ffe3ad; letter-spacing: -.01em; }
 .copy { width: 780px; margin: 22px auto 0 !important; font: 500 28px/1.45 var(--body); color: #fff4ea; text-wrap: balance; }
-.photo { position: absolute; left: 50%; top: 768px; width: 480px; margin: 0 0 0 -210px; padding: 14px; background: #fff; border-radius: 18px;
+.photo { position: absolute; left: 50%; top: 742px; width: 580px; margin: 0 0 0 -250px; padding: 14px; background: #fff; border-radius: 18px;
   transform: rotate(-3deg); box-shadow: 0 30px 50px rgba(70, 20, 0, .35); }
-.photo img { display: block; width: 100%; border-radius: 10px; }
-.sticker { position: absolute; left: 70px; top: 840px; width: 230px; font: 700 38px/1.1 var(--hand); color: var(--yellow); transform: rotate(-8deg); }
-.sticker svg { display: block; width: 120px; height: 70px; margin: 8px 0 0 90px; }
+.photo img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; }
+.sticker { position: absolute; left: 44px; top: 812px; width: 220px; font: 700 38px/1.1 var(--hand); color: var(--yellow); transform: rotate(-8deg); }
+.sticker svg { display: block; width: 110px; height: 64px; margin: 8px 0 0 100px; }
 .swipe { position: absolute; left: 50%; bottom: 74px; transform: translateX(-50%); padding: 18px 40px; border-radius: 999px; background: var(--yellow); color: var(--ink);
   font: 800 27px var(--body); letter-spacing: .04em; white-space: nowrap; box-shadow: 0 10px 24px rgba(80, 25, 0, .25); z-index: 2; }
 .swipe b { margin-left: 8px; }
@@ -210,7 +209,7 @@ body { background: #d9d0c2; font-family: var(--body); color: var(--ink); -webkit
 .real h3 { font: 800 20px var(--body); letter-spacing: .3em; text-transform: uppercase; color: var(--terracotta); }
 .real ul { list-style: none; padding: 0; margin-top: 20px !important; display: flex; justify-content: center; gap: 30px; }
 .real li { width: 190px; }
-.real img { width: 170px; height: 170px; border-radius: 50%; object-fit: cover; object-position: 50% 70%; border: 6px solid #fff; box-shadow: 0 10px 22px rgba(60, 25, 5, .18); }
+.real img { width: 170px; height: 170px; border-radius: 50%; object-fit: cover; border: 6px solid #fff; box-shadow: 0 10px 22px rgba(60, 25, 5, .18); }
 .real span { display: block; margin-top: 10px; font: 700 19px/1.25 var(--body); color: var(--soft); }
 .steps { list-style: none; padding: 0; position: absolute; left: 70px; right: 70px; bottom: 112px; display: flex; justify-content: center; gap: 12px; }
 .steps li { display: flex; align-items: center; gap: 12px; padding: 14px 22px 14px 14px; border-radius: 999px; background: #fff; border: 1.5px solid var(--rule);
@@ -249,7 +248,7 @@ html = '''<!doctype html>
 <body>
 <!-- Diwali corporate meal-box carousel: seven 1080x1350 Instagram slides in the Urban Rasoi box-sleeve
      style (orange, cream and terracotta with white food doodles). Each box is a real photo (box-N.jpg);
-     the cover uses the real branded box photo. Rendered to JPG slides and a PDF by the build script. -->
+     the cover leads with the Diwali Thali photo. Rendered to JPG slides and a PDF by the build script. -->
 %s
 %s
 </body>
